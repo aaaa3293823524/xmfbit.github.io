@@ -362,49 +362,14 @@
 
       
         
-          
-            <p>数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，首先介绍针孔相机模型，<br><img src="/img/camera_geometry_application.png" alt="立体视觉应用"></p>
-<h2 id="针孔相机模型（Pinhole-Camera）"><a href="#针孔相机模型（Pinhole-Camera）" class="headerlink" title="针孔相机模型（Pinhole Camera）"></a>针孔相机模型（Pinhole Camera）</h2><p>针孔相机是简化的相机模型。光线沿直线传播。物体反射的光线，通过针孔，在成像面形成倒立的影像。针孔与成像面的距离，称为焦距。一般而言，针孔越小，影像越清晰，但针孔太小，会导致衍射，反而令影像模糊。</p>
-<h3 id="投影几何的重要性质"><a href="#投影几何的重要性质" class="headerlink" title="投影几何的重要性质"></a>投影几何的重要性质</h3><p>在对针孔相机详细说明之前，首先介绍投影几何（Projective Geometry）的几条性质。</p>
-<p>在投影变换前后，长度和角度信息丢失，但直线仍然保持是直线。如下图所示。原来垂直和平行的台球桌面的边不再保持原有的角度和相对长度，但是仍然是直线。<br><img src="/img/projective_geometry_property_1.png" alt="性质1"></p>
-<p>另一方面，虽然3D世界中的平行线在投影变换后相交（我们将交点称为Vanishing point），但是3D世界中互相平行的线，在2D平面上的Vanishing point为同一点。而所有平行线的Vanishing point又在同一条直线上。如下图所示（竖直的绿色平行线在投影变换后仍然保持平行，实际上并不想交，但我们这里认为其交于无穷远的某点）。<br><img src="/img/projective_geometry_property_2.png" alt="性质2"></p>
-<h3 id="针孔相机模型"><a href="#针孔相机模型" class="headerlink" title="针孔相机模型"></a>针孔相机模型</h3><p>如下图所示，为针孔相机成像原理示意图。外部世界的一点$P$发出（或反射）的光线，经过小孔$O$，成像在在像平面$\Pi^{‘}$的点$P^{‘}$处。通过简单的相似三角形知识，可以得到图上的关系式。<br><img src="/img/pinhole_camera_model.png" alt="针孔相机模型示意图"></p>
-<p>由上图可以知道，3D空间的一点$P$与成像平面上的对应点$P^{‘}$坐标之间的数量关系为：</p>
-<script type="math/tex; mode=display">\left\{\begin{matrix}
-x^{'} = fx/z \\
-y^{'} = fy/z
-\end{matrix}\right.</script><p>可是，由于变量$z$位于分母的位置，也就是说如果直接写成变换矩阵的话，这个矩阵是和变量$z$有关的，我们不想这样，而是想得到一个完全由相机本身确定的变换矩阵。所以，我们借鉴齐次矩阵的思想，将原来的点增加一个维度，转换为齐次坐标。如下图的两个例子所示。<br><img src="/img/qicizuobiao.png" alt="齐次坐标"></p>
-<p>这样，我们可以将3D和2D之间的变换写成下面的形式。当实际计算的时候，我们首先将3D点转换为4维向量（在末尾补1），然后左乘变换矩阵。最后将得到的结果化为末尾元素为1的形式，这样，前面两个元素就代表了变换后2D点的坐标。这样做，使得变换矩阵$M$完全由相机参数（即焦距$f$）决定。<br><img src="/img/qicizuobiao_transform.png" alt=""></p>
-<p>上面的式子只是理想情况下的相机模型，成立的假设条件较强，主要有以下几点假设：</p>
-<ol>
-<li>内假设（和相机本身有关）<ul>
-<li>不同方向上焦距相同；</li>
-<li>光学中心在相平面的坐标原点$(0, 0)$</li>
-<li>没有倾斜（no skew）</li>
-</ul>
-</li>
-<li>外假设（和相机位姿有关，和相机本身参数无关）<ul>
-<li>相机没有旋转（坐标轴与世界坐标系方向重合）</li>
-<li>相机没有平移（相机中心与世界坐标系中心重合）</li>
-</ul>
-</li>
-</ol>
-<p>其中，no skew情形我也不知道中文应该如何翻译。这种情况如图所示，由于剪切变形，成像平面的坐标轴并不是严格正交，使得两个轴之间实际存在一个很小的夹角。<br><img src="/img/camera_skew.png" alt="what is &quot;skew&quot;?"></p>
-<p>下面，按照slide的顺序逐渐将上述假设移去，分析变换矩阵$M$应该如何修正。</p>
-<h4 id="理想情况"><a href="#理想情况" class="headerlink" title="理想情况"></a>理想情况</h4><p>理想情况以上假设全部满足，矩阵$M$如下所示。<br><img src="/img/case_1_m.png" alt="case 1: M"></p>
-<h4 id="光学中心不在像平面的坐标原点"><a href="#光学中心不在像平面的坐标原点" class="headerlink" title="光学中心不在像平面的坐标原点"></a>光学中心不在像平面的坐标原点</h4><p>假设光学中心位于像平面内坐标为$(u_0, v_0)$的位置。则需要在理想情况计算的坐标基础上加上这个偏移量。所以，矩阵$M$被修正为：<br><img src="/img/case_2_m.png" alt="case 2: M"></p>
-<h4 id="像素非正方形"><a href="#像素非正方形" class="headerlink" title="像素非正方形"></a>像素非正方形</h4><p>由于透镜在$x$和$y$方向上的焦距不同，使得两个方向上的比例因子不同，不能再使用同一个$f$计算。修正如下：<br><img src="/img/case_3_m.png" alt="case 3: M"></p>
-<h4 id="no-skew"><a href="#no-skew" class="headerlink" title="no skew"></a>no skew</h4><p>这时候$x$方向上其实有$y$轴坐标的分量，所以修正如下：<br><img src="/img/case_4_m.png" alt="case 4: M"></p>
-<h4 id="相机的旋转和平移"><a href="#相机的旋转和平移" class="headerlink" title="相机的旋转和平移"></a>相机的旋转和平移</h4><p>相机外部姿态很可能经过了旋转和平移，从而不与世界坐标系完全重合。如图所示。<br><img src="/img/camera_translation_rotation.png" alt="相机旋转和平移"></p>
-<p>所以我们需要先对世界坐标系内的3D点做一个齐次变换，将其变换为一个中间坐标系，这个中间坐标系和相机坐标系是重合的。也就是我们的变换矩阵应该是下面这个形式的，其中，$H$是表征旋转和平移的齐次矩阵，$H\in \mathbb{R}^{3\times 4}$。</p>
-<script type="math/tex; mode=display">P^{'} = MHP</script><p>首先考虑较为简单的平移。所做的修正如下所示，也就是将原来的$\mathbb{0}$矩阵变为了一个平移向量。<br><img src="/img/case_m_5.png" alt="case 5: M"></p>
-<p>进一步考虑旋转时，我们将旋转分解为绕三个坐标轴的三次旋转，单次旋转矩阵如下所示：<br><img src="/img/rotation_matrix.png" alt="绕单轴的旋转矩阵"></p>
-<p>将它们按照旋转顺序左乘起来，可以得到修正后的变换形式如下：<br><img src="/img/case_6_m.png" alt="case 6: M"></p>
-<h4 id="最终形式"><a href="#最终形式" class="headerlink" title="最终形式"></a>最终形式</h4><p>综上所示，变换矩阵的最终形式为：<br><img src="/img/generic_projection_matrix.png" alt="最终的投影变换矩阵"></p>
-<p>其中，内参数矩阵中有5个自由度，外参数矩阵中有6个自由度（3平移，3旋转）。</p>
-<p>上面的内容总结起来，如下图所示。<br><img src="/img/camera_model_things_to_remember.png" alt="things to remember"></p>
-
-          
+          <p>数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，首先介绍针孔相机模型，<br><img src="/img/camera_geometry_application.png" alt="立体视觉应用"><br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/02/cs131-camera/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -530,55 +495,20 @@ y^{'} = fy/z
 
       
         
-          
-            <p><a href="https://en.wikipedia.org/wiki/Scale-invariant_feature_transform" target="_blank" rel="external">SIFT(尺度不变特征变换，Scale Invariant Feature Transform)</a>,最早由Lowe提出，目的是为了解决目标检测（Object Detection）问题中提取图像特征的问题。从名字可以看出，SIFT的优势就在于对尺度变换的不变性，同时SIFT还满足平移变换和旋转变换下的不变性，并对光照变化和3D视角变换有一定的不变性。它的主要步骤如下：</p>
+          <p><a href="https://en.wikipedia.org/wiki/Scale-invariant_feature_transform">SIFT(尺度不变特征变换，Scale Invariant Feature Transform)</a>,最早由Lowe提出，目的是为了解决目标检测（Object Detection）问题中提取图像特征的问题。从名字可以看出，SIFT的优势就在于对尺度变换的不变性，同时SIFT还满足平移变换和旋转变换下的不变性，并对光照变化和3D视角变换有一定的不变性。它的主要步骤如下：</p>
 <ul>
 <li>scale space上的极值检测。使用DoG在不同的scaleast和image position下找到interest point。</li>
 <li>interest point的localization。对上面的interest point进行稳定度检测，并确定其所在的scale和position。</li>
 <li>确定方向。通过计算图像的梯度图，确定key point的方向，下一步的feature operation就是在这个方向，scale和position上进行的。</li>
 <li>确定key point的描述子。使用图像的局部梯度作为key point的描述子，最终构成SIFT特征向量。</li>
 </ul>
-<h2 id="SIFT介绍"><a href="#SIFT介绍" class="headerlink" title="SIFT介绍"></a>SIFT介绍</h2><p>上讲中介绍的Harris角点方法计算简便，并具有平移不变性和旋转不变性。特征$f$对某种变换$\mathcal{T}$具有不变性，是指在经过变换后原特征保持不变，也就是$f(I) = f(\mathcal{T}(I))$。但是Harris角点不具有尺度变换不变性，如下图所示。当图像被放大后，原图的角点被判定为了边缘点。<br><img src="/img/harris_non_scale_constant.png" alt="harris的尺度变换不满足尺度不变性"></p>
-<p>而我们想要得到一种对尺度变换保持不变性的特征计算方法。例如图像patch的像素平均亮度，如下图所示。region size缩小为原始的一半后，亮度直方图的形状不变，即平均亮度不变。<br><img src="/img/patch_average_intensity_scale_constant.png" alt="平均亮度满足尺度变化呢不变性"></p>
-<p>而Lowe想到了使用局部极值来作为feature来保证对scale变换的不变性。在算法的具体实现中，他使用DoG来获得局部极值。</p>
-<p><a href="http://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf" target="_blank" rel="external">Lowe的论文</a>中也提到了SIFT特征的应用。SIFT特征可以产生稠密（dense）的key point，例如一张500x500像素大小的图像，一般可以产生~2000个稳定的SIFT特征。在进行image matching和recognition时，可以将ref image的SIFT特征提前计算出来保存在数据库中，并计算待处理图像的SIFT特征，根据特征向量的欧氏距离进行匹配。</p>
-<p>这篇博客主要是<a href="http://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf" target="_blank" rel="external">Lowe上述论文</a>的读书笔记，按照SIFT特征的计算步骤进行组织。</p>
-<h2 id="尺度空间极值的检测方法"><a href="#尺度空间极值的检测方法" class="headerlink" title="尺度空间极值的检测方法"></a>尺度空间极值的检测方法</h2><p>前人研究已经指出，在一系列合理假设下，高斯核是唯一满足尺度不变性的。所谓的尺度空间，就是指原始图像$I(x,y)$和可变尺度的高斯核$G(x,y,\sigma)$的卷积结果。如下式所示：</p>
-<script type="math/tex; mode=display">L(x,y,\sigma) = G(x,y,\sigma)\ast I(x,y)</script><p>其中，$G(x,y, \sigma) = \frac{1}{2\pi\sigma^2}\exp(-(x^2+y^2)/2\sigma^2)$。不同的$\sigma$代表不同的尺度。</p>
-<p>DoG(difference of Gaussian)函数定义为不同尺度的高斯核与图像卷积结果之差，即，</p>
-<script type="math/tex; mode=display">D(x,y,\sigma) = L(x,y,k\sigma) - L(x,y,\sigma)</script><p>如下图所示，输入的图像重复地与高斯核进行卷积得到结果图像$L$（左侧），这样构成了一个octave。相邻的$L$之间作差得到DoG图像（右侧）。当一个octave处理完之后，将当前octave的最后一张高斯卷积结果图像降采样两倍，按照前述方法构造下一个octave。在图中，我们将一个octave划分为$s$个间隔（即$s+1$个图像）时，设$\sigma$最终变成了2倍（即$\sigma$加倍）。那么，显然有相邻两层之间的$k = 2^{1/s}$。不过为了保证首尾两张图像也能够计算差值，我们实际上需要再补上两张（做一个padding），也就是说一个octave内的总图像为$s+3$（下图中的$s=2$）。<br><img src="/img/sift_dog.png" alt="DoG的计算"></p>
-<p>为何我们要费力气得到DoG呢？论文中作者给出的解释是：DoG对scale-normalized后的Guassian Laplace函数$\sigma^2\Delta G$提供了足够的近似。其中前面的$\sigma^2$系数正是为了保证尺度不变性。而前人的研究则指出，$\sigma \Delta G$函数的极值，和其他一大票其他function比较时，能够提供最稳定的feature。</p>
-<p>对于高斯核函数，有以下性质：</p>
-<script type="math/tex; mode=display">\frac{\partial G}{\partial \sigma} = \sigma \Delta G</script><p>我们将式子左侧的微分变成差分，得到了下式：</p>
-<script type="math/tex; mode=display">\sigma\Delta G \approx \frac{G(x,y,k\sigma)-G(x,y,\sigma)}{k\sigma - \sigma}</script><p>也就是：</p>
-<script type="math/tex; mode=display">G(x,y,k\sigma)-G(x,y,\sigma) \approx (k-1)\sigma^2 \Delta G</script><p>当$k=1$时，上式的近似误差为0（即上面的$s=\infty$，也就是说octave的划分是连续的）。但是当$k$较大时，如$\sqrt{2}$（这时$s=2$，octave划分十分粗糙了），仍然保证了稳定性。同时，由于相邻两层的比例$k$是定值，所以$k-1$这个因子对于检测极值没有影响。我们在计算时，无需除以$k-1$。</p>
-<p>构造完了DoG图像金字塔，下面我们的任务就是检测其中的极值。如下图，对于每个点，我们将它与金字塔中相邻的26个点作比较，找到局部极值。<br><img src="/img/sift_detection_maximum.png" alt="检测极值"></p>
-<p>另外，我们将输入图像行列预先使用线性插值的方法resize为原来的2倍，获取更多的key point。</p>
-<p>此外，在Lowe的论文中还提到了使用DoG的泰勒展开和海森矩阵进行key point的精细确定方法，并对key point进行过滤。这里也不再赘述了。</p>
-<h2 id="128维feature的获取"><a href="#128维feature的获取" class="headerlink" title="128维feature的获取"></a>128维feature的获取</h2><p>我们需要在每个key point处提取128维的特征向量。这里结合CS131课程作业2的相关练习作出说明。对于每个key point，我们关注它位于图像金字塔中的具体层数以及像素点位置，也就是说通过索引<code>pyramid{scale}(y, x)</code>就可以获取key point。我们遍历key point，为它们赋予一个128维的特征向量。</p>
-<p>我们选取point周围16x16大小的区域，称为一个patch。将其分为4x4共计16个cell。这样，每个cell内共有像素点16个。对于每个cell，我们计算它的局部梯度方向直方图，直方图共有8个bin。也就是说每个cell可以得到一个8维的特征向量。将16个cell的特征向量首尾相接，就得到了128维的SIFT特征向量。在下面的代码中，使用变量<code>patch_mag</code>和<code>patch_theta</code>分别代表patch的梯度幅值和角度，它们可以很简单地使用卷积和数学运算得到。</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">patch_mag = <span class="built_in">sqrt</span>(patch_dx.^<span class="number">2</span> + patch_dy.^<span class="number">2</span>);</div><div class="line">patch_theta = <span class="built_in">atan2</span>(patch_dy, patch_dx);  <span class="comment">% atan2的返回结果在区间[-pi, pi]上。</span></div><div class="line">patch_theta = <span class="built_in">mod</span>(patch_theta, <span class="number">2</span>*<span class="built_in">pi</span>);   <span class="comment">% 这里我们要将其转换为[0, 2pi]</span></div></pre></td></tr></table></figure>
-<p>之后，我们需要获取key point的主方向。其定义可见slide，即为key point扩展出来的patch的梯度方向直方图的峰值对应的角度。<br><img src="/img/sift_dominant_orientation.png" alt="何为主方向"></p>
-<p>所以我们首先应该设计如何构建局部梯度方向直方图。我们只要将<code>[0, 2pi]</code>区间划分为若干个<code>bin</code>，并将patch内的每个点使用其梯度大小向对应的<code>bin</code>内投票即可。如下所示：</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[histogram, angles]</span> = <span class="title">ComputeGradientHistogram</span><span class="params">(num_bins, gradient_magnitudes, gradient_angles)</span></span></div><div class="line"><span class="comment">% Compute a gradient histogram using gradient magnitudes and directions.</span></div><div class="line"><span class="comment">% Each point is assigned to one of num_bins depending on its gradient</span></div><div class="line"><span class="comment">% direction; the gradient magnitude of that point is added to its bin.</span></div><div class="line"><span class="comment">%</span></div><div class="line"><span class="comment">% INPUT</span></div><div class="line"><span class="comment">% num_bins: The number of bins to which points should be assigned.</span></div><div class="line"><span class="comment">% gradient_magnitudes, gradient angles:</span></div><div class="line"><span class="comment">%       Two arrays of the same shape where gradient_magnitudes(i) and</span></div><div class="line"><span class="comment">%       gradient_angles(i) give the magnitude and direction of the gradient</span></div><div class="line"><span class="comment">%       for the ith point. gradient_angles ranges from 0 to 2*pi</span></div><div class="line"><span class="comment">%                                      </span></div><div class="line"><span class="comment">% OUTPUT</span></div><div class="line"><span class="comment">% histogram: A 1 x num_bins array containing the gradient histogram. Entry 1 is</span></div><div class="line"><span class="comment">%       the sum of entries in gradient_magnitudes whose corresponding</span></div><div class="line"><span class="comment">%       gradient_angles lie between 0 and angle_step. Similarly, entry 2 is for</span></div><div class="line"><span class="comment">%       angles between angle_step and 2*angle_step. Angle_step is calculated as</span></div><div class="line"><span class="comment">%       2*pi/num_bins.</span></div><div class="line"></div><div class="line"><span class="comment">% angles: A 1 x num_bins array which holds the histogram bin lower bounds.</span></div><div class="line"><span class="comment">%       In other words, histogram(i) contains the sum of the</span></div><div class="line"><span class="comment">%       gradient magnitudes of all points whose gradient directions fall</span></div><div class="line"><span class="comment">%       in the range [angles(i), angles(i + 1))</span></div><div class="line"></div><div class="line">    angle_step = <span class="number">2</span> * <span class="built_in">pi</span> / num_bins;</div><div class="line">    angles = <span class="number">0</span> : angle_step : (<span class="number">2</span>*<span class="built_in">pi</span>-angle_step);</div><div class="line"></div><div class="line">    histogram = <span class="built_in">zeros</span>(<span class="number">1</span>, num_bins);</div><div class="line">    num = <span class="built_in">numel</span>(gradient_angles);</div><div class="line">    <span class="keyword">for</span> n = <span class="number">1</span>:num</div><div class="line">        index = <span class="built_in">floor</span>(gradient_angles(n) / angle_step) + <span class="number">1</span>;</div><div class="line">        histogram(index) = histogram(index) + gradient_magnitudes(n);</div><div class="line">    <span class="keyword">end</span>    </div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>Lowe论文中推荐的<code>bin</code>数目为36个，计算主方向的函数如下：</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">direction</span> = <span class="title">ComputeDominantDirection</span><span class="params">(gradient_magnitudes, gradient_angles)</span></span></div><div class="line"><span class="comment">% Computes the dominant gradient direction for the region around a keypoint</span></div><div class="line"><span class="comment">% given the scale of the keypoint and the gradient magnitudes and gradient</span></div><div class="line"><span class="comment">% angles of the pixels in the region surrounding the keypoint.</span></div><div class="line"><span class="comment">%</span></div><div class="line"><span class="comment">% INPUT</span></div><div class="line"><span class="comment">% gradient_magnitudes, gradient_angles:</span></div><div class="line"><span class="comment">%   Two arrays of the same shape where gradient_magnitudes(i) and</span></div><div class="line"><span class="comment">%   gradient_angles(i) give the magnitude and direction of the gradient for</span></div><div class="line"><span class="comment">%   the ith point.</span></div><div class="line"></div><div class="line">    <span class="comment">% Compute a gradient histogram using the weighted gradient magnitudes.</span></div><div class="line">    <span class="comment">% In David Lowe's paper he suggests using 36 bins for this histogram.</span></div><div class="line">    num_bins = <span class="number">36</span>;</div><div class="line">    <span class="comment">% Step 1:</span></div><div class="line">    <span class="comment">% compute the 36-bin histogram of angles using ComputeGradientHistogram()</span></div><div class="line">    [histogram, angle_bound] = ComputeGradientHistogram(num_bins, gradient_magnitudes, gradient_angles);</div><div class="line">    <span class="comment">% Step 2:</span></div><div class="line">    <span class="comment">% Find the maximum value of the gradient histogram, and set "direction"</span></div><div class="line">    <span class="comment">% to the angle corresponding to the maximum. (To match our solutions,</span></div><div class="line">    <span class="comment">% just use the lower-bound angle of the max histogram bin. (E.g. return</span></div><div class="line">    <span class="comment">% 0 radians if it's bin 1.)</span></div><div class="line">    [~, max_index] = max(histogram);</div><div class="line">    direction = angle_bound(max_index);</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>之后，我们更新patch内各点的梯度方向，计算其与主方向的夹角，作为新的方向。并将梯度进行高斯平滑。</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">patch_theta = patch_theta - ComputeDominantDirection(patch_mag, patch_theta);;</div><div class="line">patch_theta = <span class="built_in">mod</span>(patch_theta, <span class="number">2</span>*<span class="built_in">pi</span>);</div><div class="line">patch_mag = patch_mag .* fspecial(<span class="string">'gaussian'</span>, patch_size, patch_size / <span class="number">2</span>); <span class="comment">% patch_size = 16</span></div></pre></td></tr></table></figure>
-<p>遍历cell，计算feature如下：</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">feature = [];</div><div class="line">row_iter = <span class="number">1</span>;</div><div class="line"><span class="keyword">for</span> y = <span class="number">1</span>:num_histograms</div><div class="line">    col_iter = <span class="number">1</span>;</div><div class="line">    <span class="keyword">for</span> x = <span class="number">1</span>:num_histograms</div><div class="line">        cell_mag = patch_mag(row_iter: row_iter + pixelsPerHistogram - <span class="number">1</span>, ...</div><div class="line">                             col_iter: col_iter + pixelsPerHistogram - <span class="number">1</span>);</div><div class="line">        cell_theta = patch_theta(row_iter: row_iter + pixelsPerHistogram - <span class="number">1</span>, ...</div><div class="line">                             col_iter: col_iter + pixelsPerHistogram - <span class="number">1</span>);</div><div class="line">        [histogram, ~] = ComputeGradientHistogram(num_angles, cell_mag, cell_theta);</div><div class="line">        feature = [feature, histogram];</div><div class="line">        col_iter = col_iter + pixelsPerHistogram;</div><div class="line">    <span class="keyword">end</span></div><div class="line">    row_iter = row_iter + pixelsPerHistogram;</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>最后，对feature做normalization。首先将feature化为单位长度，并将其中太大的分量进行限幅（如0.2的阈值），之后再重新将其转换为单位长度。</p>
-<p>这样，就完成了SIFT特征的计算。在Lowe的论文中，有更多对实现细节的讨论，这里只是跟随课程slide和作业走完了算法流程，不再赘述。</p>
-<h2 id="应用：图像特征点匹配"><a href="#应用：图像特征点匹配" class="headerlink" title="应用：图像特征点匹配"></a>应用：图像特征点匹配</h2><p>和Harris角点一样，SIFT特征可以用作两幅图像的特征点匹配，并且具有多种变换不变性的优点。对于两幅图像分别计算得到的特征点SIFT特征向量，可以使用下面简单的方法搜寻匹配点。计算每组点对之间的欧式距离，如果最近的距离比第二近的距离小得多，那么可以认为有一对成功匹配的特征点。其MATLAB代码如下，其中<code>descriptor</code>是两幅图像的SIFT特征向量。阈值默认为取做0.7。</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">match</span> = <span class="title">SIFTSimpleMatcher</span><span class="params">(descriptor1, descriptor2, thresh)</span></span></div><div class="line"><span class="comment">% SIFTSimpleMatcher</span></div><div class="line"><span class="comment">%   Match one set of SIFT descriptors (descriptor1) to another set of</span></div><div class="line"><span class="comment">%   descriptors (decriptor2). Each descriptor from descriptor1 can at</span></div><div class="line"><span class="comment">%   most be matched to one member of descriptor2, but descriptors from</span></div><div class="line"><span class="comment">%   descriptor2 can be matched more than once.</span></div><div class="line"><span class="comment">%   </span></div><div class="line"><span class="comment">%   Matches are determined as follows:</span></div><div class="line"><span class="comment">%   For each descriptor vector in descriptor1, find the Euclidean distance</span></div><div class="line"><span class="comment">%   between it and each descriptor vector in descriptor2. If the smallest</span></div><div class="line"><span class="comment">%   distance is less than thresh*(the next smallest distance), we say that</span></div><div class="line"><span class="comment">%   the two vectors are a match, and we add the row [d1 index, d2 index] to</span></div><div class="line"><span class="comment">%   the "match" array.</span></div><div class="line"><span class="comment">%   </span></div><div class="line"><span class="comment">% INPUT:</span></div><div class="line"><span class="comment">%   descriptor1: N1 * 128 matrix, each row is a SIFT descriptor.</span></div><div class="line"><span class="comment">%   descriptor2: N2 * 128 matrix, each row is a SIFT descriptor.</span></div><div class="line"><span class="comment">%   thresh: a given threshold of ratio. Typically 0.7</span></div><div class="line"><span class="comment">%</span></div><div class="line"><span class="comment">% OUTPUT:</span></div><div class="line"><span class="comment">%   Match: N * 2 matrix, each row is a match.</span></div><div class="line"><span class="comment">%          For example, Match(k, :) = [i, j] means i-th descriptor in</span></div><div class="line"><span class="comment">%          descriptor1 is matched to j-th descriptor in descriptor2.</span></div><div class="line">    <span class="keyword">if</span> ~exist(<span class="string">'thresh'</span>, <span class="string">'var'</span>),</div><div class="line">        thresh = <span class="number">0.7</span>;</div><div class="line">    <span class="keyword">end</span></div><div class="line"></div><div class="line">    match = [];</div><div class="line">    [N1, ~] = <span class="built_in">size</span>(descriptor1);</div><div class="line">    <span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:N1</div><div class="line">        fea = descriptor1(<span class="built_in">i</span>, :);</div><div class="line">        err = <span class="built_in">bsxfun</span>(@minus, fea, descriptor2);</div><div class="line">        dis = <span class="built_in">sqrt</span>(sum(err.^<span class="number">2</span>, <span class="number">2</span>));</div><div class="line">        [sorted_dis, ind] = sort(dis, <span class="number">1</span>);</div><div class="line">        <span class="keyword">if</span> sorted_dis(<span class="number">1</span>) &lt; thresh * sorted_dis(<span class="number">2</span>)</div><div class="line">            match = [match; [i, ind(<span class="number">1</span>)]];</div><div class="line">        <span class="keyword">end</span></div><div class="line">    <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>接下来，我们可以使用最小二乘法计算两幅图像之间的仿射变换矩阵（齐次变换矩阵）$H$。其中$H$满足：</p>
-<script type="math/tex; mode=display">Hp_{\text{before}} = p_{\text{after}}</script><p>其中</p>
-<script type="math/tex; mode=display">p = \begin{bmatrix}x \\\\ y \\\\ 1\end{bmatrix}</script><p>对上式稍作变形，有</p>
-<script type="math/tex; mode=display">p_{\text{before}}^\dagger H^\dagger = p_{\text{after}}\dagger</script><p>就可以使用标准的最小二乘正则方程进行求解了。代码如下：</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">H</span> = <span class="title">ComputeAffineMatrix</span><span class="params">( Pt1, Pt2 )</span></span></div><div class="line"><span class="comment">%ComputeAffineMatrix</span></div><div class="line"><span class="comment">%   Computes the transformation matrix that transforms a point from</span></div><div class="line"><span class="comment">%   coordinate frame 1 to coordinate frame 2</span></div><div class="line"><span class="comment">%Input:</span></div><div class="line"><span class="comment">%   Pt1: N * 2 matrix, each row is a point in image 1</span></div><div class="line"><span class="comment">%       (N must be at least 3)</span></div><div class="line"><span class="comment">%   Pt2: N * 2 matrix, each row is the point in image 2 that</span></div><div class="line"><span class="comment">%       matches the same point in image 1 (N should be more than 3)</span></div><div class="line"><span class="comment">%Output:</span></div><div class="line"><span class="comment">%   H: 3 * 3 affine transformation matrix,</span></div><div class="line"><span class="comment">%       such that H*pt1(i,:) = pt2(i,:)</span></div><div class="line"></div><div class="line">    N = <span class="built_in">size</span>(Pt1,<span class="number">1</span>);</div><div class="line">    <span class="keyword">if</span> <span class="built_in">size</span>(Pt1, <span class="number">1</span>) ~= <span class="built_in">size</span>(Pt2, <span class="number">1</span>),</div><div class="line">        error(<span class="string">'Dimensions unmatched.'</span>);</div><div class="line">    <span class="keyword">elseif</span> N&lt;<span class="number">3</span></div><div class="line">        error(<span class="string">'At least 3 points are required.'</span>);</div><div class="line">    <span class="keyword">end</span></div><div class="line"></div><div class="line">    <span class="comment">% Convert the input points to homogeneous coordintes.</span></div><div class="line">    P1 = [Pt1<span class="string">';ones(1,N)];</span></div><div class="line">    P2 = [Pt2';ones(<span class="number">1</span>,N)];</div><div class="line"></div><div class="line">    H = P1*P1'\P1*P2';</div><div class="line">    H = H';</div><div class="line"></div><div class="line">    <span class="comment">% Sometimes numerical issues cause least-squares to produce a bottom</span></div><div class="line">    <span class="comment">% row which is not exactly [0 0 1], which confuses some of the later</span></div><div class="line">    <span class="comment">% code. So we'll ensure the bottom row is exactly [0 0 1].</span></div><div class="line">    H(<span class="number">3</span>,:) = [<span class="number">0</span> <span class="number">0</span> <span class="number">1</span>];</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<p>作业中的其他例子也很有趣，这里不再多说了。贴上两张图像拼接的实验结果吧~<br><img src="/img/sift_experiment_1.png" alt="result 1"><br><img src="/img/sift_experiment_2.png" alt="result 2"></p>
-
-          
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/30/cs131-sift/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -704,25 +634,15 @@ y^{'} = fy/z
 
       
         
-          
-            <h2 id="局部不变特征"><a href="#局部不变特征" class="headerlink" title="局部不变特征"></a>局部不变特征</h2><p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。<br><img src="/img/image_matching_hard.png" alt="image matching example"></p>
-<p>首先，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述。</p>
-<h2 id="Harris角点"><a href="#Harris角点" class="headerlink" title="Harris角点"></a>Harris角点</h2><p>角点，即corner，和edge类似，区别在于其在两个方向上都有较为剧烈的灰度变化（而edge只在某一个方向上灰度值变化剧烈）。如图所示。<br><img src="/img/what_is_corner.png" alt="what is corner"></p>
-<p><a href="http://www.bmva.org/bmvc/1988/avc-88-023.pdf" target="_blank" rel="external">Harris角点</a>得名于其发明者Harris，是一种常见的角点检测方法。<br>给定观察窗口大小，计算平移后窗口内各个像素差值的加权平方和，如下式。</p>
-<script type="math/tex; mode=display">E(u,v) = \sum_x\sum_yw(x,y)[I(x+u, y+v) - I(x,y)]^2</script><p>其中，窗口加权函数$w$可以取做门限函数或gaussian函数。如图所示。<br><img src="/img/corner_window_fun.png" alt="window function"></p>
-<p>使用泰勒级数展开，并忽略非线性项，我们有</p>
-<script type="math/tex; mode=display">I(x+u,y+v) = I(x,y) + I_x(x,y)u+I_y(x,y)v</script><p>所以上式可以写成（线性二次型写成了矩阵形式），</p>
-<script type="math/tex; mode=display">E(u,v) = \sum_{x,y}w(I_xu+I_yv)^2 = \begin{bmatrix}u&v\end{bmatrix}M\begin{bmatrix}u\\\\v\end{bmatrix}</script><p>其中，</p>
-<script type="math/tex; mode=display">M = w\begin{bmatrix}I_x^2& I_xI_y\\\\I_xI_y&I_y^2\end{bmatrix}</script><p>当使用门限函数时，权值$w_{i,j} = 1$，则，</p>
-<script type="math/tex; mode=display">M = \begin{bmatrix}\sum I_xI_x& \sum I_xI_y\\\\\sum I_xI_y&\sum I_yI_y\end{bmatrix} = \sum \begin{bmatrix}I_x \\\\I_y\end{bmatrix}\begin{bmatrix}I_x &I_y\end{bmatrix}</script><p>当corner与xy坐标轴对齐时候，如下图所示。由于在黑色观察窗口内，只有上侧和左侧存在边缘，且在上边缘，$I_y$很大，而$I_x=0$，在左侧边缘，$I_x$很大而$I_y = 0$，所以，矩阵</p>
-<script type="math/tex; mode=display">M = \begin{bmatrix}\lambda_1 & 0 \\\\ 0&\lambda_2 \end{bmatrix}</script><p><img src="/img/corner_type_1.png" alt="M为对角阵"></p>
-<p>当corner与坐标轴没有对齐时，经过旋转变换就可以将其转换到与坐标轴对齐的角度，而这种旋转操作可以使用矩阵的相似化来表示（其实是二次型的化简，可以使用合同变换，而旋转变换的矩阵是酉矩阵，转置即为矩阵的逆，所以也是相似变换）。也就是说，矩阵$M$相似于某个对角阵。</p>
-<script type="math/tex; mode=display">M = R^{-1}\Sigma R, \text{其中}\Sigma = \begin{bmatrix}\lambda_1&0\\\\0&\lambda_2\end{bmatrix}</script><p>所以，可以根据下面这张图利用矩阵$M$的特征值来判定角点和边缘点。当两个特征值都较大时为角点；当某个分量近似为0而另一个分量较大时，可以判定为边缘点（因为某个方向的导数为0）；当两个特征值都近似为0时，说明是普通点（flat point）。（课件原图如此，空缺的问号处应分别为$\lambda_1$和$\lambda_2$）。<br><img src="/img/corner_judge.png" alt="使用M矩阵特征值判定"></p>
-<p> 然而矩阵的特征值计算较为复杂，所以使用下面的方法进行近似计算。</p>
-<script type="math/tex; mode=display">\theta = \det(M)-\alpha\text{trace}(M)^2 = \lambda_1\lambda_2-\alpha(\lambda_1+\lambda_2)^2</script><p><img src="/img/corner_judge_2.png" alt="使用theta判定"></p>
-<p>为了减弱噪声的影响，常常使用gaussian窗函数。如下式所示：</p>
-<script type="math/tex; mode=display">w(x,y) = \exp(-(x^2+y^2)/2\sigma^2)</script>
-          
+          <p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。<br><img src="/img/image_matching_hard.png" alt="image matching example"></p>
+<p>那么，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述，并介绍Harris角点检测方法。在下一节中介绍SIFT特征。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/25/cs131-finding-features/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -848,43 +768,14 @@ y^{'} = fy/z
 
       
         
-          
-            <p>边缘(Edge)在哺乳动物的视觉中有重要意义。在由若干卷积层构成的深度神经网络中，较低层的卷积层就被训练成为对特定形状的边缘做出响应。边缘检测也是计算机视觉和图像处理领域中一个重要的问题。</p>
-<h2 id="边缘的产生"><a href="#边缘的产生" class="headerlink" title="边缘的产生"></a>边缘的产生</h2><p>若仍采取将图像视作某一函数的观点，边缘是指这个函数中的不连续点。边缘检测是后续进行目标检测和形状识别的基础，也能够在立体视觉中恢复视角等。边缘的来源主要有以下几点：</p>
-<ul>
-<li>物体表面不平造成灰度值的不连续；</li>
-<li>深度值不同造成灰度值不连续；</li>
-<li>物体表面颜色的突变造成灰度值不连续</li>
-</ul>
-<h2 id="朴素思想"><a href="#朴素思想" class="headerlink" title="朴素思想"></a>朴素思想</h2><p>利用边缘是图像中不连续点的这一性质，可以通过计算图像的一阶导数，再找到一阶导数的极大值，即认为是边缘点。如下图所示，在白黑交界处，图像一阶导数的值非常大，表明此处灰度值变化剧烈，是边缘。<br><img src="/img/edge_deriative.png" alt="边缘点处导数很大"></p>
-<p>问题转换为如何求取图像的一阶导数（或梯度）。由于图像是离散的二元函数，所以下文不再区分求导与差分。</p>
-<p>在$x$方向上，令$g_x = \frac{\partial f}{\partial x}$；在$y$方向上，令$g_y = \frac{\partial f}{\partial y}$。梯度的大小和方向为</p>
-<script type="math/tex; mode=display">g = \lbrack g_x, g_y\rbrack, \theta = \arctan(g_y/g_x)</script><p>通过和Sobel算子等做卷积，可以求取两个正交方向上图像的一阶导数，并计算梯度，之后检测梯度的局部极大值就能够找出边缘点了。</p>
-<p>只是这种方法很容易受到噪声影响。如图所示，真实的边缘点被湮没在了噪声中。<br><img src="/img/fun_noise.png" alt="噪声影响湮没了边缘点"></p>
-<h2 id="改进1：先平滑"><a href="#改进1：先平滑" class="headerlink" title="改进1：先平滑"></a>改进1：先平滑</h2><p>改进措施1，可以首先对图像进行高斯平滑，再按照上面的方法求取边缘点。根据卷积的性质，有：</p>
-<script type="math/tex; mode=display">\frac{d}{dx}(f\ast g) = f\ast\frac{d}{dx}g</script><p>所以我们可以先求取高斯核的一阶导数，再和原始图像直接做一次卷积就可以一举两得了。这样，引出了DoG(Deriative of Gaussian)。$x$方向的DoG如图所示。<br><img src="/img/dog_x.png" alt="x方向的DoG"></p>
-<p>进行高斯平滑不可避免会使图像中原本的细节部分模糊，所以需要在克服噪声和引入模糊之间做好折中。<br><img src="/img/dog_different_size.png" alt="不同"></p>
-<h2 id="改进2：Canny检测子"><a href="#改进2：Canny检测子" class="headerlink" title="改进2：Canny检测子"></a>改进2：Canny检测子</h2><p>改进措施2，使用Canny检测子进行检测。Canny检测方法同样基于梯度，其基本原理如下：</p>
-<ul>
-<li>使用DoG计算梯度幅值和方向。</li>
-<li>非极大值抑制，这个过程需要根据梯度方向做线性插值。如图，沿着点$q$的梯度方向找到了$p$和$r$两个点。这两个点的梯度幅值需要根据其临近的两点做插值得到。</li>
-<li>利用梯度方向和边缘线互相垂直这一性质，如图，若已经确定点$p$为边缘点，则向它的梯度方向正交方向上寻找下一个边缘点（点$r$或$s$）。这一步也叫edge linking。</li>
-</ul>
-<p><img src="/img/canny_nms.png" alt="nms示意图"><br><img src="/img/canny_linking.png" alt="linking示意图"></p>
-<p>同时，为了提高算法性能，Canny中采用了迟滞阈值的方法，设定<code>low</code>和<code>high</code>两个阈值，来判定某个点是否属于<strong>强</strong>或<strong>弱</strong>边缘点。在做edge linking的时候，从强边缘点开始，如果遇到了弱边缘点，则继续，直到某点的梯度幅值甚至比<code>low</code>还要小，则在此停止。</p>
-<h2 id="改进3：RANSAC方法"><a href="#改进3：RANSAC方法" class="headerlink" title="改进3：RANSAC方法"></a>改进3：RANSAC方法</h2><p>有的时候，我们并不是想要找到所有的边缘点，可能只是想找到图像中水平方向的某些边缘。这时候可以考虑采用RANSAC方法。</p>
-<p>RANSAC方法的思想在于，认为已有的feature大部分都是<strong>好的</strong>。这样，每次随机抽取出若干feature，建立model，再在整个feature集合上进行验证。那么由那些好的feature得到的model一定是得分较高的。（世界上还是好人多啊！）这样就剔除了离群点的影响。</p>
-<p>以直线拟合为例，在下图中，给出了使用RANSAC方法拟合直线的步骤。如图1所示，由于离群点的存在，如果直接使用最小二乘法进行拟合，拟合结果效果会很不理想。由于确定一条直线需要两个点，所以从点集中选取两个点，并计算拟合直线。并计算点集中的点在这条直线附近的个数，作为对模型好坏的判定，这些点是新的内点。找出最优的那条直线，使用其所有内点再进行拟合，重复上述操作，直至迭代终止。<br><img src="/img/ransac_step.png" alt="ransac step"></p>
-<p>上述RANSAC方法进行直线拟合的过程可以总结如下：<br><img src="/img/ransac_line_fit.png" alt="ransac line fit alg"></p>
-<p>按照上述思想，我分别使用最小二乘法和RANSAC方法尝试进行直线拟合。在下面的代码中，我首先产生了正常受到一定高斯噪声污染的数据（图中的红色点），这些点的真值都落在直线$y = 2x+1$上。而后，我随机变化了斜率和截距，以期产生一些离群点（图中的蓝色点）。当然，由于随机性，这种方法生成的点有可能仍然是内点。</p>
-<p>而后，我分别使用上述两种方法进行拟合。可以从结果图中看出，RANSAC（绿色线）能够有效避免离群点的干扰，获得更好的拟合效果。在某次实验中，两种方法的拟合结果如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">least square: a = 3.319566, b = -1.446528</div><div class="line">ransac method: a = 1.899640, b= 1.298608</div></pre></td></tr></table></figure></p>
-<p><img src="/img/line_fit_demo.png" alt="demo result"></p>
-<p>实验使用的MATLAB代码如下：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div></pre></td><td class="code"><pre><div class="line"><span class="comment">%% generate data</span></div><div class="line">x = <span class="number">0</span>:<span class="number">1</span>:<span class="number">10</span>;</div><div class="line">y_gt = <span class="number">2</span>*x+<span class="number">1</span>;</div><div class="line">y = y_gt + <span class="built_in">randn</span>(<span class="built_in">size</span>(y_gt));</div><div class="line">scatter(x, y, [], [<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>]);</div><div class="line">hold on</div><div class="line">out_x = <span class="number">0</span>:<span class="number">1</span>:<span class="number">10</span>;</div><div class="line">out_y = <span class="number">5</span>*<span class="built_in">rand</span>(<span class="built_in">size</span>(out_x)).*out_x + <span class="number">4</span>*<span class="built_in">rand</span>(<span class="built_in">size</span>(out_x));</div><div class="line">scatter(out_x, out_y, [], [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>]);</div><div class="line">X = [x, out_x]';</div><div class="line">Y = [y, out_y]';</div><div class="line">X = [X, ones(length(X), <span class="number">1</span>)];</div><div class="line">[a, b] = ls_fit(X, Y);</div><div class="line">plot(x, a*x+b, <span class="string">'linestyle'</span>, <span class="string">'--'</span>, <span class="string">'color'</span>, <span class="string">'r'</span>);</div><div class="line"></div><div class="line">[ra, rb] = ransac_fit(X, Y, <span class="number">100</span>, <span class="number">2</span>, <span class="number">0.5</span>, <span class="number">3</span>);</div><div class="line">plot(x, ra*x+rb, <span class="string">'linestyle'</span>, <span class="string">'-.'</span>, <span class="string">'color'</span>, <span class="string">'g'</span>);</div><div class="line">fprintf(<span class="string">'least square: a = %f, b = %f\n'</span>,a, b);</div><div class="line">fprintf(<span class="string">'ransac method: a = %f, b= %f\n'</span>, ra, rb)</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[a, b]</span> = <span class="title">ransac_fit</span><span class="params">(X, Y, k, n, t ,d)</span></span></div><div class="line"><span class="comment">% ransac fit</span></div><div class="line"><span class="comment">% k -- maximum iteration number</span></div><div class="line"><span class="comment">% n -- smallest point numer required</span></div><div class="line"><span class="comment">% t -- threshold to identify a point is fit well</span></div><div class="line"><span class="comment">% d -- the number of nearby points to assert a model is fine</span></div><div class="line">data = [X, Y];</div><div class="line">N = <span class="built_in">size</span>(data, <span class="number">1</span>);</div><div class="line">best_good_cnt = <span class="number">-1</span>;</div><div class="line">best_a = <span class="number">0</span>;</div><div class="line">best_b = <span class="number">0</span>;</div><div class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span>:k</div><div class="line">    <span class="comment">% sample point</span></div><div class="line">    idx = randsample(N, n);</div><div class="line">    data_sampled = data(idx, :);</div><div class="line">    <span class="comment">% fit with least square</span></div><div class="line">    [a, b] = ls_fit(data_sampled(:, <span class="number">1</span>:<span class="number">2</span>), data_sampled(:, <span class="number">3</span>));</div><div class="line">    <span class="comment">% test model</span></div><div class="line">    not_sampled = <span class="built_in">ones</span>(N, <span class="number">1</span>);</div><div class="line">    not_sampled(idx) = <span class="number">0</span>;</div><div class="line">    not_sampled_data = data(not_sampled == <span class="number">1</span>, :);</div><div class="line">    distance = <span class="built_in">abs</span>(not_sampled_data(:, <span class="number">1</span>:<span class="number">2</span>) * [a; b] - not_sampled_data(:, <span class="number">3</span>)) / <span class="built_in">sqrt</span>(a^<span class="number">2</span>+<span class="number">1</span>);</div><div class="line">    inner_flag = distance &lt; t;</div><div class="line">    good_cnt = sum(inner_flag);</div><div class="line">    <span class="keyword">if</span> good_cnt &gt;= d &amp;&amp; good_cnt &gt; best_good_cnt</div><div class="line">        best_good_cnt = good_cnt;</div><div class="line">        data_refine = data(<span class="built_in">find</span>(inner_flag), :);</div><div class="line">        [a, b] = ls_fit(data_refine(:, <span class="number">1</span>:<span class="number">2</span>), data_refine(:, <span class="number">3</span>));</div><div class="line">        best_a = a;</div><div class="line">        best_b = b;</div><div class="line">    <span class="keyword">end</span></div><div class="line">    fprintf(<span class="string">'iteration %d, best_a = %f, best_b = %f\n'</span>, <span class="built_in">i</span>, best_a, best_b);</div><div class="line"><span class="keyword">end</span></div><div class="line">a = best_a;</div><div class="line">b = best_b;</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="params">[a, b]</span> = <span class="title">ls_fit</span><span class="params">(X, Y)</span></span></div><div class="line"><span class="comment">% least square fit</span></div><div class="line">A = X'*X\X'*Y;</div><div class="line">a = A(<span class="number">1</span>);</div><div class="line">b = A(<span class="number">2</span>);</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<p>我们对RANSAC稍作分析，可以大概了解试验次数$k$的确定方法。</p>
-<p>仍然使用上述直线拟合的例子。如果所有点中内点所占的比例为$\omega$，每次挑选$n$个点尝试（上述demo代码中取$n=2$）。那么每次挑选的两个点全部是内点的概率为$\omega^n$。当选取的$n$个点全部为内点时，视为有效实验。那么，重复$k$次实验，有效实验次数为0的概率为$(1-\omega^n)^k$。由于底数小于1，所以我们只需尽量增大$k$，就能够降低这种倒霉的概率。下图是不同$n$和$\omega$情况下为了使得实验成功的概率大于0.99所需的$k$的分布。<br><img src="/img/ransac_k.png" alt="k"></p>
-<p>RANSAC方法的有点在于能够较为鲁棒地估计模型的参数，而且实现简单。缺点在于当离群点比例较大时，为保证实验成功所需的$k$值较大。这时候，可能Hough变换等基于投票的方法更适合用于图像中的直线检测问题。</p>
-
-          
+          <p>边缘(Edge)在哺乳动物的视觉中有重要意义。在由若干卷积层构成的深度神经网络中，较低层的卷积层就被训练成为对特定形状的边缘做出响应。边缘检测也是计算机视觉和图像处理领域中一个重要的问题。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/24/cs131-edge-detection/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1010,87 +901,14 @@ y^{'} = fy/z
 
       
         
-          
-            <p>数字图像可以看做$\mathbb{R}^2 \rightarrow \mathbb{R}^c$的映射，其中$c$是图像的channel数。使用信号与系统的角度来看，如果单独考察某个channel，可以将图像看做是二维离散系统。</p>
-<h2 id="卷积"><a href="#卷积" class="headerlink" title="卷积"></a>卷积</h2><p>卷积的概念不再详述，利用不同的kernel与原始图像做卷积，就是对图像进行线性滤波的过程。卷积操作时，以某一个点为中心点，最终结果是这个点以及它的邻域点的线性组合，组合系数由kernel决定。一般kernel的大小取成奇数。如下图所示。（图片来自<a href="http://blog.csdn.net/zouxy09/article/details/49080029" target="_blank" rel="external">博客《图像卷积与滤波的一些知识点》</a>）<br><img src="/img/convolution.png" alt="卷积操作示意图"></p>
-<p>在卷积操作时，常常需要对图像做padding，常用的padding方法有：</p>
-<ul>
-<li>zero padding，也就是填充0值。</li>
-<li>edge replication，也就是复制边缘值进行填充。</li>
-<li>mirror extension，也就是将图像看做是周期性的，相当于使用对侧像素值进行填充。</li>
-</ul>
-<h2 id="作业1"><a href="#作业1" class="headerlink" title="作业1"></a>作业1</h2><h3 id="调整图像灰度值为0到255"><a href="#调整图像灰度值为0到255" class="headerlink" title="调整图像灰度值为0到255"></a>调整图像灰度值为0到255</h3><p>计算相应的k和offset值即可。另外MATLAB中的<code>uint8</code>函数可以将结果削顶与截底为0到255之间。<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">scale_ratio = <span class="number">255.0</span> / (max_val - min_val);</div><div class="line">offset = -min_val * scale_ratio;</div><div class="line">fixedimg = scale_ratio * dark + offset;</div></pre></td></tr></table></figure></p>
-<h3 id="SVD图像压缩"><a href="#SVD图像压缩" class="headerlink" title="SVD图像压缩"></a>SVD图像压缩</h3><p>使用SVD进行图像压缩，下图是将所有奇异值按照从大到小的顺序排列的大小示意图。可以看到，第一个奇异值比其他高出一个数量级。<br><img src="/img/svd_ranking.png" alt="SVD值大小示意图"></p>
-<h4 id="MATLAB实现"><a href="#MATLAB实现" class="headerlink" title="MATLAB实现"></a>MATLAB实现</h4><p>分别使用10，50， 100个分量进行图像压缩，如下图所示。可以看到，k=10时，已经能够复原出原图像的大致轮廓。当k更大时，更多细节被复原出来。<br><img src="/img/svd_flower.png" alt="不同分量个数的图像压缩"></p>
-<p>MATLAB代码如下：<br><figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line"><span class="comment">%% read image</span></div><div class="line">im = imread(<span class="string">'./flower.bmp'</span>);</div><div class="line">im_gray = double(rgb2gray(im));</div><div class="line">[u, s, v] = svd(im_gray);</div><div class="line"><span class="comment">%% get sigular value</span></div><div class="line">sigma = <span class="built_in">diag</span>(s);</div><div class="line">top_k = sigma(<span class="number">1</span>:<span class="number">10</span>);</div><div class="line">figure</div><div class="line">plot(<span class="number">1</span>:<span class="built_in">length</span>(sigma), sigma, <span class="string">'r-'</span>, <span class="string">'marker'</span>, <span class="string">'s'</span>, <span class="string">'markerfacecolor'</span>, <span class="string">'g'</span>);</div><div class="line"></div><div class="line">figure</div><div class="line">subplot(<span class="number">2</span>, <span class="number">2</span>, <span class="number">1</span>);</div><div class="line">imshow(uint8(im_gray));</div><div class="line">title(<span class="string">'flower.bmp'</span>)</div><div class="line">index = <span class="number">2</span>;</div><div class="line"><span class="keyword">for</span> k = [<span class="number">10</span>, <span class="number">50</span>, <span class="number">100</span>]</div><div class="line">    uk = u(:, <span class="number">1</span>:k);</div><div class="line">    sk = s(<span class="number">1</span>:k, <span class="number">1</span>:k);</div><div class="line">    vk = v(:, <span class="number">1</span>:k);</div><div class="line">    im_rec = uk * sk * vk';</div><div class="line">    subplot(<span class="number">2</span>, <span class="number">2</span>, index);</div><div class="line">    index = index + <span class="number">1</span>;</div><div class="line">    imshow(uint8(im_rec));</div><div class="line">    title(sprintf(<span class="string">'k = %d'</span>, k));</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure></p>
-<h4 id="图像SVD压缩中的误差分析"><a href="#图像SVD压缩中的误差分析" class="headerlink" title="图像SVD压缩中的误差分析"></a>图像SVD压缩中的误差分析</h4><p>完全是个人随手推导，不严格的说明：</p>
-<p>将矩阵分块。由SVD分解公式$\mathbf{U}\mathbf{\Sigma} \mathbf{V^\dagger} = \mathbf{A}$，把$\mathbf{U}$按列分块，$\mathbf{V^\dagger}$按行分块，有下式成立：</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-u_1 & u_2 &\vdots  &u_n
-\end{bmatrix}
-\begin{bmatrix}
-\sigma_1 &  &  & \\\\
- &  \sigma_2&  & \\\\
- &  &  \ddots& \\\\
- &  &  &\sigma_m
-\end{bmatrix}
-\begin{bmatrix}
-v_1^\dagger\\\\
-v_2^\dagger\\\\
-\dots\\\\
-v_m^\dagger
-\end{bmatrix}=\mathbf{A}</script><p>由于</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-u_1 & u_2 &\vdots  &u_n
-\end{bmatrix}
-\begin{bmatrix}
-\sigma_1 &  &  & \\\\
- &  \sigma_2&  & \\\\
- &  &  \ddots& \\\\
- &  &  &\sigma_m
-\end{bmatrix}
-=
-\begin{bmatrix}
-\sigma_1u_1 & \sigma_2u_2 &\vdots  &\sigma_nu_n
-\end{bmatrix}</script><p>所以，</p>
-<script type="math/tex; mode=display">\mathbf{A} = \sum_{i = 1}^{r}\sigma_iu_iv_i^\dagger</script><p>上面的式子和式里面只有$r$项，是因为当$k &gt; r$时，$\sigma_k = 0$。</p>
-<p>所以<script type="math/tex">\mathbf{A} - \hat{\mathbf{A}} = \sum_{i = k+1}^{r}\sigma_iu_iv_i^\dagger</script></p>
-<p>根绝矩阵范数的<a href="https://zh.wikipedia.org/wiki/矩陣範數" target="_blank" rel="external">性质</a>，我们有，</p>
-<script type="math/tex; mode=display">\left\lVert\mathbf{A} - \hat{\mathbf{A}}\right\rVert \le \sum_{i=k+1}^{r}\sigma_i\left\lVert u_i\right\rVert\left\lVert v_i^\dagger\right\rVert</script><p>由于$u_i$和$v_i$都是标准正交基，所以范数小于1.故，</p>
-<script type="math/tex; mode=display">\left\lVert\mathbf{A} - \hat{\mathbf{A}}\right\rVert \le \sum_{i=k+1}^{r}\sigma_i</script><p>取无穷范数，可以知道对于误差矩阵中的任意元素（也就是压缩重建之后任意位置的像素灰度值之差），都有：</p>
-<script type="math/tex; mode=display">e \le \sum_{i=k+1}^{r}\sigma_i</script><h3 id="SVD与矩阵范数"><a href="#SVD与矩阵范数" class="headerlink" title="SVD与矩阵范数"></a>SVD与矩阵范数</h3><p>如果某个函数$f$满足以下的性质，就可以作为矩阵的范数。</p>
-<ul>
-<li>$f(\mathbf{A}) = \mathbf{0} \Leftrightarrow \mathbf{A} = \mathbf{0}$</li>
-<li>$f(c\mathbf{A}) = c f(\mathbf{A}), \forall c \in \mathbb{R}$</li>
-<li>$f(\mathbf{A+b}) \le f(\mathbf{A}) + f(\mathbf{B})$</li>
-</ul>
-<p>其中，矩阵的2范数可以定义为</p>
-<script type="math/tex; mode=display">\left\lVert\mathbf{A}\right\rVert_2 = \max{\sqrt{(\mathbf{A}x)^\dagger\mathbf{A}x}}</script><p>其中，$x$是单位向量。上式的意义在于表明矩阵的2范数是对于所有向量，经过该矩阵线性变换后摸长最大的那个变换后向量的长度。</p>
-<p>下面，给出不严格的说明，证明矩阵的2范数数值上等于其最大的奇异值。</p>
-<p>对于空间内的任意单位向量$x$，利用矩阵的SVD分解，有（为了书写简单，矩阵不再单独加粗）：</p>
-<script type="math/tex; mode=display">(Ax)^\dagger Ax = x^\dagger V \Sigma^\dagger \Sigma V^\dagger x</script><p>其中，$U^\dagger U = I$，已经被消去了。</p>
-<p>进一步化简，我们将$V^\dagger x$看做一个整体，令$\omega = V\dagger x$，那么有，</p>
-<script type="math/tex; mode=display">(Ax)^\dagger Ax = (\Sigma \omega)^\dagger \Sigma \omega</script><p>也就是说，矩阵的2范转换为了$\Sigma \omega$的幅值的最大值。由于$\omega$是酉矩阵和一个单位向量的乘积，所以$\omega$仍然是单位阵。</p>
-<p>由于$\Sigma$是对角阵，所以$\omega$与其相乘后，相当于每个分量分别被放大了$\sigma_i$倍。即</p>
-<script type="math/tex; mode=display">\Sigma \omega =
-\begin{bmatrix}
-\sigma_1 \omega_1\\\\
-\sigma_2 \omega_2\\\\
-\cdots\\\\
-\sigma_n \omega_n
-\end{bmatrix}</script><p>它的幅值平方为</p>
-<script type="math/tex; mode=display">\left\lVert \Sigma \omega \right \rVert ^2 = \sum_{i=1}^{n}\sigma_i^2 \omega_i^2 \le \sigma_{1} \sum_{i=1}^{n}\omega_i^2 = \sigma_1^2</script><p>当且仅当，$\omega_1 = 1$, $\omega_k = 0, k &gt; 1$时取得等号。</p>
-<p>综上所述，矩阵2范数的值等于其最大的奇异值。</p>
-<p>矩阵的另一种范数定义方法Frobenius norm定义如下：</p>
-<script type="math/tex; mode=display">\left\lVert A \right\rVert_{F} = \sqrt{\sum_{i=1}^{m}\sum_{j=1}^{n}\left\vert a_{i,j}\right\rvert}</script><p>如果我们两边平方，可以得到，矩阵的F范数实际等于某个矩阵的迹，见下式：</p>
-<script type="math/tex; mode=display">\left\lVert A\right \rVert_F^2 = \text{trace}(A^\dagger A)</script><p>利用矩阵的SVD分解，可以很容易得出，$\text{trace}(A^\dagger A) = \sum_{i=1}^{r}\sigma_i^2$</p>
-<p>说明如下：</p>
-<script type="math/tex; mode=display">\text{trace}(A^\dagger A) = \text{trace}(V\Sigma^\dagger\Sigma V^\dagger)</script><p>由于$V^\dagger = V^{-1}$，而且$\text{trace}(BAB^{-1}) = \text{trace}(A)$，所以，</p>
-<script type="math/tex; mode=display">\text{trace}(A^\dagger A) = \text{trace}(\Sigma^\dagger \Sigma) = \sum_{i=1}^{r}\sigma_i^2</script><p>也就是说，矩阵的F范数等于它的奇异值平方和的平方根。</p>
-<script type="math/tex; mode=display">\left\lVert A\right\rVert_F= \sqrt{\sum_{i=1}^{r}\sigma_i^2}</script>
-          
+          <p>数字图像可以看做$\mathbb{R}^2 \rightarrow \mathbb{R}^c$的映射，其中$c$是图像的channel数。使用信号与系统的角度来看，如果单独考察某个channel，可以将图像看做是二维离散系统。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/23/cs131-filter-svd/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1216,54 +1034,15 @@ u_1 & u_2 &\vdots  &u_n
 
       
         
-          
-            <h2 id="课程简介"><a href="#课程简介" class="headerlink" title="课程简介"></a>课程简介</h2><p>CS131课程(Computer Vision: Foundations and Applications)，是斯坦福大学Li Feifei实验室开设的一门计算机视觉入门基础课程，<a href="http://vision.stanford.edu/teaching/cs131_fall1617/index.html" target="_blank" rel="external">该课程</a>目的在于为刚接触计算机视觉领域的学生提供基本原理和应用介绍。目前2016年冬季课程刚刚结束。CS131博客系列主要是关于本课的slide知识点总结与作业重点问题归纳，作为个人学习本门课程的心得体会和复习材料。</p>
-<p>由于是个人项目，所以会比较随意，只对个人感兴趣的内容做一总结。这篇文章是对课前的<a href="http://vision.stanford.edu/teaching/cs131_fall1617/lectures/lecture2_linalg_review_cs131_2016.pdf" target="_blank" rel="external">线代基础</a>做一复习与整理。</p>
-<h2 id="向量与矩阵"><a href="#向量与矩阵" class="headerlink" title="向量与矩阵"></a>向量与矩阵</h2><p>数字图像可以看做二维矩阵，向量是特殊的矩阵，本课程默认的向量都是列向量。<br>slide中给出了一些矩阵行列式和迹的性质，都比较简单，这里不再多说。</p>
-<h2 id="矩阵作为线性变换"><a href="#矩阵作为线性变换" class="headerlink" title="矩阵作为线性变换"></a>矩阵作为线性变换</h2><p>通过线代知识，我们知道，在线性空间中，如果给定一组基，线性变换可以通过对应的矩阵来进行描述。</p>
-<h3 id="scale变换"><a href="#scale变换" class="headerlink" title="scale变换"></a>scale变换</h3><p>对角阵可以用来表示放缩变换。</p>
-<script type="math/tex; mode=display">
-\begin{bmatrix}
-s_x & 0\\\\
-0 & s_y
-\end{bmatrix}\begin{bmatrix}
-x\\\\
-y
-\end{bmatrix} = \begin{bmatrix}
-s_xx\\\\
-s_yy
-\end{bmatrix}</script><h3 id="旋转变换"><a href="#旋转变换" class="headerlink" title="旋转变换"></a>旋转变换</h3><p>如图所示，逆时针旋转$theta$角度，对应的旋转矩阵为：<br><img src="/img/rotation.png" alt="旋转变换"></p>
-<script type="math/tex; mode=display">
-\mathbf{R} = \begin{bmatrix}
-\cos\theta &-\sin\theta \\\\
-\sin\theta &\cos\theta
-\end{bmatrix}</script><p>旋转矩阵是<a href="https://zh.wikipedia.org/wiki/酉矩阵" target="_blank" rel="external">酉矩阵</a>，矩阵内的各列（或者各行）相互正交。满足如下的关系式：</p>
-<script type="math/tex; mode=display">
-\mathbf{R}\mathbf{R^{\dagger}} = \mathbf{I}</script><p>由于$\det{\mathbf{R}} = \det{\mathbf{R^{\dagger}}}$，所以，对于酉矩阵，$\det{\mathbf{R}} = \pm 1$<br>旋转矩阵是<a href="https://zh.wikipedia.org/wiki/酉矩阵" target="_blank" rel="external">酉矩阵</a>，矩阵内的各列（或者各行）相互正交。满足如下的关系式：</p>
-<script type="math/tex; mode=display">
-\mathbf{R}\mathbf{R^{\dagger}} = \mathbf{I}</script><p>由于$\det{\mathbf{R}} = \det{\mathbf{R^{\dagger}}}$，所以，对于酉矩阵，$\det{\mathbf{R}} = \pm 1$.</p>
-<h3 id="齐次变换-Homogeneous-Transform"><a href="#齐次变换-Homogeneous-Transform" class="headerlink" title="齐次变换(Homogeneous Transform)"></a>齐次变换(Homogeneous Transform)</h3><p>只用上面的二维矩阵不能表达平移，使用齐次矩阵可以表达放缩，旋转和平移操作。</p>
-<script type="math/tex; mode=display">
-\mathbf{H} =\begin{bmatrix}
-a & b & t_x\\\\
-c & d & t_y\\\\
-0 & 0 & 1
-\end{bmatrix},\mathbf{H}\begin{bmatrix}
-x\\\\
-y\\\\
-1\\\\
-\end{bmatrix}=\begin{bmatrix}
-ax+by+t_x\\\\
-cx+dy+t_y\\\\
-1
-\end{bmatrix}</script><h3 id="SVD分解"><a href="#SVD分解" class="headerlink" title="SVD分解"></a>SVD分解</h3><p>可以将矩阵分成若干个矩阵的乘积，叫做矩阵分解，比如QR分解，满秩分解等。SVD分解，即奇异值分解，也是一种特殊的矩阵分解方法。如下式所示，是将矩阵分解成为三个矩阵的乘积：</p>
-<script type="math/tex; mode=display">\mathbf{U}\mathbf{\Sigma}\mathbf{V^\dagger} = \mathbf{A}</script><p>其中矩阵$\mathbf{A}$大小为$m\times n$，矩阵$\mathbf{U}$是大小为$m\times m$的酉矩阵，$\mathbf{V}$是大小为$n \times n$的酉矩阵，$\mathbf{\Sigma}$是大小为$m \times n$的旋转矩阵，即只有主对角元素不为0.</p>
-<p>SVD分解在主成分分析中年很有用。由于矩阵$\mathbf{\Sigma}$一般情况下是将奇异值按照从大到小的顺序摆放，所以矩阵$\mathbf{U}$中，前面的若干列被视作主成分，后面的列显得相对不这么重要。可以抛弃后面的列，进行图像压缩。</p>
-<p>如下图，是使用前10个分量对原图片进行压缩的效果。</p>
-<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">im = imread(<span class="string">'./superman.png'</span>);</div><div class="line">im_gray = rbg2gray(im);</div><div class="line">[u, s, v] = svd(double(im_gray));</div><div class="line">k = <span class="number">10</span>;</div><div class="line">uk = u(:, <span class="number">1</span>:k);</div><div class="line">sigma = <span class="built_in">diag</span>(s);</div><div class="line">sk = <span class="built_in">diag</span>(sigma(<span class="number">1</span>:k));</div><div class="line">vk = v(:, <span class="number">1</span>:k);</div><div class="line">im_k = uk*sk*vk';</div><div class="line">imshow(uint8(im_k))</div></pre></td></tr></table></figure>
-<p><img src="/img/original_superman.png" alt="原始图像"><br><img src="/img/svd_superman.png" alt="压缩图像"></p>
-
-          
+          <p>CS131课程(Computer Vision: Foundations and Applications)，是斯坦福大学Li Feifei实验室开设的一门计算机视觉入门基础课程，<a href="http://vision.stanford.edu/teaching/cs131_fall1617/index.html">该课程</a>目的在于为刚接触计算机视觉领域的学生提供基本原理和应用介绍。目前2016年冬季课程刚刚结束。CS131博客系列主要是关于本课的slide知识点总结与作业重点问题归纳，作为个人学习本门课程的心得体会和复习材料。</p>
+<p>由于是个人项目，所以会比较随意，只对个人感兴趣的内容做一总结。这篇文章是对课前的<a href="http://vision.stanford.edu/teaching/cs131_fall1617/lectures/lecture2_linalg_review_cs131_2016.pdf">线代基础</a>做一复习与整理。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/01/22/cs131-linear-alg/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1389,95 +1168,14 @@ cx+dy+t_y\\\\
 
       
         
-          
-            <p>GSL是一个GNU支持的科学计算库，提供了很丰富的数值计算方法。<a href="http://www.gnu.org/software/gsl/" target="_blank" rel="external">GSL 的项目主页</a>提供的说明来看，它支持如下的科学计算：</p>
-<p>（下面的这张表格的HTML使用的是<a href="http://pressbin.com/tools/excel_to_html_table/index.html" target="_blank" rel="external">No-Cruft Excel to HTML Table Converter</a>生成的）<br>
-<table>
-   <tr>
-      <td>Complex Numbers </td>
-      <td>Roots of Polynomials</td>
-   </tr>
-   <tr>
-      <td>Special Functions </td>
-      <td>Vectors and Matrices</td>
-   </tr>
-   <tr>
-      <td>Permutations </td>
-      <td>Sorting</td>
-   </tr>
-   <tr>
-      <td>BLAS Support </td>
-      <td>Linear Algebra</td>
-   </tr>
-   <tr>
-      <td>Eigensystems </td>
-      <td>Fast Fourier Transforms</td>
-   </tr>
-   <tr>
-      <td>Quadrature </td>
-      <td>Random Numbers</td>
-   </tr>
-   <tr>
-      <td>Quasi-Random Sequences </td>
-      <td>Random Distributions</td>
-   </tr>
-   <tr>
-      <td>Statistics </td>
-      <td>Histograms</td>
-   </tr>
-   <tr>
-      <td>N-Tuples </td>
-      <td>Monte Carlo Integration</td>
-   </tr>
-   <tr>
-      <td>Simulated Annealing </td>
-      <td>Differential Equations</td>
-   </tr>
-   <tr>
-      <td>Interpolation </td>
-      <td>Numerical Differentiation</td>
-   </tr>
-   <tr>
-      <td>Chebyshev Approximation </td>
-      <td>Series Acceleration</td>
-   </tr>
-   <tr>
-      <td>Discrete Hankel Transforms </td>
-      <td>Root-Finding</td>
-   </tr>
-   <tr>
-      <td>Minimization </td>
-      <td>Least-Squares Fitting</td>
-   </tr>
-   <tr>
-      <td>Physical Constants </td>
-      <td>IEEE Floating-Point</td>
-   </tr>
-   <tr>
-      <td>Discrete Wavelet Transforms </td>
-      <td>Basis splines</td>
-   </tr>
-</table>
-</p>
-<p>GSL的Linux下的配置很简单，照着它的INSTALL文件一步一步来就可以了。CMAKE大法HAO!</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure</div><div class="line">make</div><div class="line">make install</div><div class="line">make clean</div></pre></td></tr></table></figure>
-<p>同样的，GSL也可以在Windows环境下配置，下面记录了如何在Windows环境下使用 Visual Studio 和 CMakeGUI 编译测试GSL。</p>
-<h2 id="使用CMAKE编译成-SLN文件"><a href="#使用CMAKE编译成-SLN文件" class="headerlink" title="使用CMAKE编译成.SLN文件"></a>使用CMAKE编译成.SLN文件</h2><p>打开CMAKEGUI，将输入代码路径选为GSL源代码地址，输出路径设为自己想要的输出路径。点击 “Configure“，选择Visual Studio2013为编译器，点击Finish后会进行必要的配置。然后将表格里面的选项都打上勾，再次点击”Configure“，等待完成之后点击”Generate“。完成之后，就可以在输出路径下看到GSL.sln文件了。</p>
-<h2 id="使用Visual-Studio生成解决方案"><a href="#使用Visual-Studio生成解决方案" class="headerlink" title="使用Visual Studio生成解决方案"></a>使用Visual Studio生成解决方案</h2><p>使用 Visual Studio 打开刚才生成的.SLN文件，分别在Debug和Release模式下生成解决方案，等待完成即可。</p>
-<p>当完成后，你应该可以在路径下看到这样一张图，我们主要关注的文件夹是\bin，\gsl，\Debug和\Release。</p>
-<h2 id="加入环境变量"><a href="#加入环境变量" class="headerlink" title="加入环境变量"></a>加入环境变量</h2><p>修改环境变量的Path，将\GSL_Build_Path\bin\Debug加入，这主要是为了\Debug文件夹下面的gsl.dll文件。如果不进行这一步的话，一会虽然可以编译，但是却不能运行。</p>
-<p>这里顺便注释一句，当使用第三方库的时候，如果需要动态链接库的支持，其中一种方法就是将DLL文件的路径加入到Path中去。</p>
-<h2 id="建立Visual-Studio属性表"><a href="#建立Visual-Studio属性表" class="headerlink" title="建立Visual Studio属性表"></a>建立Visual Studio属性表</h2><p>Visual Studio可以通过建立工程属性表的方法来配置工程选项，一个OpenCV的例子可以参见Yuanbo She的这篇博文 <a href="http://my.phirobot.com/blog/2014-02-opencv_configuration_in_vs.html" target="_blank" rel="external">Opencv 完美配置攻略 2014 (Win8.1 + Opencv 2.4.8 + VS 2013)</a>。</p>
-<p>配置文件中主要是包含文件和静态链接库LIB的路径设置。下面把我的贴出来，只需要根据GSL的生成路径做相应修改即可。注意我的属性表中保留了OpenCV的内容，如果不需要的话，尽可以删掉。上面的博文对这张属性表如何配置讲得很清楚，有问题可以去参考。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span>=<span class="string">"4.0"</span> <span class="attr">xmlns</span>=<span class="string">"http://schemas.microsoft.com/developer/msbuild/2003"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ImportGroup</span> <span class="attr">Label</span>=<span class="string">"PropertySheets"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span> <span class="attr">Label</span>=<span class="string">"UserMacros"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">IncludePath</span>&gt;</span>$(OPENCV249)\include;E:\GSLCode\gsl-build\;$(IncludePath)<span class="tag">&lt;/<span class="name">IncludePath</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">LibraryPath</span> <span class="attr">Condition</span>=<span class="string">"'$(Platform)'=='Win32'"</span>&gt;</span>$(OPENCV249)\x86\vc12\lib;E:\GSLCode\gsl-build\Debug;$(LibraryPath)<span class="tag">&lt;/<span class="name">LibraryPath</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">LibraryPath</span> <span class="attr">Condition</span>=<span class="string">"'$(Platform)'=='X64'"</span>&gt;</span>$(OPENCV249)\x64\vc12\lib;E:\GSLCode\gsl-build\Debug;$(LibraryPath)<span class="tag">&lt;/<span class="name">LibraryPath</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ItemDefinitionGroup</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">Link</span> <span class="attr">Condition</span>=<span class="string">"'$(Configuration)'=='Debug'"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">AdditionalDependencies</span>&gt;</span>opencv_calib3d249d.lib;opencv_contrib249d.lib;opencv_core249d.lib;opencv_features2d249d.lib;opencv_flann249d.lib;opencv_gpu249d.lib;opencv_highgui249d.lib;opencv_imgproc249d.lib;opencv_legacy249d.lib;opencv_ml249d.lib;opencv_nonfree249d.lib;opencv_objdetect249d.lib;opencv_ocl249d.lib;opencv_photo249d.lib;opencv_stitching249d.lib;opencv_superres249d.lib;opencv_ts249d.lib;opencv_video249d.lib;opencv_videostab249d.lib;gsl.lib;gslcblas.lib;%(AdditionalDependencies)<span class="tag">&lt;/<span class="name">AdditionalDependencies</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">Link</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">Link</span> <span class="attr">Condition</span>=<span class="string">"'$(Configuration)'=='Release'"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">AdditionalDependencies</span>&gt;</span>opencv_calib3d249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_features2d249.lib;opencv_flann249.lib;opencv_gpu249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_legacy249.lib;opencv_ml249.lib;opencv_nonfree249.lib;opencv_objdetect249.lib;opencv_ocl249.lib;opencv_photo249.lib;opencv_stitching249.lib;opencv_superres249.lib;opencv_ts249.lib;opencv_video249.lib;opencv_videostab249.lib;gsl.lib;gslcblas.lib;%(AdditionalDependencies)<span class="tag">&lt;/<span class="name">AdditionalDependencies</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">Link</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">ItemDefinitionGroup</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ItemGroup</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在以后建立Visual Studio工程的时候，在属性窗口直接添加现有属性表就可以了！</p>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>在项目网站的教程上直接找到一段代码，进行测试，输出贝塞尔函数的值。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;gsl/gsl_sf_bessel.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">double</span> x = <span class="number">5.0</span>;</div><div class="line">	<span class="keyword">double</span> y = gsl_sf_bessel_J0(x);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"J0(%g) = %.18e\n"</span>, x, y);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>控制台输出正确：<br>
-</p><p><img src="http://i.imgur.com/uXhVvwS.jpg" width="600" height="200"></p>
-<p></p>
-
-          
+          <p>GSL是一个GNU支持的科学计算库，提供了很丰富的数值计算方法。本文介绍了GSL库在Windows环境下使用VisualStudio进行编译构建的过程。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/12/16/gsl-with-vs/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1603,24 +1301,14 @@ cx+dy+t_y\\\\
 
       
         
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
-<h3 id="Code-highlight"><a href="#Code-highlight" class="headerlink" title="Code highlight"></a>Code highlight</h3><p>Hello World!</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"HelloWorld\n"</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">print</span> <span class="string">'HelloWorld'</span></div></pre></td></tr></table></figure>
-<h3 id="Latex-Support-by-Mathjax"><a href="#Latex-Support-by-Mathjax" class="headerlink" title="Latex Support by Mathjax"></a>Latex Support by Mathjax</h3><p>Mass-energy equation by Einstein: $E = mc^2$</p>
-<p>a linear equation:</p>
-<pre><code>$$\mathbf{A}\mathbf{v} = \mathbf{y}$$
-</code></pre>
-          
+          <p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/12/16/hello-world/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1746,31 +1434,14 @@ cx+dy+t_y\\\\
 
       
         
-          
-            <p>Doxygen 是一种很好用的代码注释生成工具，然而和很多国外的工具软件一样，在中文环境下，它的使用总是会出现一些问题，也就是中文注释文档出现乱码。经过调试，终于是解决了这个问题。</p>
-<h2 id="安装-Doxygen"><a href="#安装-Doxygen" class="headerlink" title="安装 Doxygen"></a>安装 Doxygen</h2><p>Doxygen 在Windows平台下的安装是简单的，<a href="http://www.doxygen.nl/" target="_blank" rel="external">Doxygen的项目主页</a>提供了下载和安装的使用说明，可以下载它们的官方使用手册进行阅读。对于Windows，提供了源代码编译安装和直接安装程序安装两种方式，可以自行选择。</p>
-<p>安装成功后，使用命令行命令</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">doxygen --help</div></pre></td></tr></table></figure>
-<p>就可以查看帮助文档，对应参数含义一目了然，降低了入手难度。</p>
-<p>使用命令，</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">doxygen -g doxygen_filename</div></pre></td></tr></table></figure>
-<p>就可以在当前目录下建立一个doxygen配置文件，用文本编辑器打开就可以编辑里面的配置选项。</p>
-<p>使用命令，</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">doxygen doxygen_filename</div></pre></td></tr></table></figure>
-<p>就可以生成注释文档了。</p>
-<p>下面就来说一说对中文的支持。</p>
-<h2 id="生成-HTML-格式文档"><a href="#生成-HTML-格式文档" class="headerlink" title="生成 HTML 格式文档"></a>生成 HTML 格式文档</h2><p>中文之所以乱码，很多时候是由于编码和译码格式不同，所以我们需要先知道自己代码文件的编码方式。我的代码都是建立在Visual Studio上的，可以通过VS的高级保存选项查看自己代码文件的存储编码格式。对于中文版的VS，一般应该是GB2312。</p>
-<p>我们打开 Doxygen 的配置文件，将里面的 INPUT_ENCODING 改为我们代码文件的编码格式，这里就改成 GB2312。</p>
-<p>这样一来，编译出来的 HTML 页面就不会有中文乱码了。</p>
-<h2 id="生成Latex-格式文档"><a href="#生成Latex-格式文档" class="headerlink" title="生成Latex 格式文档"></a>生成Latex 格式文档</h2><p>生成 Latex 需要本机上安装有 Latex 的编译环境。如果是中文用户，推荐的是CTEX套件，可以到他们的网站上去下载。</p>
-<p>可以看到，Doxygen为Latex文件的编译生成了make文件，我们在命令行窗口中执行make命令就可以完成编译，然而这时候会发现编译出错，pdf文档无法生成。</p>
-<p>打开生成的refman.latex文档，添加宏包 CJKutf8。然后找到 <code>\begin{document}</code>一行，将其改为</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">\begin&#123;document&#125;</div><div class="line">\begin&#123;CJK&#125;&#123;UTF8&#125;&#123;gbsn&#125;</div></pre></td></tr></table></figure>
-<p>也就是说为正文提供了CJK环境，这样中文文本就可以正常编译了。</p>
-<p>相应的，我们要将结尾的 <code>\end{document)</code>改为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">\end&#123;CJK&#125; </div><div class="line">\end&#123;document&#125;</div></pre></td></tr></table></figure></p>
-<p>这样，运行make命令之后，就可以看到中文的注释文档了。</p>
-
-          
+          <p>Doxygen 是一种很好用的代码注释生成工具，然而和很多国外的工具软件一样，在中文环境下，它的使用总是会出现一些问题，也就是中文注释文档出现乱码。经过调试，终于是解决了这个问题。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2016/12/16/use-doxygen/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1896,51 +1567,14 @@ cx+dy+t_y\\\\
 
       
         
-          
-            <p>本文来自于Google Developers中对于Python的介绍。<a href="https://developers.google.com/edu/python/regular-expressions" title="Google Python Class, Regular Expression" target="_blank" rel="external">https://developers.google.com/edu/python/regular-expressions</a>。</p>
-<h2 id="认识正则表达式"><a href="#认识正则表达式" class="headerlink" title="认识正则表达式"></a>认识正则表达式</h2><p>Python的正则表达式是使用 <strong>re 模块</strong>的。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">match = re.search(pattern,str)</div><div class="line"><span class="keyword">if</span> match:</div><div class="line">	<span class="keyword">print</span> <span class="string">'found'</span>,match.group()</div><div class="line"><span class="keyword">else</span>:</div><div class="line">    <span class="keyword">print</span> <span class="string">'NOT Found!'</span></div></pre></td></tr></table></figure>
-<h2 id="正则表达式的规则"><a href="#正则表达式的规则" class="headerlink" title="正则表达式的规则"></a>正则表达式的规则</h2><h3 id="基本规则"><a href="#基本规则" class="headerlink" title="基本规则"></a>基本规则</h3><ul>
-<li>a, x, 9 都是普通字符 (ordinary characters)</li>
-<li>. (一个点)可以匹配任何单个字符（除了’\n’）</li>
-<li>\w（小写的w）可以匹配一个单词里面的字母，数字或下划线 [a-zA-Z0-9_];\W （大写的W）可以匹配非单词里的这些元素</li>
-<li>\b 匹配单词与非单词的分界</li>
-<li>\s（小写的s）匹配一个 whitespace character，包括 space，newline，return，tab，form(\n\r\t\f)；\S（大写的S）匹配一个非 whitespace character</li>
-<li>\d 匹配十进制数字 [0-9]</li>
-<li>^=start，$=end 用来匹配字符串的开始和结束</li>
-<li>\ 是转义字符，用 . 来匹配串里的’.’，等<h3 id="一些基本的例子"><a href="#一些基本的例子" class="headerlink" title="一些基本的例子"></a>一些基本的例子</h3></li>
-</ul>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## 在字符串'piiig'中查找'iii'</span></div><div class="line">match = re.search(<span class="string">r'iii'</span>, <span class="string">'piiig'</span>)  <span class="comment"># found, match.group() == "iii"</span></div><div class="line">match = re.search(<span class="string">r'igs'</span>, <span class="string">'piiig'</span>)  <span class="comment">#  not found, match == None</span></div><div class="line"></div><div class="line"><span class="comment">## . 匹配除了\n的任意字符</span></div><div class="line">match = re.search(<span class="string">r'..g'</span>, <span class="string">'piiig'</span>)  <span class="comment">#  found, match.group() == "iig"</span></div><div class="line"></div><div class="line"><span class="comment">## \d 匹配0-9的数字字符, \w 匹配单词里的字符</span></div><div class="line">match = re.search(<span class="string">r'\d\d\d'</span>, <span class="string">'p123g'</span>) <span class="comment">#  found, match.group() == "123"</span></div><div class="line">match = re.search(<span class="string">r'\w\w\w'</span>, <span class="string">'@@abcd!!'</span>) <span class="comment">#  found, match.group() == "abc"</span></div></pre></td></tr></table></figure>
-<h3 id="重复"><a href="#重复" class="headerlink" title="重复"></a>重复</h3><p>可以用’+’ ‘*’ ‘?’来匹配0个，1个或多个重复字符。</p>
-<ul>
-<li>‘+’ 用来匹配1个或者多个字符</li>
-<li>‘*’ 用来匹配0个或者多个字符</li>
-<li>‘?’ 用来匹配0个或1个字符</li>
-</ul>
-<p>注意，’+’和’*’会匹配尽可能多的字符。</p>
-<h3 id="一些重复字符的例子"><a href="#一些重复字符的例子" class="headerlink" title="一些重复字符的例子"></a>一些重复字符的例子</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## i+  匹配1个或者多个'i'</span></div><div class="line">match = re.search(<span class="string">r'pi+'</span>, <span class="string">'piiig'</span>) <span class="comment">#  found, match.group() == "piii"</span></div><div class="line"></div><div class="line"><span class="comment">## 找到字符串中最左边尽可能长的模式。</span></div><div class="line"><span class="comment">## 注意，并没有匹配到第二个 'i+'</span></div><div class="line">match = re.search(<span class="string">r'i+'</span>, <span class="string">'piigiiii'</span>)  <span class="comment">#  found, match.group() == "ii"</span></div><div class="line"></div><div class="line"><span class="comment">## \s*  匹配0个或1个空白字符 whitespace</span></div><div class="line">match = re.search(<span class="string">r'\d\s*\d\s*\d'</span>, <span class="string">'xx1 2   3xx'</span>)  <span class="comment">#  found, match.group() == "1 2   3"</span></div><div class="line">match = re.search(<span class="string">r'\d\s*\d\s*\d'</span>, <span class="string">'xx12  3xx'</span>)    <span class="comment">#  found, match.group() == "12  3"</span></div><div class="line">match = re.search(<span class="string">r'\d\s*\d\s*\d'</span>, <span class="string">'xx123xx'</span>)      <span class="comment"># found, match.group() == "123"</span></div><div class="line"></div><div class="line"><span class="comment">## ^ 匹配字符串的第一个字符</span></div><div class="line">match = re.search(<span class="string">r'^b\w+'</span>, <span class="string">'foobar'</span>)  <span class="comment"># not found, match == None</span></div><div class="line"><span class="comment">## 与上例对比</span></div><div class="line">match = re.search(<span class="string">r'b\w+'</span>, <span class="string">'foobar'</span>)   <span class="comment"># found, match.group() == "bar"</span></div></pre></td></tr></table></figure>
-<h3 id="Email"><a href="#Email" class="headerlink" title="Email"></a>Email</h3><p>考虑一个典型的Email地址：someone@host.com，可以用如下的方式匹配：</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">    match = re.search(<span class="string">r'\w+@\w+'</span>,str)</div><div class="line">```    </div><div class="line"></div><div class="line">但是，对于这种Email地址 <span class="string">'xyz alice-b@google.com purple monkey'</span> 则不能奏效。</div><div class="line"></div><div class="line"><span class="comment">### 使用方括号 ###</span></div><div class="line">方括号里面的字符表示一个字符集合。[abc]可以被用来匹配<span class="string">'a'</span>或者<span class="string">'b'</span>或者<span class="string">'c'</span>。\w \s等都可以用在方括号里，除了<span class="string">'.'</span>以外，它只能用来表示字面意义上的‘点’。所以上面的Email规则可以扩充如下：</div><div class="line">    </div><div class="line">``` py</div><div class="line">    match = re.search(<span class="string">'r[\w.-]+@[\w.-]+'</span>,str)</div></pre></td></tr></table></figure>
-<p>你还可以使用’-‘来指定范围，如[a-z]指示的是所有小写字母的集合。所以如果你想构造的字符集合中有’-‘，请把它放到末尾[ab-]。另外，前方加上’^’，用来表示取集合的补集，例如<sup><a href="#fn_ab" id="reffn_ab">ab</a></sup>表示除了’a’和’b’之外的其他字符。</p>
-<h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>以Email地址为例，如果我们想要分别提取该地址的用户名’someone’和主机名’host.com’该怎么办呢？<br>可以在模式中用圆括号指定。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">str = <span class="string">'purple alice-b@google.com monkey dishwasher'</span></div><div class="line">match = re.search(<span class="string">'([\w.-]+)@([\w.-]+)'</span>, str)   <span class="comment">#用圆括号指定分割</span></div><div class="line"><span class="keyword">if</span> match:</div><div class="line">    <span class="keyword">print</span> match.group()   <span class="comment">## 'alice-b@google.com' (the whole match)</span></div><div class="line">    <span class="keyword">print</span> match.group(<span class="number">1</span>)  <span class="comment">## 'alice-b' (the username, group 1)</span></div><div class="line">  	<span class="keyword">print</span> match.group(<span class="number">2</span>)  <span class="comment">## 'google.com' (the host, group 2)</span></div></pre></td></tr></table></figure>
-<h3 id="findall-函数"><a href="#findall-函数" class="headerlink" title="findall 函数"></a>findall 函数</h3><p>与group函数只找到最左端的一个匹配不同，findall函数找到字符串中所有与模式匹配的串。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">str = <span class="string">'purple alice@google.com, blah monkey bob@abc.com blah dishwasher'</span></div><div class="line"><span class="comment">## findall返回一个包含所有匹配结果的 list</span></div><div class="line">emails = re.findall(<span class="string">r'[\w\.-]+@[\w\.-]+'</span>, str) <span class="comment">## ['alice@google.com', 'bob@abc.com']</span></div><div class="line"><span class="keyword">for</span> email <span class="keyword">in</span> emails:</div><div class="line">    <span class="keyword">print</span> email</div></pre></td></tr></table></figure>
-<h3 id="在文件中使用findall"><a href="#在文件中使用findall" class="headerlink" title="在文件中使用findall"></a>在文件中使用findall</h3><p>当然可以读入文件的每一行，然后对每一行的内容调用findall，但是为什么不让这一切自动发生呢？</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">f = open(filename.txt,<span class="string">'r'</span>)</div><div class="line">matches = re.findall(pattern,f.read())</div></pre></td></tr></table></figure>
-<h3 id="findall-和分组"><a href="#findall-和分组" class="headerlink" title="findall 和分组"></a>findall 和分组</h3><p>和group的用法相似，也可以指定分组。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">str = <span class="string">'purple alice@google.com, blah monkey bob@abc.com blah dishwasher'</span></div><div class="line"><span class="comment">##　返回了一个list</span></div><div class="line">tuples = re.findall(<span class="string">r'([\w\.-]+)@([\w\.-]+)'</span>, str)</div><div class="line"><span class="keyword">print</span> tuples  <span class="comment">## [('alice', 'google.com'), ('bob', 'abc.com')]</span></div><div class="line"><span class="comment">##　list中的元素是tuple </span></div><div class="line"><span class="keyword">for</span> tuple <span class="keyword">in</span> tuples:</div><div class="line">  <span class="keyword">print</span> tuple[<span class="number">0</span>]  <span class="comment">## username</span></div><div class="line">  <span class="keyword">print</span> tuple[<span class="number">1</span>]  <span class="comment">## host</span></div></pre></td></tr></table></figure>
-<h2 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h2><p>正则表达式异常强大，使用简单的几条规则就可以演变出很多的模式组合。在确定你的模式之前，可能需要很多的调试工作。在一个小的测试集合上测试正则表达式。</p>
-<h2 id="其他选项"><a href="#其他选项" class="headerlink" title="其他选项"></a>其他选项</h2><p>正则表达式还可以设置“选项”。</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">match = re.search(pat,str,opt)</div></pre></td></tr></table></figure>
-<p>这些可选项如下：</p>
-<ul>
-<li>IGNORECASE  忽视大小写</li>
-<li>DOTALL  允许’.’匹配’\n’</li>
-<li>MULTILINE  在一个由许多行组成的字符串中，允许’^’和’$’匹配每一行的开始和结束</li>
-</ul>
-
-          
+          <p>本文来自于Google Developers中对于Python的介绍。<a href="https://developers.google.com/edu/python/regular-expressions" title="Google Python Class, Regular Expression">https://developers.google.com/edu/python/regular-expressions</a>。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2014/07/17/python-reg-exp/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
