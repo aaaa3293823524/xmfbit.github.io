@@ -84,12 +84,12 @@
 
 
 
-<meta name="description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，首先介绍针孔相机模型，">
+<meta name="description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CS131-立体视觉基础">
 <meta property="og:url" content="https://xmfbit.github.io/2017/02/02/cs131-camera/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，首先介绍针孔相机模型，">
+<meta property="og:description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。">
 <meta property="og:image" content="https://xmfbit.github.io/img/camera_geometry_application.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/projective_geometry_property_1.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/projective_geometry_property_2.png">
@@ -109,10 +109,10 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/camera_model_things_to_remember.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/epipolar_fig.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/epipolar_constraint_1.png">
-<meta property="og:updated_time" content="2017-02-04T10:48:44.000Z">
+<meta property="og:updated_time" content="2017-02-05T08:36:00.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS131-立体视觉基础">
-<meta name="twitter:description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，首先介绍针孔相机模型，">
+<meta name="twitter:description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。">
 <meta name="twitter:image" content="https://xmfbit.github.io/img/camera_geometry_application.png">
 
 
@@ -377,7 +377,7 @@
       
 
       
-        <p>数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，首先介绍针孔相机模型，<br><img src="/img/camera_geometry_application.png" alt="立体视觉应用"><br><a id="more"></a></p>
+        <p>数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。<br><img src="/img/camera_geometry_application.png" alt="立体视觉应用"><br><a id="more"></a></p>
 <h2 id="针孔相机模型（Pinhole-Camera）"><a href="#针孔相机模型（Pinhole-Camera）" class="headerlink" title="针孔相机模型（Pinhole Camera）"></a>针孔相机模型（Pinhole Camera）</h2><p>针孔相机是简化的相机模型。光线沿直线传播。物体反射的光线，通过针孔，在成像面形成倒立的影像。针孔与成像面的距离，称为焦距。一般而言，针孔越小，影像越清晰，但针孔太小，会导致衍射，反而令影像模糊。</p>
 <h3 id="投影几何的重要性质"><a href="#投影几何的重要性质" class="headerlink" title="投影几何的重要性质"></a>投影几何的重要性质</h3><p>在对针孔相机详细说明之前，首先介绍投影几何（Projective Geometry）的几条性质。</p>
 <p>在投影变换前后，长度和角度信息丢失，但直线仍然保持是直线。如下图所示。原来垂直和平行的台球桌面的边不再保持原有的角度和相对长度，但是仍然是直线。<br><img src="/img/projective_geometry_property_1.png" alt="性质1"></p>
