@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="cs131,公开课," />
+  <meta name="keywords" content="math," />
 
 
 
@@ -84,23 +84,18 @@
 
 
 
-<meta name="description" content="feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，">
+<meta name="description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CS131-描述图像的特征(Harris 角点)">
-<meta property="og:url" content="https://xmfbit.github.io/2017/01/25/cs131-finding-features/index.html">
+<meta property="og:title" content="B站视频“线性代数的本质”观后感">
+<meta property="og:url" content="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，">
-<meta property="og:image" content="https://xmfbit.github.io/img/image_matching_hard.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/what_is_corner.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/corner_window_fun.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/corner_type_1.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/corner_judge.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/corner_judge_2.png">
-<meta property="og:updated_time" content="2017-02-05T08:50:31.000Z">
+<meta property="og:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
+<meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
+<meta property="og:updated_time" content="2017-02-06T15:37:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CS131-描述图像的特征(Harris 角点)">
-<meta name="twitter:description" content="feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/image_matching_hard.png">
+<meta name="twitter:title" content="B站视频“线性代数的本质”观后感">
+<meta name="twitter:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
 
 
 
@@ -128,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2017/01/25/cs131-finding-features/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/"/>
 
 
 
 
 
-  <title> CS131-描述图像的特征(Harris 角点) | 来呀，快活呀~ </title>
+  <title> B站视频“线性代数的本质”观后感 | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -279,7 +274,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/01/25/cs131-finding-features/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -303,7 +298,7 @@
             
             
               
-                CS131-描述图像的特征(Harris 角点)
+                B站视频“线性代数的本质”观后感
               
             
           </h1>
@@ -318,8 +313,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-25T10:51:47+08:00">
-                2017-01-25
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-05T19:16:32+08:00">
+                2017-02-05
               </time>
             
 
@@ -337,8 +332,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/01/25/cs131-finding-features/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/25/cs131-finding-features/" itemprop="commentCount"></span>
+                <a href="/2017/02/05/video-linear-alg-essential-property/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/05/video-linear-alg-essential-property/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -364,23 +359,34 @@
       
 
       
-        <p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。<br><img src="/img/image_matching_hard.png" alt="image matching example"></p>
-<p>那么，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述，并介绍Harris角点检测方法。在下一节中介绍SIFT特征。<br><a id="more"></a></p>
-<h2 id="Harris角点"><a href="#Harris角点" class="headerlink" title="Harris角点"></a>Harris角点</h2><p>角点，即corner，和edge类似，区别在于其在两个方向上都有较为剧烈的灰度变化（而edge只在某一个方向上灰度值变化剧烈）。如图所示。<br><img src="/img/what_is_corner.png" alt="what is corner"></p>
-<p><a href="http://www.bmva.org/bmvc/1988/avc-88-023.pdf" target="_blank" rel="external">Harris角点</a>得名于其发明者Harris，是一种常见的角点检测方法。<br>给定观察窗口大小，计算平移后窗口内各个像素差值的加权平方和，如下式。</p>
-<script type="math/tex; mode=display">E(u,v) = \sum_x\sum_yw(x,y)[I(x+u, y+v) - I(x,y)]^2</script><p>其中，窗口加权函数$w$可以取做门限函数或gaussian函数。如图所示。<br><img src="/img/corner_window_fun.png" alt="window function"></p>
-<p>使用泰勒级数展开，并忽略非线性项，我们有</p>
-<script type="math/tex; mode=display">I(x+u,y+v) = I(x,y) + I_x(x,y)u+I_y(x,y)v</script><p>所以上式可以写成（线性二次型写成了矩阵形式），</p>
-<script type="math/tex; mode=display">E(u,v) = \sum_{x,y}w(I_xu+I_yv)^2 = \begin{bmatrix}u&v\end{bmatrix}M\begin{bmatrix}u\\\\v\end{bmatrix}</script><p>其中，</p>
-<script type="math/tex; mode=display">M = w\begin{bmatrix}I_x^2& I_xI_y\\\\I_xI_y&I_y^2\end{bmatrix}</script><p>当使用门限函数时，权值$w_{i,j} = 1$，则，</p>
-<script type="math/tex; mode=display">M = \begin{bmatrix}\sum I_xI_x& \sum I_xI_y\\\\\sum I_xI_y&\sum I_yI_y\end{bmatrix} = \sum \begin{bmatrix}I_x \\\\I_y\end{bmatrix}\begin{bmatrix}I_x &I_y\end{bmatrix}</script><p>当corner与xy坐标轴对齐时候，如下图所示。由于在黑色观察窗口内，只有上侧和左侧存在边缘，且在上边缘，$I_y$很大，而$I_x=0$，在左侧边缘，$I_x$很大而$I_y = 0$，所以，矩阵</p>
-<script type="math/tex; mode=display">M = \begin{bmatrix}\lambda_1 & 0 \\\\ 0&\lambda_2 \end{bmatrix}</script><p><img src="/img/corner_type_1.png" alt="M为对角阵"></p>
-<p>当corner与坐标轴没有对齐时，经过旋转变换就可以将其转换到与坐标轴对齐的角度，而这种旋转操作可以使用矩阵的相似化来表示（其实是二次型的化简，可以使用合同变换，而旋转变换的矩阵是酉矩阵，转置即为矩阵的逆，所以也是相似变换）。也就是说，矩阵$M$相似于某个对角阵。</p>
-<script type="math/tex; mode=display">M = R^{-1}\Sigma R, \text{其中}\Sigma = \begin{bmatrix}\lambda_1&0\\\\0&\lambda_2\end{bmatrix}</script><p>所以，可以根据下面这张图利用矩阵$M$的特征值来判定角点和边缘点。当两个特征值都较大时为角点；当某个分量近似为0而另一个分量较大时，可以判定为边缘点（因为某个方向的导数为0）；当两个特征值都近似为0时，说明是普通点（flat point）。（课件原图如此，空缺的问号处应分别为$\lambda_1$和$\lambda_2$）。<br><img src="/img/corner_judge.png" alt="使用M矩阵特征值判定"></p>
-<p> 然而矩阵的特征值计算较为复杂，所以使用下面的方法进行近似计算。</p>
-<script type="math/tex; mode=display">\theta = \det(M)-\alpha\text{trace}(M)^2 = \lambda_1\lambda_2-\alpha(\lambda_1+\lambda_2)^2</script><p><img src="/img/corner_judge_2.png" alt="使用theta判定"></p>
-<p>为了减弱噪声的影响，常常使用gaussian窗函数。如下式所示：</p>
-<script type="math/tex; mode=display">w(x,y) = \exp(-(x^2+y^2)/2\sigma^2)</script>
+        <p>线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：<a href="http://www.bilibili.com/video/av6731067/index_1.html" target="_blank" rel="external">线性代数的本质</a>。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。<br><img src="/img/video_linear_alg_essential.png" alt=""></p>
+<a id="more"></a>
+<h2 id="从线性空间和线性变换讲起"><a href="#从线性空间和线性变换讲起" class="headerlink" title="从线性空间和线性变换讲起"></a>从线性空间和线性变换讲起</h2><p>BIT的教学水平，不同的老师参差不齐。所幸的是，大一教授线性代数一课的吴惠彬老师，是一位既有深厚学问又善于教课的老师。我们所用的教材，正是吴老师主编的。和这个视频不同，教材是以线性方程组入手来介绍矩阵，而后引入到线性空间和线性变换。吴老师还曾经告诫大家，线性空间和线性变换一章较为抽象晦涩，不易理解。当然，很多年过去了，我也在研究生阶段继续修了线性代数的深入课程，如今想来，其实线性变换和矩阵的联系更为紧密一些。但是我们的教材之所以不用线性变换为引子，可能正是由于对于大一新生来说，过去十二年所受的基础教育都是操作一些看得见摸得着的数和几何体，一时难以接受线性空间这种东西吧~而也正是从这门课和高数开始，思考问题的方式和初等数学不一样了。我们更多地考察运动和极限，将具有共性的东西抽象出来，研究它们的等价性质。</p>
+<p>而抽象这个问题，在本视频中，通过将问题聚焦在二维（偶有提及三维）平面并辅之以动画的形式避开了（所以这个视频也只能算是有趣的不严肃的科普性质）。视频从线性空间入手，首先介绍了向量和基的概念，而后引入出贯穿视频系列始终的<strong>线性变换</strong>。什么是线性变换呢？从“数”的角度来看，定义在线性空间上，满足叠加性和齐次性就是线性变换。而本视频则从“形”的角度出发（注意，这也是本视频贯穿始终的指导思想：用“形”来思考），给出了下面两个条件：</p>
+<ul>
+<li>变换前后原点不动</li>
+<li>变换前后平行等距线仍然保持平行等距（但是距离值可能会变）。</li>
+</ul>
+<h2 id="线性变换与矩阵的关系"><a href="#线性变换与矩阵的关系" class="headerlink" title="线性变换与矩阵的关系"></a>线性变换与矩阵的关系</h2><p>视频在阐述线性变换和矩阵关系的时候一带而过，不是很好。下面是我写的一个补充说明。</p>
+<p>在由一组基向量$\alpha_i, i = 1,2,\dots,n$张成的线性空间$\mathcal{V}$上，任何一个向量$v$都可以表示为这组基的线性组合，也就是</p>
+<script type="math/tex; mode=display">v = \sum_{i=1}^{n}k_i\alpha_i</script><p>则线性变换$\mathcal{T}$对$v$作用之后，有，</p>
+<script type="math/tex; mode=display">u = \mathcal{T}(v) = \mathcal{T}(\sum_{i=1}^{n}k_i\alpha_i)</script><p>根据线性变换的叠加性，有，</p>
+<script type="math/tex; mode=display">u = \sum_{i=1}^{n}k_i\mathcal{T}(\alpha_i)</script><p>设$\alpha_i$经过线性变换$\mathcal{T}$作用后，变换为$\beta_i$，那么，</p>
+<script type="math/tex; mode=display">u = \sum_{i=1}^{n}k_i\beta_i</script><p>也就是说，</p>
+<script type="math/tex; mode=display">u = \begin{bmatrix}\mathcal{T}(\alpha_1), \mathcal{T}(\alpha_2), \cdots, \mathcal{T}(\alpha_n)\end{bmatrix}
+\begin{bmatrix}k_1\\\\ k_2\\\\ \vdots\\\\ k_n\end{bmatrix}</script><p>上式说明，一个抽象的线性变换可以使用一个具体的矩阵来代表。这个矩阵的列，就是线性变换之后的那组基。</p>
+<p>举个例子，旋转变换。如果旋转$\frac{\pi}{4}$，那么原来坐标轴方向的单位向量的$i$和$j$分别转到了$(\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})$和$(-\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})$。所以描述这个线性变换的矩阵为</p>
+<script type="math/tex; mode=display">A = \begin{bmatrix}\frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2}\\\\ \frac{\sqrt{2}}{2}& \frac{\sqrt{2}}{2}\end{bmatrix}</script><p>矩阵$A$的两列分别为变换后的基向量坐标。</p>
+<h2 id="矩阵乘法"><a href="#矩阵乘法" class="headerlink" title="矩阵乘法"></a>矩阵乘法</h2><p>那么矩阵乘法的意义也就有了，那就是对向量做线性变换。例如上面的矩阵$A$与$x = \begin{bmatrix}-1\\ 0\end{bmatrix}$相乘，就是求取向量$-1i+0j$在旋转变换之后的新坐标。这时候，$-1$和$0$就是上面推导过程中的$k_1$和$k_2$，所以，</p>
+<script type="math/tex; mode=display">Ax = -1\begin{bmatrix}\frac{\sqrt{2}}{2}\\\\ \frac{\sqrt{2}}{2}\end{bmatrix} + 0\begin{bmatrix}-\frac{\sqrt{2}}{2}\\\\\frac{\sqrt{2}}{2}\end{bmatrix}</script><p>而矩阵与矩阵相乘呢？只要把右边的矩阵按列分块即可。其实这是矩阵与多个向量相乘的简写形式。</p>
+<p>所以，对于任意向量$x$，$Ax$的结果就是组成矩阵$A$的各列向量的线性组合。这个由矩阵$A$的各列张成的空间叫做矩阵的列空间。</p>
+<p>而那些使得方程$Ax=0$成立的$x$，张成的空间为矩阵的核空间。</p>
+<p>矩阵的秩的意义就是矩阵列空间的维数。</p>
+<h2 id="行列式"><a href="#行列式" class="headerlink" title="行列式"></a>行列式</h2><p>仍然考虑二维矩阵，我们已经知道它表示了二维平面上的线性变换。而矩阵行列式的意义，就表明了变换前后，单位面积的正方形被放缩的比例。如果变换之后，$i$向量跑到了$j$向量的左手边，那么需要加上负号，表明在这个变换过程中，二维平面其实进过了一次翻转。</p>
+<h2 id="点积叉积和对偶性"><a href="#点积叉积和对偶性" class="headerlink" title="点积叉积和对偶性"></a>点积叉积和对偶性</h2><p>这部分的对偶性这个概念比较玄一些，这里就不讲了。。。对于向量的点积，我们已经知道，</p>
+<script type="math/tex; mode=display">\langle v, u \rangle = \sum_{i=1}^{n}v_iu_i</script><p>从几何的角度看，向量的点积是将向量$u$向向量$v$的方向投影（有正负），投影长度乘上$v$的长度得到的。</p>
+<p>按照上面矩阵乘法的思路，$u$可以看做代表一个从2维到1维的线性变换（也就是从$\mathbb{R}^2$到$\mathbb{R}$）。而根据上述矩阵变换和矩阵乘法的对应关系可知，变换后的结果就等于$v$的两个分量分别乘上两个基向量（也就是$u$的两个分量），这样我们就得到了向量点积的数值计算方法。</p>
+
       
     </div>
 
@@ -403,9 +409,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/cs131/" rel="tag"># cs131</a>
-          
-            <a href="/tags/公开课/" rel="tag"># 公开课</a>
+            <a href="/tags/math/" rel="tag"># math</a>
           
         </div>
       
@@ -414,8 +418,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/24/cs131-edge-detection/" rel="next" title="CS131-边缘检测">
-                <i class="fa fa-chevron-left"></i> CS131-边缘检测
+              <a href="/2017/02/04/yolo-paper/" rel="next" title="YOLO 论文阅读">
+                <i class="fa fa-chevron-left"></i> YOLO 论文阅读
               </a>
             
           </div>
@@ -424,8 +428,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/30/cs131-sift/" rel="prev" title="CS131-描述图像的特征(SIFT)">
-                CS131-描述图像的特征(SIFT) <i class="fa fa-chevron-right"></i>
+              <a href="/2017/02/05/cs131-segmentation-clustering/" rel="prev" title="CS131-使用聚类进行图形分割">
+                CS131-使用聚类进行图形分割 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -475,8 +479,8 @@
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/01/25/cs131-finding-features/"
-           data-title="CS131-描述图像的特征(Harris 角点)" data-url="https://xmfbit.github.io/2017/01/25/cs131-finding-features/" data-author-key="1">
+      <div class="ds-thread" data-thread-key="2017/02/05/video-linear-alg-essential-property/"
+           data-title="B站视频“线性代数的本质”观后感" data-url="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/" data-author-key="1">
       </div>
     
   </div>
@@ -569,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Harris角点"><span class="nav-number">1.</span> <span class="nav-text">Harris角点</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从线性空间和线性变换讲起"><span class="nav-number">1.</span> <span class="nav-text">从线性空间和线性变换讲起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性变换与矩阵的关系"><span class="nav-number">2.</span> <span class="nav-text">线性变换与矩阵的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵乘法"><span class="nav-number">3.</span> <span class="nav-text">矩阵乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行列式"><span class="nav-number">4.</span> <span class="nav-text">行列式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点积叉积和对偶性"><span class="nav-number">5.</span> <span class="nav-text">点积叉积和对偶性</span></a></li></ol></div>
             
 
           </div>

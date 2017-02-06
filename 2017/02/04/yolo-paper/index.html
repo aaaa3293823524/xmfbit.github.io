@@ -98,7 +98,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/yolo2_cluster_result.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/yolo2_bbox_location.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/yolo2_bbox_param.png">
-<meta property="og:updated_time" content="2017-02-05T08:49:03.000Z">
+<meta property="og:updated_time" content="2017-02-06T15:45:05.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="YOLO 论文阅读">
 <meta name="twitter:description" content="YOLO(You Only Look Once)是一个流行的目标检测方法，和Faster RCNN等state of the art方法比起来，主打检测速度快。截止到目前为止（2017年2月初），YOLO已经发布了两个版本，在下文中分别称为YOLO V1和YOLO V2。YOLO V2的代码目前作为Darknet的一部分开源在GitHub。在这篇博客中，记录了阅读YOLO两个版本论文中的重点内容，">
@@ -432,6 +432,8 @@ x, &\text{if}\ x > 0 \\\\
 <p>在output的feature map上，对于每个cell（共计$13\times 13$个），给出对应每个bounding box的输出$t_x$, $t_y$, $t_w$, $t_h$。每个cell共计$k=5$个bounding box。如何由这几个参数确定bounding box的真实位置呢？见下图。</p>
 <p><img src="/img/yolo2_bbox_location.png" alt="确定bbox的位置"></p>
 <p>设该grid cell距离图像左上角的offset是$(c_x, c_y)$，那么bounding box的位置和宽高计算如下。注意，box的位置是相对于grid cell的，而宽高是相对于anchor box的。<br><img src="/img/yolo2_bbox_param.png" alt="bounding box参数的计算方法"></p>
+<h3 id="改进6：Fine-Gained-Features"><a href="#改进6：Fine-Gained-Features" class="headerlink" title="改进6：Fine-Gained Features"></a>改进6：Fine-Gained Features</h3><p>这个trick是受Faster RCNN和SSD方法中使用多个不同feature map提高算法对不同分辨率目标物体的检测能力的启发，加入了一个pass-through层，直接将倒数第二层的$26\times 26$大小的feature map加进来。</p>
+<p>在具体实现时，是将higher resolution（也就是$26\times 26$）的feature map stacking在一起。比如，原大小为$26\times 26 \times 512$的feature map，因为我们要将其变为$13\times 13$大小，所以，将在空间上相近的点移到后面的channel上去，这部分可以参考Darknet中<code>reorg_layer</code>的实现。</p>
 
       
     </div>
@@ -475,6 +477,10 @@ x, &\text{if}\ x > 0 \\\\
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/05/video-linear-alg-essential-property/" rel="prev" title="B站视频“线性代数的本质”观后感">
+                B站视频“线性代数的本质”观后感 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -571,7 +577,7 @@ x, &\text{if}\ x > 0 \\\\
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">11</span>
+                <span class="site-state-item-count">13</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -582,7 +588,7 @@ x, &\text{if}\ x > 0 \\\\
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-count">9</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -617,7 +623,7 @@ x, &\text{if}\ x > 0 \\\\
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLO-V1"><span class="nav-number">1.</span> <span class="nav-text">YOLO V1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本思路"><span class="nav-number">1.1.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络模型结构"><span class="nav-number">1.2.</span> <span class="nav-text">网络模型结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">1.3.</span> <span class="nav-text">训练</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLO-V2"><span class="nav-number">2.</span> <span class="nav-text">YOLO V2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#改进1：引入BN层（Batch-Normalization）"><span class="nav-number">2.1.</span> <span class="nav-text">改进1：引入BN层（Batch Normalization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进2：高分辨率分类器（High-Resolution-Classifier）"><span class="nav-number">2.2.</span> <span class="nav-text">改进2：高分辨率分类器（High Resolution Classifier）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进3：引入Anchor-Box"><span class="nav-number">2.3.</span> <span class="nav-text">改进3：引入Anchor Box</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进4：Dimension-Cluster"><span class="nav-number">2.4.</span> <span class="nav-text">改进4：Dimension Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进5：直接位置预测（Direct-Location-Prediction）"><span class="nav-number">2.5.</span> <span class="nav-text">改进5：直接位置预测（Direct Location Prediction）</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLO-V1"><span class="nav-number">1.</span> <span class="nav-text">YOLO V1</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本思路"><span class="nav-number">1.1.</span> <span class="nav-text">基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络模型结构"><span class="nav-number">1.2.</span> <span class="nav-text">网络模型结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">1.3.</span> <span class="nav-text">训练</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#YOLO-V2"><span class="nav-number">2.</span> <span class="nav-text">YOLO V2</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#改进1：引入BN层（Batch-Normalization）"><span class="nav-number">2.1.</span> <span class="nav-text">改进1：引入BN层（Batch Normalization）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进2：高分辨率分类器（High-Resolution-Classifier）"><span class="nav-number">2.2.</span> <span class="nav-text">改进2：高分辨率分类器（High Resolution Classifier）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进3：引入Anchor-Box"><span class="nav-number">2.3.</span> <span class="nav-text">改进3：引入Anchor Box</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进4：Dimension-Cluster"><span class="nav-number">2.4.</span> <span class="nav-text">改进4：Dimension Cluster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进5：直接位置预测（Direct-Location-Prediction）"><span class="nav-number">2.5.</span> <span class="nav-text">改进5：直接位置预测（Direct Location Prediction）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#改进6：Fine-Gained-Features"><span class="nav-number">2.6.</span> <span class="nav-text">改进6：Fine-Gained Features</span></a></li></ol></li></ol></div>
             
 
           </div>
