@@ -497,7 +497,7 @@
       
         
           <p>身在天朝，GFW是一个很蛋疼的东西。有人说GFW挡住了天朝与世界其他地方的交流，尤其给科研造成了很多不便；也有人认为GFW挡住了美利坚的“坚船利炮”（Google，Facebook，Tweet等），让中国的互联网企业高速发展。这两种思路都很有道理，然而GFW对计算机相关行业人员造成不便倒也是千真万确，让人在无数次404之后，脱口而出F<em>*</em>。也有人打趣，会不会FQ，已经成为了CS入行的第一道关卡，正好用来刷掉一批人。之前我使用GoAgent来FQ，后来又使用了一段时间的免费SS服务，后来机缘巧合从一个印度佬那里挣了一些美元，所以搬到了DigitalOcean上。DO的机器，对我一个学生来说，说实话并不算便宜了，不过好在手里还有一些美元，也在GitHub那里进行了学生认证，算是也可以应付了。</p>
-<p>之前我已经在DO的机器上配置过shadowsocks，还顺手给iPad解决了FQ的问题。然而当时没有记录，这次我换了一台机器，机房位于NY，把ss重新配置了一遍，再不做些记录，下次恐怕又要东翻西找。</p>
+<p>之前我已经在DO的机器上配置过shadowsocks，还顺手给iPad解决了FQ的问题。然而当时没有记录，这次我换了一台机器，机房位于NY，把ss重新配置了一遍，再不做些记录，下次恐怕又要东翻西找。<br><img src="/img/god_use_vpn.png" alt="佛跳墙"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/02/08/digitalocean-shadowsocks/#more" rel="contents">
@@ -567,7 +567,7 @@
               
                 
                 <a class="post-title-link" href="/2017/02/05/cs131-segmentation-clustering/" itemprop="url">
-                  CS131-使用聚类进行图形分割
+                  CS131-KMeans聚类
                 </a>
               
             
@@ -630,10 +630,15 @@
 
       
         
-          
-            <p>图像分割是图像处理和计算机视觉领域的基础问题之一。图像分割是指将图像中的每隔点赋予不停的类别。而聚类方法是一种实现这一目的的常用方法。所谓聚类，就是指将相似的数据点group到一起，并使用共同的单一的象征（token）进行代表。</p>
-
-          
+          <p><a href="https://zh.wikipedia.org/wiki/K-平均算法">K-Means聚类</a>是把n个点（可以是样本的一次观察或一个实例）划分到$k$个聚类中，使得每个点都属于离他最近的均值（此即聚类中心）对应的聚类，以之作为聚类的标准，满足最小化聚类中心和属于该中心的数据点之间的平方距离和（Sum of Square Distance，SSD）。</p>
+<script type="math/tex; mode=display">\text{SSD} = \sum_{i=1}^{k}\sum_{x\in c_i}(x-c_i)^2</script><p><img src="/img/kmeans_demo.png" alt="K-Means Demo"></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2017/02/05/cs131-segmentation-clustering/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1166,6 +1171,7 @@
 <li>确定方向。通过计算图像的梯度图，确定key point的方向，下一步的feature operation就是在这个方向，scale和position上进行的。</li>
 <li>确定key point的描述子。使用图像的局部梯度作为key point的描述子，最终构成SIFT特征向量。</li>
 </ul>
+<p><img src="/img/sift_picture.jpg" alt="SIFT图示"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/01/30/cs131-sift/#more" rel="contents">
@@ -1298,8 +1304,9 @@
 
       
         
-          <p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。<br><img src="/img/image_matching_hard.png" alt="image matching example"></p>
-<p>那么，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述，并介绍Harris角点检测方法。在下一节中介绍SIFT特征。<br>
+          <p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。</p>
+<p>那么，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述，并介绍Harris角点检测方法。在下一节中介绍SIFT特征。</p>
+<p><img src="/img/image_matching_hard.png" alt="image matching example"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/01/25/cs131-finding-features/#more" rel="contents">
@@ -1433,6 +1440,7 @@
       
         
           <p>边缘(Edge)在哺乳动物的视觉中有重要意义。在由若干卷积层构成的深度神经网络中，较低层的卷积层就被训练成为对特定形状的边缘做出响应。边缘检测也是计算机视觉和图像处理领域中一个重要的问题。</p>
+<p><img src="/img/edge_camera_man.png" alt="边缘检测图示"><br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/01/24/cs131-edge-detection/#more" rel="contents">
@@ -1566,6 +1574,7 @@
       
         
           <p>数字图像可以看做$\mathbb{R}^2 \rightarrow \mathbb{R}^c$的映射，其中$c$是图像的channel数。使用信号与系统的角度来看，如果单独考察某个channel，可以将图像看做是二维离散系统。</p>
+<p><img src="/img/svd_picture.jpg" alt="SVD图示"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/01/23/cs131-filter-svd/#more" rel="contents">
@@ -1658,7 +1667,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

@@ -94,6 +94,7 @@ scale space上的极值">
 <meta property="og:description" content="SIFT(尺度不变特征变换，Scale Invariant Feature Transform),最早由Lowe提出，目的是为了解决目标检测（Object Detection）问题中提取图像特征的问题。从名字可以看出，SIFT的优势就在于对尺度变换的不变性，同时SIFT还满足平移变换和旋转变换下的不变性，并对光照变化和3D视角变换有一定的不变性。它的主要步骤如下：
 
 scale space上的极值">
+<meta property="og:image" content="https://xmfbit.github.io/img/sift_picture.jpg">
 <meta property="og:image" content="https://xmfbit.github.io/img/harris_non_scale_constant.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/patch_average_intensity_scale_constant.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/sift_dog.png">
@@ -101,13 +102,13 @@ scale space上的极值">
 <meta property="og:image" content="https://xmfbit.github.io/img/sift_dominant_orientation.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/sift_experiment_1.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/sift_experiment_2.png">
-<meta property="og:updated_time" content="2017-02-08T10:00:21.000Z">
+<meta property="og:updated_time" content="2017-02-10T08:36:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS131-描述图像的特征(SIFT)">
 <meta name="twitter:description" content="SIFT(尺度不变特征变换，Scale Invariant Feature Transform),最早由Lowe提出，目的是为了解决目标检测（Object Detection）问题中提取图像特征的问题。从名字可以看出，SIFT的优势就在于对尺度变换的不变性，同时SIFT还满足平移变换和旋转变换下的不变性，并对光照变化和3D视角变换有一定的不变性。它的主要步骤如下：
 
 scale space上的极值">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/harris_non_scale_constant.png">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/sift_picture.jpg">
 
 
 
@@ -378,6 +379,7 @@ scale space上的极值">
 <li>确定方向。通过计算图像的梯度图，确定key point的方向，下一步的feature operation就是在这个方向，scale和position上进行的。</li>
 <li>确定key point的描述子。使用图像的局部梯度作为key point的描述子，最终构成SIFT特征向量。</li>
 </ul>
+<p><img src="/img/sift_picture.jpg" alt="SIFT图示"></p>
 <a id="more"></a>
 <h2 id="SIFT介绍"><a href="#SIFT介绍" class="headerlink" title="SIFT介绍"></a>SIFT介绍</h2><p>上讲中介绍的Harris角点方法计算简便，并具有平移不变性和旋转不变性。特征$f$对某种变换$\mathcal{T}$具有不变性，是指在经过变换后原特征保持不变，也就是$f(I) = f(\mathcal{T}(I))$。但是Harris角点不具有尺度变换不变性，如下图所示。当图像被放大后，原图的角点被判定为了边缘点。<br><img src="/img/harris_non_scale_constant.png" alt="harris的尺度变换不满足尺度不变性"></p>
 <p>而我们想要得到一种对尺度变换保持不变性的特征计算方法。例如图像patch的像素平均亮度，如下图所示。region size缩小为原始的一半后，亮度直方图的形状不变，即平均亮度不变。<br><img src="/img/patch_average_intensity_scale_constant.png" alt="平均亮度满足尺度变化呢不变性"></p>
@@ -572,7 +574,7 @@ scale space上的极值">
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>

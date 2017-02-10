@@ -96,7 +96,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/corner_type_1.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/corner_judge.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/corner_judge_2.png">
-<meta property="og:updated_time" content="2017-02-08T10:00:21.000Z">
+<meta property="og:updated_time" content="2017-02-10T08:39:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS131-描述图像的特征(Harris 角点)">
 <meta name="twitter:description" content="feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，">
@@ -364,8 +364,10 @@
       
 
       
-        <p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。<br><img src="/img/image_matching_hard.png" alt="image matching example"></p>
-<p>那么，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述，并介绍Harris角点检测方法。在下一节中介绍SIFT特征。<br><a id="more"></a></p>
+        <p>feature是对图像的描述。比如，图像整体灰度值的均值和方差就可以作为feature。如果我们想在一副图像中检测足球时，可以使用滑动窗方法，逐一检查窗口内的灰度值分布是否和一张给定的典型黑白格子足球相似。可想而知，这种方法的性能一定让人捉急。而在image matching问题中，常常需要将不同视角的同一目标物进行matching，进而计算相机转过的角度。这在SLAM问题中很有意义。如下图所示，同一处景观，在不同摄影师的镜头下，不仅视角不同，而且明暗变化也有很多差别，右侧的图暖色调更浓。这也告诉我们，上面提到的只使用全局图像灰度值来做feature的做法有多么不靠谱。</p>
+<p>那么，让我们脱离全局特征，转而将注意力集中在局部特征上。这是因为使用局部特征能够更好地处理图像中的遮挡、变形等情况，而且我们的研究对象常常是图像中的部分区域而不是图像整体。更特殊地，在这一讲中，我们主要探究key point作为local feature的描述，并介绍Harris角点检测方法。在下一节中介绍SIFT特征。</p>
+<p><img src="/img/image_matching_hard.png" alt="image matching example"></p>
+<a id="more"></a>
 <h2 id="Harris角点"><a href="#Harris角点" class="headerlink" title="Harris角点"></a>Harris角点</h2><p>角点，即corner，和edge类似，区别在于其在两个方向上都有较为剧烈的灰度变化（而edge只在某一个方向上灰度值变化剧烈）。如图所示。<br><img src="/img/what_is_corner.png" alt="what is corner"></p>
 <p><a href="http://www.bmva.org/bmvc/1988/avc-88-023.pdf" target="_blank" rel="external">Harris角点</a>得名于其发明者Harris，是一种常见的角点检测方法。<br>给定观察窗口大小，计算平移后窗口内各个像素差值的加权平方和，如下式。</p>
 <script type="math/tex; mode=display">E(u,v) = \sum_x\sum_yw(x,y)[I(x+u, y+v) - I(x,y)]^2</script><p>其中，窗口加权函数$w$可以取做门限函数或gaussian函数。如图所示。<br><img src="/img/corner_window_fun.png" alt="window function"></p>
@@ -534,7 +536,7 @@
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
