@@ -100,7 +100,8 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/kmeans_scaling_up.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/kmeans_data_demo.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/kmeans_success.png">
-<meta property="og:updated_time" content="2017-02-11T07:31:54.000Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/kmeans_bigger_demo.png">
+<meta property="og:updated_time" content="2017-02-11T07:55:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS131-KMeans聚类">
 <meta name="twitter:description" content="K-Means聚类是把n个点（可以是样本的一次观察或一个实例）划分到$k$个聚类中，使得每个点都属于离他最近的均值（此即聚类中心）对应的聚类，以之作为聚类的标准，满足最小化聚类中心和属于该中心的数据点之间的平方距离和（Sum of Square Distance，SSD）。
@@ -419,6 +420,7 @@
 <p>在demo中，随机选取初始化的聚类中心，重复进行$5$次实验。下图是产生的原始数据的散点图。用不同的颜色标明了cluster。<br><img src="/img/kmeans_data_demo.png" alt="K-Means聚类"></p>
 <p>下图是某次的实验结果，其中菱形和它们之间的连线指示了聚类中心的变化。注意，颜色只是用来区别不同的cluster，和上图并没有对应关系。可以看到，初始化时绿色标注的cluster的中心（也即是上图中的红色cluster）虽然偏离了很远，但是在迭代过程中也能实现纠正。</p>
 <p><img src="/img/kmeans_success.png" alt="K-Means聚类"></p>
+<p>再换个大点的数据集来做，效果貌似还不错~<br><img src="/img/kmeans_bigger_demo.png" alt="大一些"></p>
 <h2 id="PS"><a href="#PS" class="headerlink" title="PS"></a>PS</h2><p>这里插一句与本文内容完全无关的一个tip：在Markdown中使用LaTex时，如果在内联形式（也就是行内使用两个美元符号插入公式）时，如果有多个下划线，那么Markdown有时会将下划线之间的部分认为是自己的斜体标记，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$c_&#123;i&#125;^\ast$ XXX $\delta_&#123;ij&#125;^\ast$</div></pre></td></tr></table></figure></p>
 <p>它的显示效果为$c<em>{i}^\ast$ XXX $\delta</em>{ij}^\ast$。</p>
 <p>这时候，只需在下划线前加入反斜线进行转义即可（虽然略显麻烦）。如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$c\_&#123;i&#125;^\ast$ XXX $\delta\_&#123;ij&#125;^\ast$</div></pre></td></tr></table></figure></p>
