@@ -84,36 +84,24 @@
 
 
 
-<meta name="description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。">
+<meta name="description" content="MeanShift最初由Fukunaga和Hostetler在1975年提出，但是一直到2000左右这篇PAMI的论文Mean Shift: A Robust Approach Toward Feature Space Analysis，将它的原理和收敛性等重新整理阐述，并应用于计算机视觉和图像处理领域之后，才逐渐为人熟知。
+MeanShift是一种用来寻找特征空间内模态)的方法。所谓模态（Mod">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CS131-立体视觉基础">
-<meta property="og:url" content="https://xmfbit.github.io/2017/02/02/cs131-camera/index.html">
+<meta property="og:title" content="CS131-MeanShift">
+<meta property="og:url" content="https://xmfbit.github.io/2017/02/12/cs131-mean-shift/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。">
-<meta property="og:image" content="https://xmfbit.github.io/img/camera_geometry_application.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/projective_geometry_property_1.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/projective_geometry_property_2.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/pinhole_camera_model.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/qicizuobiao.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/qicizuobiao_transform.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/camera_skew.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/case_1_m.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/case_2_m.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/case_3_m.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/case_4_m.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/camera_translation_rotation.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/case_m_5.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/rotation_matrix.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/case_6_m.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/generic_projection_matrix.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/camera_model_things_to_remember.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/epipolar_fig.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/epipolar_constraint_1.png">
-<meta property="og:updated_time" content="2017-02-11T07:58:36.000Z">
+<meta property="og:description" content="MeanShift最初由Fukunaga和Hostetler在1975年提出，但是一直到2000左右这篇PAMI的论文Mean Shift: A Robust Approach Toward Feature Space Analysis，将它的原理和收敛性等重新整理阐述，并应用于计算机视觉和图像处理领域之后，才逐渐为人熟知。
+MeanShift是一种用来寻找特征空间内模态)的方法。所谓模态（Mod">
+<meta property="og:image" content="https://xmfbit.github.io/img/meanshift_basics.jpg">
+<meta property="og:image" content="https://xmfbit.github.io/img/meanshift_kernel_function.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/meanshift_gradient_of_density.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/meanshift_simple_demo.png">
+<meta property="og:updated_time" content="2017-02-13T05:14:40.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="CS131-立体视觉基础">
-<meta name="twitter:description" content="数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/camera_geometry_application.png">
+<meta name="twitter:title" content="CS131-MeanShift">
+<meta name="twitter:description" content="MeanShift最初由Fukunaga和Hostetler在1975年提出，但是一直到2000左右这篇PAMI的论文Mean Shift: A Robust Approach Toward Feature Space Analysis，将它的原理和收敛性等重新整理阐述，并应用于计算机视觉和图像处理领域之后，才逐渐为人熟知。
+MeanShift是一种用来寻找特征空间内模态)的方法。所谓模态（Mod">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/meanshift_basics.jpg">
 
 
 
@@ -141,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2017/02/02/cs131-camera/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/02/12/cs131-mean-shift/"/>
 
 
 
 
 
-  <title> CS131-立体视觉基础 | 来呀，快活呀~ </title>
+  <title> CS131-MeanShift | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -292,7 +280,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/02/02/cs131-camera/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/02/12/cs131-mean-shift/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -316,7 +304,7 @@
             
             
               
-                CS131-立体视觉基础
+                CS131-MeanShift
               
             
           </h1>
@@ -331,8 +319,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-02T20:38:55+08:00">
-                2017-02-02
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-12T22:28:15+08:00">
+                2017-02-12
               </time>
             
 
@@ -350,8 +338,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/02/02/cs131-camera/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/02/cs131-camera/" itemprop="commentCount"></span>
+                <a href="/2017/02/12/cs131-mean-shift/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/02/12/cs131-mean-shift/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -377,58 +365,21 @@
       
 
       
-        <p>数字图像是现实世界的物体通过光学成像设备在感光材料上的投影。在3D到2D的转换过程中，深度信息丢失。如何从单幅或者多幅图像中恢复出有用的3D信息，需要使用立体视觉的知识进行分析。如下图所示。这篇博客对课程讲义中立体视觉部分做一整理，分别介绍了针孔相机模型和对极集合的基础知识。<br><img src="/img/camera_geometry_application.png" alt="立体视觉应用"><br><a id="more"></a></p>
-<h2 id="针孔相机模型（Pinhole-Camera）"><a href="#针孔相机模型（Pinhole-Camera）" class="headerlink" title="针孔相机模型（Pinhole Camera）"></a>针孔相机模型（Pinhole Camera）</h2><p>针孔相机是简化的相机模型。光线沿直线传播。物体反射的光线，通过针孔，在成像面形成倒立的影像。针孔与成像面的距离，称为焦距。一般而言，针孔越小，影像越清晰，但针孔太小，会导致衍射，反而令影像模糊。</p>
-<h3 id="投影几何的重要性质"><a href="#投影几何的重要性质" class="headerlink" title="投影几何的重要性质"></a>投影几何的重要性质</h3><p>在对针孔相机详细说明之前，首先介绍投影几何（Projective Geometry）的几条性质。</p>
-<p>在投影变换前后，长度和角度信息丢失，但直线仍然保持是直线。如下图所示。原来垂直和平行的台球桌面的边不再保持原有的角度和相对长度，但是仍然是直线。<br><img src="/img/projective_geometry_property_1.png" alt="性质1"></p>
-<p>另一方面，虽然3D世界中的平行线在投影变换后相交（我们将交点称为Vanishing point），但是3D世界中互相平行的线，在2D平面上的Vanishing point为同一点。而所有平行线的Vanishing point又在同一条直线上。如下图所示（竖直的绿色平行线在投影变换后仍然保持平行，实际上并不想交，但我们这里认为其交于无穷远的某点）。<br><img src="/img/projective_geometry_property_2.png" alt="性质2"></p>
-<h3 id="针孔相机模型"><a href="#针孔相机模型" class="headerlink" title="针孔相机模型"></a>针孔相机模型</h3><p>如下图所示，为针孔相机成像原理示意图。外部世界的一点$P$发出（或反射）的光线，经过小孔$O$，成像在在像平面$\Pi^\prime$的点$P^\prime$处。通过简单的相似三角形知识，可以得到图上的关系式。<br><img src="/img/pinhole_camera_model.png" alt="针孔相机模型示意图"></p>
-<p>由上图可以知道，3D空间的一点$P$与成像平面上的对应点$P^\prime$坐标之间的数量关系为：</p>
-<script type="math/tex; mode=display">\left\{\begin{matrix}
-x^\prime = fx/z \\
-y^\prime = fy/z
-\end{matrix}\right.</script><p>可是，由于变量$z$位于分母的位置，也就是说如果直接写成变换矩阵的话，这个矩阵是和变量$z$有关的，我们不想这样，而是想得到一个完全由相机本身确定的变换矩阵。所以，我们借鉴齐次矩阵的思想，将原来的点增加一个维度，转换为齐次坐标。如下图的两个例子所示。<br><img src="/img/qicizuobiao.png" alt="齐次坐标"></p>
-<p>这样，我们可以将3D和2D之间的变换写成下面的形式。当实际计算的时候，我们首先将3D点转换为4维向量（在末尾补1），然后左乘变换矩阵。最后将得到的结果化为末尾元素为1的形式，这样，前面两个元素就代表了变换后2D点的坐标。这样做，使得变换矩阵$M$完全由相机参数（即焦距$f$）决定。<br><img src="/img/qicizuobiao_transform.png" alt=""></p>
-<p>上面的式子只是理想情况下的相机模型，成立的假设条件较强，主要有以下几点假设：</p>
-<ol>
-<li>内假设（和相机本身有关）<ul>
-<li>不同方向上焦距相同；</li>
-<li>光学中心在相平面的坐标原点$(0, 0)$</li>
-<li>没有倾斜（no skew）</li>
-</ul>
-</li>
-<li>外假设（和相机位姿有关，和相机本身参数无关）<ul>
-<li>相机没有旋转（坐标轴与世界坐标系方向重合）</li>
-<li>相机没有平移（相机中心与世界坐标系中心重合）</li>
-</ul>
-</li>
-</ol>
-<p>其中，no skew情形我也不知道中文应该如何翻译。这种情况如图所示，由于剪切变形，成像平面的坐标轴并不是严格正交，使得两个轴之间实际存在一个很小的夹角。<br><img src="/img/camera_skew.png" alt="what is &quot;skew&quot;?"></p>
-<p>下面，按照slide的顺序逐渐将上述假设移去，分析变换矩阵$M$应该如何修正。</p>
-<h4 id="理想情况"><a href="#理想情况" class="headerlink" title="理想情况"></a>理想情况</h4><p>理想情况以上假设全部满足，矩阵$M$如下所示。<br><img src="/img/case_1_m.png" alt="case 1: M"></p>
-<h4 id="光学中心不在像平面的坐标原点"><a href="#光学中心不在像平面的坐标原点" class="headerlink" title="光学中心不在像平面的坐标原点"></a>光学中心不在像平面的坐标原点</h4><p>假设光学中心位于像平面内坐标为$(u_0, v_0)$的位置。则需要在理想情况计算的坐标基础上加上这个偏移量。所以，矩阵$M$被修正为：<br><img src="/img/case_2_m.png" alt="case 2: M"></p>
-<h4 id="像素非正方形"><a href="#像素非正方形" class="headerlink" title="像素非正方形"></a>像素非正方形</h4><p>由于透镜在$x$和$y$方向上的焦距不同，使得两个方向上的比例因子不同，不能再使用同一个$f$计算。修正如下：<br><img src="/img/case_3_m.png" alt="case 3: M"></p>
-<h4 id="no-skew"><a href="#no-skew" class="headerlink" title="no skew"></a>no skew</h4><p>这时候$x$方向上其实有$y$轴坐标的分量，所以修正如下：<br><img src="/img/case_4_m.png" alt="case 4: M"></p>
-<h4 id="相机的旋转和平移"><a href="#相机的旋转和平移" class="headerlink" title="相机的旋转和平移"></a>相机的旋转和平移</h4><p>相机外部姿态很可能经过了旋转和平移，从而不与世界坐标系完全重合。如图所示。<br><img src="/img/camera_translation_rotation.png" alt="相机旋转和平移"></p>
-<p>所以我们需要先对世界坐标系内的3D点做一个齐次变换，将其变换为一个中间坐标系，这个中间坐标系和相机坐标系是重合的。也就是我们的变换矩阵应该是下面这个形式的，其中，$H$是表征旋转和平移的齐次矩阵，$H\in \mathbb{R}^{3\times 4}$。</p>
-<script type="math/tex; mode=display">P^\prime = MHP</script><p>首先考虑较为简单的平移。所做的修正如下所示，也就是将原来的$\mathbb{0}$矩阵变为了一个平移向量。<br><img src="/img/case_m_5.png" alt="case 5: M"></p>
-<p>进一步考虑旋转时，我们将旋转分解为绕三个坐标轴的三次旋转，单次旋转矩阵如下所示：<br><img src="/img/rotation_matrix.png" alt="绕单轴的旋转矩阵"></p>
-<p>将它们按照旋转顺序左乘起来，可以得到修正后的变换形式如下：<br><img src="/img/case_6_m.png" alt="case 6: M"></p>
-<h4 id="最终形式"><a href="#最终形式" class="headerlink" title="最终形式"></a>最终形式</h4><p>综上所示，变换矩阵的最终形式为：<br><img src="/img/generic_projection_matrix.png" alt="最终的投影变换矩阵"></p>
-<p>其中，内参数矩阵中有5个自由度，外参数矩阵中有6个自由度（3平移，3旋转）。</p>
-<p>上面的内容总结起来，如下图所示。<br><img src="/img/camera_model_things_to_remember.png" alt="things to remember"></p>
-<h2 id="对极几何"><a href="#对极几何" class="headerlink" title="对极几何"></a>对极几何</h2><h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><p>如下图所示，给出了对极几何中的几个基本概念。两个相机的中心分别位于$O$点和$O^{‘}$点，被观察物体位于$P$点。</p>
-<p><img src="/img/epipolar_fig.png" alt="对极几何概念图示"></p>
-<ul>
-<li>极点：$e$和$e^\prime$点分别是$OO^\prime$连线与两个成像平面的交点，也是相机中心在另一台相机成像平面上对应的像。</li>
-<li>极平面：点$O$，$O^\prime$，$P$点共同确定的平面（灰色）</li>
-<li>极线：极平面与两个成像平面的交线，即$pe$和$p^\prime e^\prime$（蓝色）</li>
-<li>基线：两个相机中心的连线（黄色）</li>
-</ul>
-<h3 id="极线约束"><a href="#极线约束" class="headerlink" title="极线约束"></a>极线约束</h3><p>从上图可以看出，如果两台相机已经给定，那么给定物体点在左边相机像平面内的成像点，则右边相机成像平面内的点被唯一确定。如何能够找到这个对应点呢？或者换种说法，在对极几何中，如何描述这种不同相机成像点的约束关系呢？</p>
-<p>如下图所示，从上面的讨论我们已经知道，物点$P$在左右两个相机成像平面的坐标可以使用由相机内参数矩阵和外参数矩阵确定的齐次变换矩阵得到（下图在标注时，右侧相机的点应被标注为$p^\prime$）。为了简化问题，在下面的讨论时，我们假定相机都是理想的针孔相机模型，也就是说，变换矩阵只和外参数矩阵（也即是相机的位姿决定）。再做简化，认为世界坐标系与左侧相机的相机坐标系重合。那么，就得到了图上所示的变换矩阵$M$和$M^\prime$。其中，$R$是左右两个相机之间的旋转矩阵，$T$是$OO^\prime$有向线段，表明相机中心的位移。<br><img src="/img/epipolar_constraint_1.png" alt="极线约束1"></p>
-<p>（下面的推导参考了<a href="http://www.cnblogs.com/gemstone/articles/2294551.html" target="_blank" rel="external">博客：计算机视觉基础4——对极几何</a>）。在下面的推导中，我们使用$p^\prime$表示在相机$O^\prime$下的向量$O\prime P$，符号$p$同理。那么，有如下关系成立：<br>$R(p-T) = p^\prime$</p>
-
+        <p><a href="https://en.wikipedia.org/wiki/Mean_shift" target="_blank" rel="external">MeanShift</a>最初由Fukunaga和Hostetler在1975年提出，但是一直到2000左右这篇PAMI的论文<a href="http://courses.csail.mit.edu/6.869/handouts/PAMIMeanshift.pdf" target="_blank" rel="external">Mean Shift: A Robust Approach Toward Feature Space Analysis</a>，将它的原理和收敛性等重新整理阐述，并应用于计算机视觉和图像处理领域之后，才逐渐为人熟知。</p>
+<p>MeanShift是一种用来寻找特征空间内<a href="https://en.wikipedia.org/wiki/Mode_(statistics" target="_blank" rel="external">模态</a>)的方法。所谓模态（Mode），就是指数据集中最经常出现的数据。例如，连续随机变量概率密度函数的模态就是指函数的极大值。从概率的角度看，我们可以认为数据集（或者特征空间）内的数据点都是从某个概率分布中随机抽取出来的。这样，数据点越密集的地方就说明这里越有可能是密度函数的极大值。MeanShift就是一种能够从离散的抽样点中估计密度函数局部极大值的方法。<br><img src="/img/meanshift_basics.jpg" alt="MeanShift"></p>
+<h2 id="核密度估计"><a href="#核密度估计" class="headerlink" title="核密度估计"></a>核密度估计</h2><p>上面提到的PAMI论文篇幅较长，且数学名词较多，我不是很理解。下面的说明过程主要参考了<a href="https://saravananthirumuruganathan.wordpress.com/2010/04/01/introduction-to-mean-shift-algorithm/" target="_blank" rel="external">这篇博客</a>和<a href="https://saravananthirumuruganathan.wordpress.com/2010/04/01/introduction-to-mean-shift-algorithm/" target="_blank" rel="external">这篇讲义</a>。</p>
+<p>注意下面的推导中$x$是一个$d$维的向量。为了书写简单，没有写成向量的加粗形式。首先，先介绍核函数（Kernel Function）的概念。如果某个$\mathbb{R}^n\rightarrow \mathbb{R}$的函数满足以下条件，就能将其作为核函数。<br><img src="/img/meanshift_kernel_function.png" alt="kernel"></p>
+<p>比如高斯核函数：</p>
+<script type="math/tex; mode=display">K(x) = \frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{x^2}{2\sigma^2})$$。
+核密度估计是一种用来估计随机变量密度函数的非参数化方法。给定核函数$K$，带宽（bandwidth）参数$h$（就是指观察窗口的大小）。那么密度函数可以使用核函数进行估计，如下面的形式所示。其中，$n$是窗口内的数据点的数量。
+$$f(x) = \frac{1}{nh^d}\sum_{i=1}^{n}K(\frac{x-x_i}{h})</script><p>如果核函数是放射形状且对称的（例如高斯核函数），那么$K(x)$可以写成如下的形式，其中$c_{k,d}$是为了使得核函数满足积分为$1$的正则系数。</p>
+<script type="math/tex; mode=display">K(x) = c_{k,d}k(\Arrowvert x\Arrowvert ^2)</script><h2 id="mean-shift向量"><a href="#mean-shift向量" class="headerlink" title="mean shift向量"></a>mean shift向量</h2><p>那么，原来密度函数的极值点就是使得$f(x)$梯度为$0$的点。求取$f(x)$的梯度，可以得到下式。其中$g(s) = -k^\prime(s)$。<br><img src="/img/meanshift_gradient_of_density.png" alt="密度函数的梯度"></p>
+<p>观察后可以发现，乘积第一项连带前面的系数，相当于是使用核函数$G(x) = c_{k,d}g(\Arrowvert x\Arrowvert^2)$得到的点$x$处的密度函数估计值（差了常数倍因子）（所以对于给定的某一点$x = x_0$，这一项是定值），后面一项拿出来，定义为$m_h(x)$，称为mean shift向量。</p>
+<script type="math/tex; mode=display">m_h(x) = \frac{\sum_{i=1}^{n}x_i g(\Arrowvert \frac{x-x_i}{h} \Arrowvert^2)}{\sum_{i=1}^{n}g(\Arrowvert \frac{x-x_i}{h} \Arrowvert^2)}-x</script><p>所以说，$m_h(x)$的指向和$f(x)$的梯度是相同的。另外，从感性的角度出发。$m_h(x)$中的第一项（分式的那一大坨），相当于是在计算$x$周围窗口大小为$h$的这个领域的均值（$g(s)$是加权的系数）。所以$m_h(x)$实际上指示了局部均值和当前点$x$之间的位移。我们想要找到密度函数的局部极大值，不就应该让局部均值向着点密集的方向移动吗？</p>
+<h2 id="算法流程"><a href="#算法流程" class="headerlink" title="算法流程"></a>算法流程</h2><p>所以，在给定初始位置$x_0$后，我们首先计算此点处的$m_h$，之后，将$x$沿着$m_h$移动即可。下面是一个简单的例子。数据点服从二维高斯分布，均值为$[1, 2]$。其中，红色菱形指示了迭代过程中mean shift的移动。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div></pre></td><td class="code"><pre><div class="line"><span class="comment">%% generate data</span></div><div class="line">mu = [<span class="number">1</span> <span class="number">2</span>];</div><div class="line">Sigma = [<span class="number">1</span> <span class="number">0</span>; <span class="number">0</span> <span class="number">2</span>]; R = chol(Sigma);</div><div class="line">N = <span class="number">250</span>;</div><div class="line">data = <span class="built_in">repmat</span>(mu, N, <span class="number">1</span>) + <span class="built_in">randn</span>(N, <span class="number">2</span>)*R;</div><div class="line">figure</div><div class="line">hold on</div><div class="line">scatter(data(:, <span class="number">1</span>), data(:, <span class="number">2</span>), <span class="number">50</span>, <span class="string">'filled'</span>);</div><div class="line"><span class="comment">%% meanshift</span></div><div class="line">mu0 = <span class="built_in">rand</span>(<span class="number">1</span>,<span class="number">2</span>) * <span class="number">5</span>;</div><div class="line">mu = mean_shift(mu0, <span class="number">10</span>, data);</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">out</span> = <span class="title">gaussian_kernel</span><span class="params">(x, sigma)</span></span></div><div class="line"><span class="comment">% gauss kernel, g(x) = \exp(-x^2/2\sigma^2)</span></div><div class="line">out = <span class="built_in">exp</span>(-x.*x/(<span class="number">2</span>*sigma*sigma));</div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">mu</span> = <span class="title">mean_shift</span><span class="params">(mu0, h, data)</span></span></div><div class="line"><span class="comment">% implementation of meanshift algorithm</span></div><div class="line"><span class="comment">% mu_&#123;k+1&#125; = meanshift(mu_&#123;k&#125;) + mu_&#123;k&#125; = \frac&#123;\sum_i=1^n xg&#125;&#123;\sum_i=1^n g&#125;</span></div><div class="line">mu = mu0;</div><div class="line">sigma = <span class="number">1</span>;    <span class="comment">% parameter for gaussian kernel function</span></div><div class="line"><span class="keyword">for</span> iter = <span class="number">1</span>:<span class="number">20</span>    </div><div class="line">    fprintf(<span class="string">'iter = %d, mu = [%f, %f]\n'</span>, iter, mu(<span class="number">1</span>), mu(<span class="number">2</span>));</div><div class="line">    scatter(mu(<span class="number">1</span>), mu(<span class="number">2</span>), <span class="number">50</span>, [<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>], <span class="string">'d'</span>, <span class="string">'filled'</span>);</div><div class="line">    offset = <span class="built_in">bsxfun</span>(@minus, mu, data);    <span class="comment">% offset = x-x_i</span></div><div class="line">    dis = sum(offset.^<span class="number">2</span>, <span class="number">2</span>);              <span class="comment">% dis = ||x-x_i||^2</span></div><div class="line">    x = data(dis &lt; h, :);                 <span class="comment">% neighborhood with bandwidth = h</span></div><div class="line">    g = gaussian_kernel(offset(dis &lt; h), sigma);</div><div class="line">    xg = x.*g;</div><div class="line">    mu_prev = mu;</div><div class="line">    mu = sum(xg, <span class="number">1</span>) / sum(g, <span class="number">1</span>);</div><div class="line">    <span class="keyword">if</span> norm(mu_prev - mu, <span class="number">2</span>) &lt; <span class="number">1E-2</span></div><div class="line">        <span class="keyword">break</span>;</div><div class="line">    <span class="keyword">end</span></div><div class="line">    plot([mu_prev(<span class="number">1</span>) mu(<span class="number">1</span>)], [mu_prev(<span class="number">2</span>), mu(<span class="number">2</span>)], <span class="string">'b-.'</span>, <span class="string">'linewidth'</span>, <span class="number">2</span>);</div><div class="line"><span class="keyword">end</span></div><div class="line">scatter(mu(<span class="number">1</span>), mu(<span class="number">2</span>), <span class="number">50</span>, [<span class="number">1</span>,<span class="number">0</span>,<span class="number">0</span>], <span class="string">'d'</span>, <span class="string">'filled'</span>);</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<p><img src="/img/meanshift_simple_demo.png" alt=""></p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="平滑滤波"><a href="#平滑滤波" class="headerlink" title="平滑滤波"></a>平滑滤波</h3><h3 id="图像分割"><a href="#图像分割" class="headerlink" title="图像分割"></a>图像分割</h3>
       
     </div>
 
@@ -462,8 +413,8 @@ y^\prime = fy/z
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/30/cs131-sift/" rel="next" title="CS131-描述图像的特征(SIFT)">
-                <i class="fa fa-chevron-left"></i> CS131-描述图像的特征(SIFT)
+              <a href="/2017/02/09/build-caffe-ubuntu/" rel="next" title="在Ubuntu14.04构建Caffe">
+                <i class="fa fa-chevron-left"></i> 在Ubuntu14.04构建Caffe
               </a>
             
           </div>
@@ -471,10 +422,6 @@ y^\prime = fy/z
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/04/yolo-paper/" rel="prev" title="YOLO 论文阅读">
-                YOLO 论文阅读 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -523,8 +470,8 @@ y^\prime = fy/z
           
   <div class="comments" id="comments">
     
-      <div class="ds-thread" data-thread-key="2017/02/02/cs131-camera/"
-           data-title="CS131-立体视觉基础" data-url="https://xmfbit.github.io/2017/02/02/cs131-camera/" data-author-key="1">
+      <div class="ds-thread" data-thread-key="2017/02/12/cs131-mean-shift/"
+           data-title="CS131-MeanShift" data-url="https://xmfbit.github.io/2017/02/12/cs131-mean-shift/" data-author-key="1">
       </div>
     
   </div>
@@ -617,7 +564,7 @@ y^\prime = fy/z
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#针孔相机模型（Pinhole-Camera）"><span class="nav-number">1.</span> <span class="nav-text">针孔相机模型（Pinhole Camera）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#投影几何的重要性质"><span class="nav-number">1.1.</span> <span class="nav-text">投影几何的重要性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#针孔相机模型"><span class="nav-number">1.2.</span> <span class="nav-text">针孔相机模型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#理想情况"><span class="nav-number">1.2.1.</span> <span class="nav-text">理想情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#光学中心不在像平面的坐标原点"><span class="nav-number">1.2.2.</span> <span class="nav-text">光学中心不在像平面的坐标原点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#像素非正方形"><span class="nav-number">1.2.3.</span> <span class="nav-text">像素非正方形</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#no-skew"><span class="nav-number">1.2.4.</span> <span class="nav-text">no skew</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#相机的旋转和平移"><span class="nav-number">1.2.5.</span> <span class="nav-text">相机的旋转和平移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#最终形式"><span class="nav-number">1.2.6.</span> <span class="nav-text">最终形式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#对极几何"><span class="nav-number">2.</span> <span class="nav-text">对极几何</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基础概念"><span class="nav-number">2.1.</span> <span class="nav-text">基础概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#极线约束"><span class="nav-number">2.2.</span> <span class="nav-text">极线约束</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#核密度估计"><span class="nav-number">1.</span> <span class="nav-text">核密度估计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mean-shift向量"><span class="nav-number">2.</span> <span class="nav-text">mean shift向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法流程"><span class="nav-number">3.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#平滑滤波"><span class="nav-number">4.1.</span> <span class="nav-text">平滑滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图像分割"><span class="nav-number">4.2.</span> <span class="nav-text">图像分割</span></a></li></ol></li></ol></div>
             
 
           </div>
