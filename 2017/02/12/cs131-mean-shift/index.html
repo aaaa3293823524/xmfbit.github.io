@@ -96,7 +96,7 @@ MeanShift是一种用来寻找特征空间内模态)的方法。所谓模态（M
 <meta property="og:image" content="https://xmfbit.github.io/img/meanshift_kernel_function.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/meanshift_gradient_of_density.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/meanshift_simple_demo.png">
-<meta property="og:updated_time" content="2017-02-16T04:38:52.000Z">
+<meta property="og:updated_time" content="2017-02-22T07:34:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS131-MeanShift">
 <meta name="twitter:description" content="MeanShift最初由Fukunaga和Hostetler在1975年提出，但是一直到2000左右这篇PAMI的论文Mean Shift: A Robust Approach Toward Feature Space Analysis，将它的原理和收敛性等重新整理阐述，并应用于计算机视觉和图像处理领域之后，才逐渐为人熟知。
@@ -383,7 +383,7 @@ $$f(x) = \frac{1}{nh^d}\sum_{i=1}^{n}K(\frac{x-x_i}{h})</script><p>如果核函�
 <p><img src="/img/meanshift_simple_demo.png" alt=""></p>
 <p>同时，我也试验了其他的kernel函数，如神似logistaic形式，效果也是相似的。</p>
 <script type="math/tex; mode=display">K(x) = \frac{1}{e^x+e^{-x}+2}</script><figure class="highlight matlab"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">out</span> = <span class="title">logistic_kernel</span><span class="params">(x)</span></span></div><div class="line">out = <span class="number">1.</span>/(<span class="built_in">exp</span>(x) + <span class="built_in">exp</span>(-x) + <span class="number">2</span>);</div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
-<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><h3 id="平滑滤波"><a href="#平滑滤波" class="headerlink" title="平滑滤波"></a>平滑滤波</h3><h3 id="图像分割"><a href="#图像分割" class="headerlink" title="图像分割"></a>图像分割</h3>
+
       
     </div>
 
@@ -426,6 +426,10 @@ $$f(x) = \frac{1}{nh^d}\sum_{i=1}^{n}K(\frac{x-x_i}{h})</script><p>如果核函�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/02/22/warpctc-caffe/" rel="prev" title="在Caffe中使用Baidu warpctc实现CTC Loss的计算">
+                在Caffe中使用Baidu warpctc实现CTC Loss的计算 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -522,7 +526,7 @@ $$f(x) = \frac{1}{nh^d}\sum_{i=1}^{n}K(\frac{x-x_i}{h})</script><p>如果核函�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">16</span>
+                <span class="site-state-item-count">17</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -568,7 +572,7 @@ $$f(x) = \frac{1}{nh^d}\sum_{i=1}^{n}K(\frac{x-x_i}{h})</script><p>如果核函�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#核密度估计"><span class="nav-number">1.</span> <span class="nav-text">核密度估计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mean-shift向量"><span class="nav-number">2.</span> <span class="nav-text">mean shift向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法流程"><span class="nav-number">3.</span> <span class="nav-text">算法流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">4.</span> <span class="nav-text">应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#平滑滤波"><span class="nav-number">4.1.</span> <span class="nav-text">平滑滤波</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#图像分割"><span class="nav-number">4.2.</span> <span class="nav-text">图像分割</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#核密度估计"><span class="nav-number">1.</span> <span class="nav-text">核密度估计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mean-shift向量"><span class="nav-number">2.</span> <span class="nav-text">mean shift向量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法流程"><span class="nav-number">3.</span> <span class="nav-text">算法流程</span></a></li></ol></div>
             
 
           </div>
