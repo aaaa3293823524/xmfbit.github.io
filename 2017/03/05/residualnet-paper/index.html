@@ -95,7 +95,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/residualnet_unit.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/residualnet_comparison_with_plainnet.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/residualnet_bottleneck_unit.png">
-<meta property="og:updated_time" content="2017-03-05T14:27:08.000Z">
+<meta property="og:updated_time" content="2017-03-05T14:35:42.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Residual Net论文阅读 - Deep Residual Learning for Image Recongnition">
 <meta name="twitter:description" content="Residuel Net是MSRA HeKaiming组的作品，斩获了ImageNet挑战赛的所有项目的第一，并荣获CVPR的best paper，成为state of the ar的网络结构。这篇文章记录了阅读最初论文“Deep Residual Learning for Image Recongnition”的重点。">
@@ -387,9 +387,9 @@
 <p>应用这种残差结构就可以很容易地搭建深层网络了。使用这种技术，作者构建了多达$1000$多层的网络，同时在多项比赛中狂揽桂冠，在实践中证明了它的威力。</p>
 <h2 id="残差学习"><a href="#残差学习" class="headerlink" title="残差学习"></a>残差学习</h2><p>从上面的介绍看出，使用残差结构后，网络不再直接学习最终的映射$\mathcal{H}$，而是这个映射和输入的残差$\mathcal{F}$。这里叫做残差学习（Residual Learning）。</p>
 <p>神经网络可以近似任意复杂的函数（作者指出此处存疑，还是作为假设）所以，它不仅可以逼近$\mathcal{H}$，当然也可以逼近残差。这两者虽然都可以通过网络近似，但是训练难度是不同的。</p>
-<p>上面途中的残差单元结构可以写成下面的式子，其中的$W_i$就是需要决定残差映射$\mathcal{F}$的参数，也是训练中要优化的东西。这里为了书写简单，省略了偏置项。</p>
+<p>上面图中的残差单元结构可以写成下面的式子，其中的$W_i$就是决定残差映射$\mathcal{F}$的参数，也是训练中要优化的东西。这里为了书写简单，省略了偏置项。</p>
 <script type="math/tex; mode=display">y = \mathcal{F(x,\lbrace W_i\rbrace)}+x</script><p>上面的式子要求$\mathcal{F}(x)$与$x$有相同的维度，如果维度不同的话，可以给输入$x$乘上一个权重参数矩阵$W_s$，做一下维度匹配。当然，即使维度相同，我们也可以乘上一个方阵$W_s$，但是这样一来，一是给网络引入了更多的参数（这样，我们的残差结构打脸效果不就打折扣了？），同时在论文中的实验部分也证明了加入这个矩阵对提升性能没用（Identity Mapping已经够用了）。</p>
-<p>同时，在设计残差结构的时候，也不必非要像上面的图那样设计两层，完全可以设计更多（只是别减少得只剩一层了，那样的话$\mathcal{F}$只剩一个线性映射可以学了。。。）。</p>
+<p>同时，在设计残差结构的时候，也不必非要像上面的图那样设计两层，完全可以设计更多（比如下面的bottleneck结构，只是别减少得只剩一层了，那样的话$\mathcal{F}$只剩一个线性映射可以学了。。。）。</p>
 <h2 id="ImageNet实验和比较"><a href="#ImageNet实验和比较" class="headerlink" title="ImageNet实验和比较"></a>ImageNet实验和比较</h2><p>由此，我们可以构建残差网络。这里开始，作者通过一系列实验，来证明残差结构的优越性：更少的参数，更深的层数，更优秀的性能。</p>
 <p>这里着重介绍作者在ImageNet上的实验结果。</p>
 <p>作者首先对比了18层和34层plain网络和残差网络的表现，进一步验证了序言中的结论。采用普通的结构，更深的网络（34层）表现反而不如较浅的网络，而使用残差结构则没有这个问题。从下图左右的对比可以很清楚地看出这个现象。作者同时指出这一现象不大可能是由于梯度消失造成的。</p>
