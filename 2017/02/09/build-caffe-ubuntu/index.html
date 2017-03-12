@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="Caffe作为较早的一款深度学习框架，很是流行。然而，由于依赖项众多，而且Jia Yangqing已经毕业，所以留下了不少的坑。这篇博客记录了我在一台操作系统为Ubuntu14.04.3的DELL游匣7559笔记本上编译Caffe的过程，主要是在编译python接口时遇到的import error问题的解决和找不到HDF5链接库的问题。">
 <meta property="og:image" content="https://xmfbit.github.io/img/caffe_image.jpg">
-<meta property="og:updated_time" content="2017-03-06T07:59:25.000Z">
+<meta property="og:updated_time" content="2017-03-12T07:43:17.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在Ubuntu14.04构建Caffe">
 <meta name="twitter:description" content="Caffe作为较早的一款深度学习框架，很是流行。然而，由于依赖项众多，而且Jia Yangqing已经毕业，所以留下了不少的坑。这篇博客记录了我在一台操作系统为Ubuntu14.04.3的DELL游匣7559笔记本上编译Caffe的过程，主要是在编译python接口时遇到的import error问题的解决和找不到HDF5链接库的问题。">
@@ -385,6 +385,8 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">error while loading shared libraries: libhdf5_hl.so.10: cannot open shared object file: No such file or directory</div></pre></td></tr></table></figure>
 <p>解决方法为手动添加符号链接，详见GitHub<a href="https://github.com/BVLC/caffe/issues/1463" target="_blank" rel="external">讨论帖</a>。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd /usr/lib/x86_64-linux-gnu</div><div class="line">sudo ln -s libhdf5.so.7 libhdf5.so.10</div><div class="line">sudo ln -s libhdf5_hl.so.7 libhdf5_hl.so.10</div></pre></td></tr></table></figure>
+<p>另外，在另一台机器上使用MKL库时，发现会提示找不到相关动态链接库的问题。找到MKL的安装位置，默认应该在目录<code>/opt/intel/mkl</code>下。使用<code>sudo</code>权限，在目录<code>/etc/ld.so.conf.d/</code>下建立一个名为<code>intel_mkl_setttings.conf</code>的文件，将MKL安装位置下的链接库目录添加进去，如下所示：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">/opt/intel/mkl/lib/intel64_lin/</div></pre></td></tr></table></figure></p>
+<p>接着，运行<code>sudo ldconfig</code>命令，就可以了。</p>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>首先，通过<code>make runtest</code>看是否全部test可以通过。其次，可以试运行<code>example</code>下的LeNet训练。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd $CAFFE_ROOT</div><div class="line">./data/mnist/get_mnist.sh</div><div class="line">./examples/mnist/create_mnist.sh</div><div class="line">./examples/mnist/train_lenet.sh</div></pre></td></tr></table></figure></p>
 
       
@@ -529,7 +531,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">23</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>

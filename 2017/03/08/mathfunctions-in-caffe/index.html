@@ -84,15 +84,19 @@
 
 
 
-<meta name="description" content="相与枕藉乎舟中，不知东方之既白">
-<meta property="og:type" content="website">
-<meta property="og:title" content="来呀，快活呀~">
-<meta property="og:url" content="https://xmfbit.github.io/tags/paper/index.html">
+<meta name="description" content="Caffe中使用了BLAS库作为底层矩阵运算的实现，这篇文章对mathfunction.hpp 文件中的相关函数做一总结。我们在自己实现layer运算的时候，也要注意是否Caffe中已经支持了类似运算，不要从scratch开始编码，自己累点不算啥，CPU/GPU的运算能力发挥不出来，更别说自己写的代码也许还是错的，那就尴尬了。。。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Caffe中的底层数学计算函数">
+<meta property="og:url" content="https://xmfbit.github.io/2017/03/08/mathfunctions-in-caffe/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="相与枕藉乎舟中，不知东方之既白">
+<meta property="og:description" content="Caffe中使用了BLAS库作为底层矩阵运算的实现，这篇文章对mathfunction.hpp 文件中的相关函数做一总结。我们在自己实现layer运算的时候，也要注意是否Caffe中已经支持了类似运算，不要从scratch开始编码，自己累点不算啥，CPU/GPU的运算能力发挥不出来，更别说自己写的代码也许还是错的，那就尴尬了。。。">
+<meta property="og:image" content="https://xmfbit.github.io/img/mathfunctions_time_distribution.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/mathfunctions_im2col.png">
+<meta property="og:updated_time" content="2017-03-12T07:46:14.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="来呀，快活呀~">
-<meta name="twitter:description" content="相与枕藉乎舟中，不知东方之既白">
+<meta name="twitter:title" content="Caffe中的底层数学计算函数">
+<meta name="twitter:description" content="Caffe中使用了BLAS库作为底层矩阵运算的实现，这篇文章对mathfunction.hpp 文件中的相关函数做一总结。我们在自己实现layer运算的时候，也要注意是否Caffe中已经支持了类似运算，不要从scratch开始编码，自己累点不算啥，CPU/GPU的运算能力发挥不出来，更别说自己写的代码也许还是错的，那就尴尬了。。。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/mathfunctions_time_distribution.png">
 
 
 
@@ -120,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/tags/paper/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/03/08/mathfunctions-in-caffe/"/>
 
 
 
 
 
-  <title> 标签: paper | 来呀，快活呀~ </title>
+  <title> Caffe中的底层数学计算函数 | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +160,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,74 +275,183 @@
           <div id="content" class="content">
             
 
-  <div id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h2 >
-        paper
-        <small>标签</small>
-      </h2>
-    </div>
-
+  <div id="posts" class="posts-expand">
     
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/03/05/residualnet-paper/" itemprop="url">
-              
-                <span itemprop="name">Residual Net论文阅读 - Deep Residual Learning for Image Recongnition</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-03-05T22:12:21+08:00"
-              content="2017-03-05" >
-          03-05
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/02/04/yolo-paper/" itemprop="url">
-              
-                <span itemprop="name">YOLO 论文阅读</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-02-04T18:49:22+08:00"
-              content="2017-02-04" >
-          02-04
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-    
-  </div>
 
   
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/03/08/mathfunctions-in-caffe/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="一个脱离了高级趣味的人">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/avatar/liumengli.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="来呀，快活呀~">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="来呀，快活呀~" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Caffe中的底层数学计算函数
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-08T17:24:48+08:00">
+                2017-03-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/03/08/mathfunctions-in-caffe/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/08/mathfunctions-in-caffe/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Caffe中使用了BLAS库作为底层矩阵运算的实现，这篇文章对<a href="https://github.com/BVLC/caffe/blob/master/include/caffe/util/math_functions.hpp" target="_blank" rel="external">mathfunction.hpp 文件</a>中的相关函数做一总结。我们在自己实现layer运算的时候，也要注意是否Caffe中已经支持了类似运算，不要从scratch开始编码，自己累点不算啥，CPU/GPU的运算能力发挥不出来，更别说自己写的代码也许还是错的，那就尴尬了。。。</p>
+<a id="more"></a>
+<h2 id="BLAS介绍"><a href="#BLAS介绍" class="headerlink" title="BLAS介绍"></a>BLAS介绍</h2><p>以下内容参考<a href="https://en.wikipedia.org/wiki/Basic_Linear_Algebra_Subprograms" target="_blank" rel="external">BLAS wiki页面</a>整理。这里不涉及BLAS的过多内容，只为介绍Caffe中的相关函数做一过渡。</p>
+<p>BLAS的全称是基础线性代数子程序库（Basic Linear Algebra Subprograms），提供了一些低层次的通用线性代数运算的实现函数，如向量的相加，数乘，点积和矩阵相乘等。BLAS的实现根绝硬件平台的不同而不同，常常利用了特定处理器的硬件特点进行加速计算（例如处理器上的向量寄存器和SIMD指令集），提供了C和Fortran语言支持。</p>
+<p>不同的厂商根据自己硬件的特点，在BLAS的统一框架下，开发了自己的加速库，比如<del>AMD的ACML</del>（已经不再支持），Intel的MKL，ATLAS和OpenBLAS。其中后面的三个均可以在Caffe中配置使用。</p>
+<p>在BLAS中，实现了矩阵与矩阵相乘的函数<code>gemm</code>（GEMM: General Matrix to Matrix Multiplication）和矩阵和向量相乘的函数<code>gemv</code>，这两个数学运算的高效实现，关系到整个DL 框架的运算速度。下面这张图来源于Jia Yangqing的博士论文。<br><img src="/img/mathfunctions_time_distribution.png" alt="前向计算中的典型时间分布"></p>
+<p>可以看到，在前向计算过程中，无论是CPU还是GPU，大量时间都花在了卷积层和全连接层上。全连接层不必多说，就是一个输入feature和权重的矩阵乘法。卷积运算也是通过矩阵相乘实现的。因为我们可以把卷积核变成一列，和相应的feature区域做相乘（如下图，这部分可以看一下Caffe中im2col部分的介绍和代码）。<br><img src="/img/mathfunctions_im2col.png" alt="im2col的原理"></p>
+<p>对于BLAS和GEMM等对DL的作用意义，可以参见这篇文章<a href="https://petewarden.com/2015/04/20/why-gemm-is-at-the-heart-of-deep-learning/" target="_blank" rel="external">Why GEMM is at the heart of deep learning</a>的分析。上面的图也都来源于这篇博客。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/07/residualnet-paper2-identitymapping/" rel="next" title="Residual Net论文阅读 - Identity Mapping in Deep Residual Networks">
+                <i class="fa fa-chevron-left"></i> Residual Net论文阅读 - Identity Mapping in Deep Residual Networks
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -346,6 +459,14 @@
 
 
           
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/08/mathfunctions-in-caffe/"
+           data-title="Caffe中的底层数学计算函数" data-url="https://xmfbit.github.io/2017/03/08/mathfunctions-in-caffe/" data-author-key="1">
+      </div>
+    
+  </div>
+
 
         </div>
         
@@ -365,8 +486,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/avatar/liumengli.jpg"
@@ -426,6 +556,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#BLAS介绍"><span class="nav-number">1.</span> <span class="nav-text">BLAS介绍</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
@@ -525,6 +671,10 @@
   
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
 
   
 
