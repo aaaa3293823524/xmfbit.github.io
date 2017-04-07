@@ -91,7 +91,9 @@
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="CTC(Connectionist Temporal Classification) Loss 函数多用于序列有监督学习，优点是不需要对齐输入数据及标签。本文内容并不涉及CTC Loss的原理介绍，而是关于如何在Caffe中移植Baidu美研院实现的warp-ctc，并利用其实现一个LSTM + CTC Loss的验证码识别demo。下面这张图引用自warp-ctc的项目页面。本文介绍内容的相关代">
 <meta property="og:image" content="https://xmfbit.github.io/img/warpctc_intro.png">
-<meta property="og:updated_time" content="2017-03-07T08:26:50.000Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/captcha_train_loss.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/captcha_test_accuracy.png">
+<meta property="og:updated_time" content="2017-04-07T15:21:56.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在Caffe中使用Baidu warpctc实现CTC Loss的计算">
 <meta name="twitter:description" content="CTC(Connectionist Temporal Classification) Loss 函数多用于序列有监督学习，优点是不需要对齐输入数据及标签。本文内容并不涉及CTC Loss的原理介绍，而是关于如何在Caffe中移植Baidu美研院实现的warp-ctc，并利用其实现一个LSTM + CTC Loss的验证码识别demo。下面这张图引用自warp-ctc的项目页面。本文介绍内容的相关代">
@@ -397,8 +399,17 @@
 </ul>
 <h3 id="数据产生"><a href="#数据产生" class="headerlink" title="数据产生"></a>数据产生</h3><p>使用<code>captcha</code>生成验证码图片。<a href="https://pypi.python.org/pypi/captcha/0.1.1" target="_blank" rel="external">这里</a>是一个简单的API demo。默认生成的图片大小为<code>160x60</code>。我们将其长宽缩小一半，使用<code>80x30</code>的彩色图片作为输入。</p>
 <p>使用<code>python</code>中的<code>h5py</code>模块生成<code>HDF5</code>格式的数据文件。将全部图片分为两部分，80%作为训练集，20%作为验证集。</p>
-<h3 id="LSTM的输入"><a href="#LSTM的输入" class="headerlink" title="LSTM的输入"></a>LSTM的输入</h3><p>在Caffe中已经有了<code>lstm_layer</code>的实现。<code>lstm_layer</code>要求输入的序列<code>blob</code>为<code>TxNx...</code>，也就是说我们需要</p>
-<h3 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h3><h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3>
+<h3 id="LSTM的输入"><a href="#LSTM的输入" class="headerlink" title="LSTM的输入"></a>LSTM的输入</h3><p>在Caffe中已经有了<code>lstm_layer</code>的实现。<code>lstm_layer</code>要求输入的序列<code>blob</code>为<code>TxNx...</code>，也就是说我们需要将输入的image进行转置。</p>
+<p>Caffe中Batch的内存布局顺序为<code>NxCxHxW</code>。我们将图像中的每一列作为一个time step输入的$x$向量。所以，在代码中使用了<a href="https://github.com/weiliu89/caffe/blob/ssd/include/caffe/layers/permute_layer.hpp" target="_blank" rel="external">liuwei的SSD工作中实现的<code>permute_layer</code></a>进行转置，将<code>W</code>维度放到最前方。与之对应的参数定义如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">layer &#123;</div><div class="line">    name: &quot;permuted_data&quot;</div><div class="line">    type: &quot;Permute&quot;</div><div class="line">    bottom: &quot;data&quot;</div><div class="line">    top: &quot;permuted_data&quot;</div><div class="line">    permute_param &#123;</div><div class="line">        order: 3   # W</div><div class="line">        order: 0   # N</div><div class="line">        order: 1   # C</div><div class="line">        order: 2   # H</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>另外，LSTM需要第二个输入，用于指示时序信号的起始位置。在代码中，我新加入了一个名为<code>ContinuationIndicator</code>的layer，产生对应的time indicator序列。</p>
+<h3 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h3><p>在某次试验中，迭代50,000次，实验过程中的损失函数变化如下：</p>
+<p><img src="/img/captcha_train_loss.png" alt="train loss"></p>
+<p>在验证集上的精度变化如下：</p>
+<p><img src="/img/captcha_test_accuracy.png" alt="test accuracy"></p>
+<p>最终模型的精度在98%左右。考虑到本实验只是简单堆叠了两层的LSTM，并使用CTC Loss进行训练，能够轻易达到这一精度，可以在一定程度上说明CTC Loss的强大。</p>
+<p>至于该实验的具体细节，可以参考repo的相关具体代码实现。</p>
+
       
     </div>
 
@@ -596,7 +607,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#移植warp-ctc"><span class="nav-number">1.</span> <span class="nav-text">移植warp-ctc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现CTC-Loss计算"><span class="nav-number">2.</span> <span class="nav-text">实现CTC Loss计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证码数字识别"><span class="nav-number">3.</span> <span class="nav-text">验证码数字识别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据产生"><span class="nav-number">3.1.</span> <span class="nav-text">数据产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM的输入"><span class="nav-number">3.2.</span> <span class="nav-text">LSTM的输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">3.3.</span> <span class="nav-text">训练</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#结论"><span class="nav-number">3.4.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#移植warp-ctc"><span class="nav-number">1.</span> <span class="nav-text">移植warp-ctc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现CTC-Loss计算"><span class="nav-number">2.</span> <span class="nav-text">实现CTC Loss计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证码数字识别"><span class="nav-number">3.</span> <span class="nav-text">验证码数字识别</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#数据产生"><span class="nav-number">3.1.</span> <span class="nav-text">数据产生</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#LSTM的输入"><span class="nav-number">3.2.</span> <span class="nav-text">LSTM的输入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练"><span class="nav-number">3.3.</span> <span class="nav-text">训练</span></a></li></ol></li></ol></div>
             
 
           </div>
