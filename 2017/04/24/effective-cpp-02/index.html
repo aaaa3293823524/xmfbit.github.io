@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="tool,gsl," />
+  <meta name="keywords" content="cpp," />
 
 
 
@@ -84,19 +84,16 @@
 
 
 
-<meta name="description" content="GSL是一个GNU支持的科学计算库，提供了很丰富的数值计算方法。本文介绍了GSL库在Windows环境下使用VisualStudio进行编译构建的过程。">
+<meta name="description" content="在第二章中，作者主要关注了在C++的OOP“联邦”中行事的注意事项。主要包括有虚函数的情况下的继承以及copying function（拷贝构造函数和拷贝赋值函数）的处理。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用 Visual Studio 编译 GSL 科学计算库">
-<meta property="og:url" content="https://xmfbit.github.io/2016/12/16/gsl-with-vs/index.html">
+<meta property="og:title" content="Effective CPP 阅读 - Chapter 2 构造拷贝和赋值函数">
+<meta property="og:url" content="https://xmfbit.github.io/2017/04/24/effective-cpp-02/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="GSL是一个GNU支持的科学计算库，提供了很丰富的数值计算方法。本文介绍了GSL库在Windows环境下使用VisualStudio进行编译构建的过程。">
-<meta property="og:image" content="https://xmfbit.github.io/img/gsl_picture.jpg">
-<meta property="og:image" content="http://i.imgur.com/uXhVvwS.jpg">
-<meta property="og:updated_time" content="2017-04-20T09:20:51.000Z">
+<meta property="og:description" content="在第二章中，作者主要关注了在C++的OOP“联邦”中行事的注意事项。主要包括有虚函数的情况下的继承以及copying function（拷贝构造函数和拷贝赋值函数）的处理。">
+<meta property="og:updated_time" content="2017-04-24T13:05:59.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用 Visual Studio 编译 GSL 科学计算库">
-<meta name="twitter:description" content="GSL是一个GNU支持的科学计算库，提供了很丰富的数值计算方法。本文介绍了GSL库在Windows环境下使用VisualStudio进行编译构建的过程。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/gsl_picture.jpg">
+<meta name="twitter:title" content="Effective CPP 阅读 - Chapter 2 构造拷贝和赋值函数">
+<meta name="twitter:description" content="在第二章中，作者主要关注了在C++的OOP“联邦”中行事的注意事项。主要包括有虚函数的情况下的继承以及copying function（拷贝构造函数和拷贝赋值函数）的处理。">
 
 
 
@@ -124,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2016/12/16/gsl-with-vs/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/04/24/effective-cpp-02/"/>
 
 
 
 
 
-  <title> 使用 Visual Studio 编译 GSL 科学计算库 | 来呀，快活呀~ </title>
+  <title> Effective CPP 阅读 - Chapter 2 构造拷贝和赋值函数 | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -285,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2016/12/16/gsl-with-vs/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/04/24/effective-cpp-02/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -309,7 +306,7 @@
             
             
               
-                使用 Visual Studio 编译 GSL 科学计算库
+                Effective CPP 阅读 - Chapter 2 构造拷贝和赋值函数
               
             
           </h1>
@@ -324,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-16T19:00:00+08:00">
-                2016-12-16
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-04-24T20:50:10+08:00">
+                2017-04-24
               </time>
             
 
@@ -360,93 +357,44 @@
       
 
       
-        <p>GSL是一个GNU支持的科学计算库，提供了很丰富的数值计算方法。本文介绍了GSL库在Windows环境下使用VisualStudio进行编译构建的过程。</p>
-<p><img src="/img/gsl_picture.jpg" alt="GSL is GNU Sentific Library"><br><a id="more"></a><br><a href="http://www.gnu.org/software/gsl/" target="_blank" rel="external">GSL 的项目主页</a>提供的说明来看，GSL支持如下的科学计算：</p>
-<p>（下面的这张表格的HTML使用的是<a href="http://pressbin.com/tools/excel_to_html_table/index.html" target="_blank" rel="external">No-Cruft Excel to HTML Table Converter</a>生成的）<br>
-<table>
-   <tr>
-      <td>Complex Numbers </td>
-      <td>Roots of Polynomials</td>
-   </tr>
-   <tr>
-      <td>Special Functions </td>
-      <td>Vectors and Matrices</td>
-   </tr>
-   <tr>
-      <td>Permutations </td>
-      <td>Sorting</td>
-   </tr>
-   <tr>
-      <td>BLAS Support </td>
-      <td>Linear Algebra</td>
-   </tr>
-   <tr>
-      <td>Eigensystems </td>
-      <td>Fast Fourier Transforms</td>
-   </tr>
-   <tr>
-      <td>Quadrature </td>
-      <td>Random Numbers</td>
-   </tr>
-   <tr>
-      <td>Quasi-Random Sequences </td>
-      <td>Random Distributions</td>
-   </tr>
-   <tr>
-      <td>Statistics </td>
-      <td>Histograms</td>
-   </tr>
-   <tr>
-      <td>N-Tuples </td>
-      <td>Monte Carlo Integration</td>
-   </tr>
-   <tr>
-      <td>Simulated Annealing </td>
-      <td>Differential Equations</td>
-   </tr>
-   <tr>
-      <td>Interpolation </td>
-      <td>Numerical Differentiation</td>
-   </tr>
-   <tr>
-      <td>Chebyshev Approximation </td>
-      <td>Series Acceleration</td>
-   </tr>
-   <tr>
-      <td>Discrete Hankel Transforms </td>
-      <td>Root-Finding</td>
-   </tr>
-   <tr>
-      <td>Minimization </td>
-      <td>Least-Squares Fitting</td>
-   </tr>
-   <tr>
-      <td>Physical Constants </td>
-      <td>IEEE Floating-Point</td>
-   </tr>
-   <tr>
-      <td>Discrete Wavelet Transforms </td>
-      <td>Basis splines</td>
-   </tr>
-</table>
-</p>
-<p>GSL的Linux下的配置很简单，照着它的INSTALL文件一步一步来就可以了。CMAKE大法HAO!</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">./configure</div><div class="line">make</div><div class="line">make install</div><div class="line">make clean</div></pre></td></tr></table></figure>
-<p>同样的，GSL也可以在Windows环境下配置，下面记录了如何在Windows环境下使用 Visual Studio 和 CMakeGUI 编译测试GSL。</p>
-<h2 id="使用CMAKE编译成-SLN文件"><a href="#使用CMAKE编译成-SLN文件" class="headerlink" title="使用CMAKE编译成.SLN文件"></a>使用CMAKE编译成.SLN文件</h2><p>打开CMAKEGUI，将输入代码路径选为GSL源代码地址，输出路径设为自己想要的输出路径。点击 “Configure“，选择Visual Studio2013为编译器，点击Finish后会进行必要的配置。然后将表格里面的选项都打上勾，再次点击”Configure“，等待完成之后点击”Generate“。完成之后，就可以在输出路径下看到GSL.sln文件了。</p>
-<h2 id="使用Visual-Studio生成解决方案"><a href="#使用Visual-Studio生成解决方案" class="headerlink" title="使用Visual Studio生成解决方案"></a>使用Visual Studio生成解决方案</h2><p>使用 Visual Studio 打开刚才生成的.SLN文件，分别在Debug和Release模式下生成解决方案，等待完成即可。</p>
-<p>当完成后，你应该可以在路径下看到这样一张图，我们主要关注的文件夹是\bin，\gsl，\Debug和\Release。</p>
-<h2 id="加入环境变量"><a href="#加入环境变量" class="headerlink" title="加入环境变量"></a>加入环境变量</h2><p>修改环境变量的Path，将\GSL_Build_Path\bin\Debug加入，这主要是为了\Debug文件夹下面的gsl.dll文件。如果不进行这一步的话，一会虽然可以编译，但是却不能运行。</p>
-<p>这里顺便注释一句，当使用第三方库的时候，如果需要动态链接库的支持，其中一种方法就是将DLL文件的路径加入到Path中去。</p>
-<h2 id="建立Visual-Studio属性表"><a href="#建立Visual-Studio属性表" class="headerlink" title="建立Visual Studio属性表"></a>建立Visual Studio属性表</h2><p>Visual Studio可以通过建立工程属性表的方法来配置工程选项，一个OpenCV的例子可以参见Yuanbo She的这篇博文 <a href="http://my.phirobot.com/blog/2014-02-opencv_configuration_in_vs.html" target="_blank" rel="external">Opencv 完美配置攻略 2014 (Win8.1 + Opencv 2.4.8 + VS 2013)</a>。</p>
-<p>配置文件中主要是包含文件和静态链接库LIB的路径设置。下面把我的贴出来，只需要根据GSL的生成路径做相应修改即可。注意我的属性表中保留了OpenCV的内容，如果不需要的话，尽可以删掉。上面的博文对这张属性表如何配置讲得很清楚，有问题可以去参考。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="utf-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">Project</span> <span class="attr">ToolsVersion</span>=<span class="string">"4.0"</span> <span class="attr">xmlns</span>=<span class="string">"http://schemas.microsoft.com/developer/msbuild/2003"</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ImportGroup</span> <span class="attr">Label</span>=<span class="string">"PropertySheets"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span> <span class="attr">Label</span>=<span class="string">"UserMacros"</span> /&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">PropertyGroup</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">IncludePath</span>&gt;</span>$(OPENCV249)\include;E:\GSLCode\gsl-build\;$(IncludePath)<span class="tag">&lt;/<span class="name">IncludePath</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">LibraryPath</span> <span class="attr">Condition</span>=<span class="string">"'$(Platform)'=='Win32'"</span>&gt;</span>$(OPENCV249)\x86\vc12\lib;E:\GSLCode\gsl-build\Debug;$(LibraryPath)<span class="tag">&lt;/<span class="name">LibraryPath</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">LibraryPath</span> <span class="attr">Condition</span>=<span class="string">"'$(Platform)'=='X64'"</span>&gt;</span>$(OPENCV249)\x64\vc12\lib;E:\GSLCode\gsl-build\Debug;$(LibraryPath)<span class="tag">&lt;/<span class="name">LibraryPath</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">PropertyGroup</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ItemDefinitionGroup</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">Link</span> <span class="attr">Condition</span>=<span class="string">"'$(Configuration)'=='Debug'"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">AdditionalDependencies</span>&gt;</span>opencv_calib3d249d.lib;opencv_contrib249d.lib;opencv_core249d.lib;opencv_features2d249d.lib;opencv_flann249d.lib;opencv_gpu249d.lib;opencv_highgui249d.lib;opencv_imgproc249d.lib;opencv_legacy249d.lib;opencv_ml249d.lib;opencv_nonfree249d.lib;opencv_objdetect249d.lib;opencv_ocl249d.lib;opencv_photo249d.lib;opencv_stitching249d.lib;opencv_superres249d.lib;opencv_ts249d.lib;opencv_video249d.lib;opencv_videostab249d.lib;gsl.lib;gslcblas.lib;%(AdditionalDependencies)<span class="tag">&lt;/<span class="name">AdditionalDependencies</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">Link</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">Link</span> <span class="attr">Condition</span>=<span class="string">"'$(Configuration)'=='Release'"</span>&gt;</span></div><div class="line">          <span class="tag">&lt;<span class="name">AdditionalDependencies</span>&gt;</span>opencv_calib3d249.lib;opencv_contrib249.lib;opencv_core249.lib;opencv_features2d249.lib;opencv_flann249.lib;opencv_gpu249.lib;opencv_highgui249.lib;opencv_imgproc249.lib;opencv_legacy249.lib;opencv_ml249.lib;opencv_nonfree249.lib;opencv_objdetect249.lib;opencv_ocl249.lib;opencv_photo249.lib;opencv_stitching249.lib;opencv_superres249.lib;opencv_ts249.lib;opencv_video249.lib;opencv_videostab249.lib;gsl.lib;gslcblas.lib;%(AdditionalDependencies)<span class="tag">&lt;/<span class="name">AdditionalDependencies</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">Link</span>&gt;</span></div><div class="line">  <span class="tag">&lt;/<span class="name">ItemDefinitionGroup</span>&gt;</span></div><div class="line">  <span class="tag">&lt;<span class="name">ItemGroup</span> /&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">Project</span>&gt;</span></div></pre></td></tr></table></figure>
-<p>在以后建立Visual Studio工程的时候，在属性窗口直接添加现有属性表就可以了！</p>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>在项目网站的教程上直接找到一段代码，进行测试，输出贝塞尔函数的值。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;gsl/gsl_sf_bessel.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">double</span> x = <span class="number">5.0</span>;</div><div class="line">	<span class="keyword">double</span> y = gsl_sf_bessel_J0(x);</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"J0(%g) = %.18e\n"</span>, x, y);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>控制台输出正确：<br>
-</p><p><img src="http://i.imgur.com/uXhVvwS.jpg" width="600" height="200"></p>
-<p></p>
+        <p>在第二章中，作者主要关注了在C++的OOP“联邦”中行事的注意事项。主要包括有虚函数的情况下的继承以及copying function（拷贝构造函数和拷贝赋值函数）的处理。<br><a id="more"></a></p>
+<h2 id="05-了解C-默默编写并调用了哪些函数"><a href="#05-了解C-默默编写并调用了哪些函数" class="headerlink" title="05 了解C++默默编写并调用了哪些函数"></a>05 了解C++默默编写并调用了哪些函数</h2><p>C++编译器会自动为类添加默认构造函数和拷贝构造函数和析构函数，以及拷贝赋值函数。</p>
+<p>在默认构造函数中，会调用基类的构造函数以及各个成员变量的构造函数。</p>
+<p>在拷贝构造函数和拷贝赋值函数中，将单纯地将源对象中的non-static的成员变量拷贝到目标对象（浅拷贝）。</p>
+<h2 id="06-若不想使用编译器自动生成的函数，那就明确拒绝"><a href="#06-若不想使用编译器自动生成的函数，那就明确拒绝" class="headerlink" title="06 若不想使用编译器自动生成的函数，那就明确拒绝"></a>06 若不想使用编译器自动生成的函数，那就明确拒绝</h2><p>有的时候，我们的类故意设计为不能拷贝构造或赋值。这时候，可以将拷贝构造函数和拷贝赋值函数声明为<code>private</code>，并且不提供函数的实现。</p>
+<h2 id="07-为多态基类声明虚析构函数"><a href="#07-为多态基类声明虚析构函数" class="headerlink" title="07 为多态基类声明虚析构函数"></a>07 为多态基类声明虚析构函数</h2><p>多态是OOP的基本概念之一。在C++中，可能遇到这样的情景：使用base class的指针或引用指向derived派生类对象，以此实现运行时的不同逻辑。这种情况下，要为基类声明虚析构函数。这是因为，当派生类对象经由一个base class指针被删除时，如果该base class带有非虚的析构函数，其结果是未定义的。常常会造成派生类自己的成员变量不能被销毁，造成内存泄露。</p>
+<p>而那些意图并非是用来当做base class的类来说，随意将其虚构函数声明为<code>virtual</code>也是不恰当的。因为这会额外引入虚函数表，造成对象体积的无谓增大，给性能造成影响，而且丧失了对C语言的移植性。</p>
+<p>由于那些被用来作为base class等待派生类继承的类通常情况下都有虚函数存在（派生类正是对虚函数重写，实现了多态），所以这一条款可以归纳如下：</p>
+<blockquote>
+<p>那些有虚函数的类，几乎确定都应该有一个虚析构函数。</p>
+</blockquote>
+<p>对于STL而言，记住其中的容器都不是为了继承而设计的，不要继承STL中的容器，包括<code>vector</code>，<code>string</code>等。</p>
+<p>有的时候，我们可能会想声明一个抽象基类作为接口。当手上没有纯虚函数时候，可以将析构函数声明为纯虚的。然而这时候问题来了，我们需要为这个纯虚析构函数提供了一个空定义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">class ABC &#123;</div><div class="line">public:</div><div class="line">    virtual ~ABC() = 0;    </div><div class="line">&#125;;</div><div class="line">ABC::~ABC() &#123;&#125;</div></pre></td></tr></table></figure>
+<p>这看上去很违背常理，因为一般情况下纯虚函数不需要实现。这里是因为当派生类被销毁时，其析构函数中会调用<code>~ABC()</code>，所以必须为这个函数提供一份定义。</p>
+<h2 id="08-别让异常逃离析构函数"><a href="#08-别让异常逃离析构函数" class="headerlink" title="08 别让异常逃离析构函数"></a>08 别让异常逃离析构函数</h2><p>如果在析构函数中抛出异常，会导致未定义的行为。</p>
+<p>析构函数不应该抛出异常。如果析构函数调用的函数可能会抛出异常，要在析构函数中捕获异常，然后结束程序（这不是未定义行为）或者吞掉它们。</p>
+<h2 id="09-绝不在构造函数和析构函数中调用虚函数"><a href="#09-绝不在构造函数和析构函数中调用虚函数" class="headerlink" title="09 绝不在构造函数和析构函数中调用虚函数"></a>09 绝不在构造函数和析构函数中调用虚函数</h2><p>你不应该在构造函数和析构函数中调用虚函数，这样的调用通常不会导致你想要的结果。</p>
+<p>为什么呢？</p>
+<p>如果我们在派生类的构造函数中使用了从基类中继承而来的虚函数。在派生类的构造函数之前，基类的构造函数被调用，这时候，所调用的虚函数实际是基类中的那个版本！析构函数同理。</p>
+<p>直接在构造函数中调用虚函数看上去很容易避免。然而在构造函数中你可能会调用其他的初始化函数，你应该确保这些初始化函数中没有调用虚函数。否则，你可能会陷入到苦涩头疼的调试中去。编译器通常不会发现此类问题，但是在程序运行中，如果基类的虚函数是纯虚函数，程序很可能中止（和后面的相比，也许这还算好的）。如果基类中的虚函数有自己的实现，那么你可能就会头疼于程序的表现为何出乎意料（期望调用派生类的重写版本，实际仍是基类的原始版本）。</p>
+<h2 id="10-令operator-返回一个-this的引用"><a href="#10-令operator-返回一个-this的引用" class="headerlink" title="10 令operator=返回一个*this的引用"></a>10 令<code>operator=</code>返回一个<code>*this</code>的引用</h2><p>为了实现连锁赋值，赋值操作符必须返回一个引用，指向操作符左侧的赋值实参。这条规范被大多数人遵守。除非有确实好的理由，否则最好按规范办事。</p>
+<p>所谓连锁赋值，是指下面这样的情况：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">a = b = c;</div></pre></td></tr></table></figure></p>
+<p>这一条款不仅适用于赋值运算符，也适用于<code>+=</code>等。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">class A &#123;</div><div class="line">public:</div><div class="line">    A&amp; operator=(const A&amp; rhs) &#123;</div><div class="line">        // ...</div><div class="line">        return *this;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<h2 id="11-在operator-中处理自我赋值"><a href="#11-在operator-中处理自我赋值" class="headerlink" title="11 在operator=中处理自我赋值"></a>11 在<code>operator=</code>中处理自我赋值</h2><p>所谓自我赋值，是指：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">Widget w;</div><div class="line">// ...</div><div class="line">w = w;</div></pre></td></tr></table></figure></p>
+<p>自我赋值常常发生在同一个对象的不同别名之间。在实现赋值运算符时，应注意处理这一现象。</p>
+<p>一种方法是进行“证同测试”，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">A&amp; operator=(const A&amp; rhs) &#123;</div><div class="line">    if(&amp;rhs == this) return *this; //证同测试</div><div class="line">    // ...</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>不过作者指出，这种方法不具备异常安全性。另一种方法是在函数内部，合理安排语句顺序，防止提前释放该对象本身的资源。</p>
+<p>还有一种方法，使用copy-swap方法，首先拷贝构造一个<code>rhs</code>的拷贝，然后交换该拷贝和<code>*this</code>，</p>
+<p>毫无疑问，使用证同测试方法和作者后文的方法都会造成性能的些许下降，这需要根据具体情况具体分析，合理采用。</p>
+<h2 id="12-复制对象时勿忘每一个成分"><a href="#12-复制对象时勿忘每一个成分" class="headerlink" title="12 复制对象时勿忘每一个成分"></a>12 复制对象时勿忘每一个成分</h2><p>这一条款是指存在继承时，实现copying函数（指拷贝构造函数和拷贝赋值函数）不要忘记base class部分成员。看下面的例子：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">class Derived: public Base&#123;</div><div class="line">private:</div><div class="line">    int a;</div><div class="line">public:</div><div class="line">    Derived(const Derived&amp; rhs):a(rhs.a) &#123;&#125;</div><div class="line">    Derived&amp; operator=(const Derived&amp; rhs) &#123;</div><div class="line">        a = rhs.a;</div><div class="line">        return *this;</div><div class="line">    &#125;</div><div class="line">&#125;;</div></pre></td></tr></table></figure></p>
+<p>上面的代码只是拷贝了派生类新加入的成员<code>a</code>，而对基类中已有的成员未作处理。要记住，</p>
+<blockquote>
+<p>任何时候自己实现copying函数时，要担起重责大任，小心地复制其基类的成员。由于基类成员往往声明为<code>private</code>，所以，一般调用基类的成员函数进行拷贝。将上面的代码修改为：</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Derived(const Derived&amp; rhs):Base(rhs), a(rhs.a) &#123;&#125;</div><div class="line">Derived&amp; operator=(const Derived&amp; rhs) &#123;</div><div class="line">    Base::operator=(rhs);</div><div class="line">    a = rhs.a;</div><div class="line">    return *this;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>此外，两种copying函数的实现往往是相似的。然而，不要试图在一个函数中调用另一个函数。把相似代码提取出来，写成一个独立的<code>init()</code>函数是一个更好的选择。</p>
 
       
     </div>
@@ -470,9 +418,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/tool/" rel="tag"># tool</a>
-          
-            <a href="/tags/gsl/" rel="tag"># gsl</a>
+            <a href="/tags/cpp/" rel="tag"># cpp</a>
           
         </div>
       
@@ -481,8 +427,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/12/16/use-doxygen/" rel="next" title="Windows环境下使用Doxygen生成注释文档">
-                <i class="fa fa-chevron-left"></i> Windows环境下使用Doxygen生成注释文档
+              <a href="/2017/04/21/python-iter-generator/" rel="next" title="Python中的迭代器和生成器">
+                <i class="fa fa-chevron-left"></i> Python中的迭代器和生成器
               </a>
             
           </div>
@@ -490,10 +436,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/12/16/hello-world/" rel="prev" title="Hello World">
-                Hello World <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -643,7 +585,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#使用CMAKE编译成-SLN文件"><span class="nav-number">1.</span> <span class="nav-text">使用CMAKE编译成.SLN文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Visual-Studio生成解决方案"><span class="nav-number">2.</span> <span class="nav-text">使用Visual Studio生成解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#加入环境变量"><span class="nav-number">3.</span> <span class="nav-text">加入环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立Visual-Studio属性表"><span class="nav-number">4.</span> <span class="nav-text">建立Visual Studio属性表</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">5.</span> <span class="nav-text">测试</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#05-了解C-默默编写并调用了哪些函数"><span class="nav-number">1.</span> <span class="nav-text">05 了解C++默默编写并调用了哪些函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#06-若不想使用编译器自动生成的函数，那就明确拒绝"><span class="nav-number">2.</span> <span class="nav-text">06 若不想使用编译器自动生成的函数，那就明确拒绝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#07-为多态基类声明虚析构函数"><span class="nav-number">3.</span> <span class="nav-text">07 为多态基类声明虚析构函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#08-别让异常逃离析构函数"><span class="nav-number">4.</span> <span class="nav-text">08 别让异常逃离析构函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#09-绝不在构造函数和析构函数中调用虚函数"><span class="nav-number">5.</span> <span class="nav-text">09 绝不在构造函数和析构函数中调用虚函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-令operator-返回一个-this的引用"><span class="nav-number">6.</span> <span class="nav-text">10 令operator=返回一个*this的引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-在operator-中处理自我赋值"><span class="nav-number">7.</span> <span class="nav-text">11 在operator=中处理自我赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-复制对象时勿忘每一个成分"><span class="nav-number">8.</span> <span class="nav-text">12 复制对象时勿忘每一个成分</span></a></li></ol></div>
             
 
           </div>
