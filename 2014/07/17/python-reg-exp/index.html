@@ -91,7 +91,7 @@
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="本文来自于Google Developers中对于Python的介绍。https://developers.google.com/edu/python/regular-expressions。">
 <meta property="og:image" content="https://xmfbit.github.io/img/regex_picture.jpg">
-<meta property="og:updated_time" content="2017-04-25T14:38:22.000Z">
+<meta property="og:updated_time" content="2017-04-29T10:24:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Python Regular Expressions （Python 正则表达式)">
 <meta name="twitter:description" content="本文来自于Google Developers中对于Python的介绍。https://developers.google.com/edu/python/regular-expressions。">
@@ -382,8 +382,11 @@
 </ul>
 <p>注意，’+’和’*’会匹配尽可能多的字符。</p>
 <h3 id="一些重复字符的例子"><a href="#一些重复字符的例子" class="headerlink" title="一些重复字符的例子"></a>一些重复字符的例子</h3><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="comment">## i+  匹配1个或者多个'i'</span></div><div class="line">match = re.search(<span class="string">r'pi+'</span>, <span class="string">'piiig'</span>) <span class="comment">#  found, match.group() == "piii"</span></div><div class="line"></div><div class="line"><span class="comment">## 找到字符串中最左边尽可能长的模式。</span></div><div class="line"><span class="comment">## 注意，并没有匹配到第二个 'i+'</span></div><div class="line">match = re.search(<span class="string">r'i+'</span>, <span class="string">'piigiiii'</span>)  <span class="comment">#  found, match.group() == "ii"</span></div><div class="line"></div><div class="line"><span class="comment">## \s*  匹配0个或1个空白字符 whitespace</span></div><div class="line">match = re.search(<span class="string">r'\d\s*\d\s*\d'</span>, <span class="string">'xx1 2   3xx'</span>)  <span class="comment">#  found, match.group() == "1 2   3"</span></div><div class="line">match = re.search(<span class="string">r'\d\s*\d\s*\d'</span>, <span class="string">'xx12  3xx'</span>)    <span class="comment">#  found, match.group() == "12  3"</span></div><div class="line">match = re.search(<span class="string">r'\d\s*\d\s*\d'</span>, <span class="string">'xx123xx'</span>)      <span class="comment"># found, match.group() == "123"</span></div><div class="line"></div><div class="line"><span class="comment">## ^ 匹配字符串的第一个字符</span></div><div class="line">match = re.search(<span class="string">r'^b\w+'</span>, <span class="string">'foobar'</span>)  <span class="comment"># not found, match == None</span></div><div class="line"><span class="comment">## 与上例对比</span></div><div class="line">match = re.search(<span class="string">r'b\w+'</span>, <span class="string">'foobar'</span>)   <span class="comment"># found, match.group() == "bar"</span></div></pre></td></tr></table></figure>
-<h3 id="Email"><a href="#Email" class="headerlink" title="Email"></a>Email</h3><p>考虑一个典型的Email地址：someone@host.com，可以用如下的方式匹配：</p>
-<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">    match = re.search(<span class="string">r'\w+@\w+'</span>,str)</div><div class="line">```    </div><div class="line"></div><div class="line">但是，对于这种Email地址 <span class="string">'xyz alice-b@google.com purple monkey'</span> 则不能奏效。</div><div class="line"></div><div class="line"><span class="comment">### 使用方括号 ###</span></div><div class="line">方括号里面的字符表示一个字符集合。[abc]可以被用来匹配<span class="string">'a'</span>或者<span class="string">'b'</span>或者<span class="string">'c'</span>。\w \s等都可以用在方括号里，除了<span class="string">'.'</span>以外，它只能用来表示字面意义上的‘点’。所以上面的Email规则可以扩充如下：</div><div class="line"></div><div class="line">``` py</div><div class="line">    match = re.search(<span class="string">'r[\w.-]+@[\w.-]+'</span>,str)</div></pre></td></tr></table></figure>
+<h3 id="Email"><a href="#Email" class="headerlink" title="Email"></a>Email</h3><p>考虑一个典型的Email地址：<code>someone@host.com</code>，可以用如下的方式匹配：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">match = re.search(<span class="string">r'\w+@\w+'</span>,str)</div></pre></td></tr></table></figure>
+<p>但是，对于这种Email地址 <code>xyz alice-b@google.com purple monkey</code>则不能奏效。</p>
+<h3 id="使用方括号"><a href="#使用方括号" class="headerlink" title="使用方括号"></a>使用方括号</h3><p>方括号里面的字符表示一个字符集合。[abc]可以被用来匹配’a’或者’b’或者’c’。\w \s等都可以用在方括号里，除了’.’以外，它只能用来表示字面意义上的‘点’。所以上面的Email规则可以扩充如下：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">match = re.search(<span class="string">'r[\w.-]+@[\w.-]+'</span>,str)</div></pre></td></tr></table></figure>
 <p>你还可以使用’-‘来指定范围，如[a-z]指示的是所有小写字母的集合。所以如果你想构造的字符集合中有’-‘，请把它放到末尾[ab-]。另外，前方加上’^’，用来表示取集合的补集，例如<sup><a href="#fn_ab" id="reffn_ab">ab</a></sup>表示除了’a’和’b’之外的其他字符。</p>
 <h2 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h2><p>以Email地址为例，如果我们想要分别提取该地址的用户名’someone’和主机名’host.com’该怎么办呢？<br>可以在模式中用圆括号指定。</p>
 <figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">str = <span class="string">'purple alice-b@google.com monkey dishwasher'</span></div><div class="line">match = re.search(<span class="string">'([\w.-]+)@([\w.-]+)'</span>, str)   <span class="comment">#用圆括号指定分割</span></div><div class="line"><span class="keyword">if</span> match:</div><div class="line">    <span class="keyword">print</span> match.group()   <span class="comment">## 'alice-b@google.com' (the whole match)</span></div><div class="line">    <span class="keyword">print</span> match.group(<span class="number">1</span>)  <span class="comment">## 'alice-b' (the username, group 1)</span></div><div class="line">  	<span class="keyword">print</span> match.group(<span class="number">2</span>)  <span class="comment">## 'google.com' (the host, group 2)</span></div></pre></td></tr></table></figure>
@@ -491,6 +494,8 @@
           
   <div class="comments" id="comments">
     
+        <div id="lv-container" data-id="city" data-uid="MTAyMC8yODMwOS80ODgx"></div>
+    
   </div>
 
 
@@ -592,7 +597,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#认识正则表达式"><span class="nav-number">1.</span> <span class="nav-text">认识正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则表达式的规则"><span class="nav-number">2.</span> <span class="nav-text">正则表达式的规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本规则"><span class="nav-number">2.1.</span> <span class="nav-text">基本规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些基本的例子"><span class="nav-number">2.2.</span> <span class="nav-text">一些基本的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重复"><span class="nav-number">2.3.</span> <span class="nav-text">重复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些重复字符的例子"><span class="nav-number">2.4.</span> <span class="nav-text">一些重复字符的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Email"><span class="nav-number">2.5.</span> <span class="nav-text">Email</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作"><span class="nav-number">3.</span> <span class="nav-text">操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#findall-函数"><span class="nav-number">3.1.</span> <span class="nav-text">findall 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在文件中使用findall"><span class="nav-number">3.2.</span> <span class="nav-text">在文件中使用findall</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#findall-和分组"><span class="nav-number">3.3.</span> <span class="nav-text">findall 和分组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">4.</span> <span class="nav-text">调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他选项"><span class="nav-number">5.</span> <span class="nav-text">其他选项</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#认识正则表达式"><span class="nav-number">1.</span> <span class="nav-text">认识正则表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正则表达式的规则"><span class="nav-number">2.</span> <span class="nav-text">正则表达式的规则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基本规则"><span class="nav-number">2.1.</span> <span class="nav-text">基本规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些基本的例子"><span class="nav-number">2.2.</span> <span class="nav-text">一些基本的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重复"><span class="nav-number">2.3.</span> <span class="nav-text">重复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些重复字符的例子"><span class="nav-number">2.4.</span> <span class="nav-text">一些重复字符的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Email"><span class="nav-number">2.5.</span> <span class="nav-text">Email</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用方括号"><span class="nav-number">2.6.</span> <span class="nav-text">使用方括号</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#操作"><span class="nav-number">3.</span> <span class="nav-text">操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#findall-函数"><span class="nav-number">3.1.</span> <span class="nav-text">findall 函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在文件中使用findall"><span class="nav-number">3.2.</span> <span class="nav-text">在文件中使用findall</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#findall-和分组"><span class="nav-number">3.3.</span> <span class="nav-text">findall 和分组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试"><span class="nav-number">4.</span> <span class="nav-text">调试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他选项"><span class="nav-number">5.</span> <span class="nav-text">其他选项</span></a></li></ol></div>
             
 
           </div>
@@ -709,7 +714,20 @@
 
 
 
+    
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
   
+
+
 
 
 
