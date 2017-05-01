@@ -90,7 +90,7 @@
 <meta property="og:url" content="https://xmfbit.github.io/2017/04/25/effective-cpp-03/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="C++相信程序员，将内存等底层资源毫无保留地献给程序员使用。然而，做到正确处理资源，写出健壮的代码并不容易，内存泄漏的幽灵始终徘徊在C++程序员身边。遵守本章给出的建议能够使你尽可能地陷入资源泄漏的泥沼，避免奇怪而又毫无头绪的调试。">
-<meta property="og:updated_time" content="2017-04-25T14:38:22.000Z">
+<meta property="og:updated_time" content="2017-05-01T07:04:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective CPP阅读 - Chapter 3 资源管理">
 <meta name="twitter:description" content="C++相信程序员，将内存等底层资源毫无保留地献给程序员使用。然而，做到正确处理资源，写出健壮的代码并不容易，内存泄漏的幽灵始终徘徊在C++程序员身边。遵守本章给出的建议能够使你尽可能地陷入资源泄漏的泥沼，避免奇怪而又毫无头绪的调试。">
@@ -372,8 +372,9 @@
 </ul>
 <h2 id="14-在资源管理类中小心coping行为"><a href="#14-在资源管理类中小心coping行为" class="headerlink" title="14 在资源管理类中小心coping行为"></a>14 在资源管理类中小心coping行为</h2><p>有时候，资源并非位于堆中（书中所给例子为互斥锁），这时可能需要我们自己建立资源管理类。</p>
 <p>如下面的例子，我们将对不同的底层资源使用情景给出不同的解决方案。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// Lock是互斥锁的资源管理类</div><div class="line">class Lock &#123;</div><div class="line">public:</div><div class="line">    explicit Lock(Mutex* pm):mutexPtr(pm) &#123; // 获得资源</div><div class="line">        lock(mutexPtr);</div><div class="line">    &#125;</div><div class="line">    ~Lock() &#123;unlock(mutexPtr); &#125; //释放资源</div><div class="line">private:</div><div class="line">    Mutex* mutexPtr;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
-<p>这样，我们期望能够使用<code>Lock</code>对象实现对互斥锁的自动管理。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Mutex m;   // 互斥锁</div><div class="line">// ...</div><div class="line">&#123;</div><div class="line">Lock ml(&amp;m);</div><div class="line">// ...</div><div class="line">&#125;    // 在区块外，ml自动析构，实现解锁</div></pre></td></tr></table></figure></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">// Lock是互斥锁的资源管理类</div><div class="line">class Lock &#123;</div><div class="line">public:</div><div class="line">    explicit Lock(Mutex* pm):mutexPtr(pm) &#123; // 获得资源</div><div class="line">        lock(mutexPtr);</div><div class="line">    &#125;</div><div class="line">    ~Lock() &#123;unlock(mutexPtr); &#125; //释放资源</div><div class="line">private:</div><div class="line">    Mutex* mutexPtr;</div><div class="line">&#125;;</div></pre></td></tr></table></figure>
+<p>这样，我们期望能够使用<code>Lock</code>对象实现对互斥锁的自动管理。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">Mutex m;   <span class="comment">// 互斥锁</span></div><div class="line"><span class="comment">// ...</span></div><div class="line">&#123;</div><div class="line"><span class="function">Lock <span class="title">ml</span><span class="params">(&amp;m)</span></span>;</div><div class="line"><span class="comment">// ...</span></div><div class="line">&#125;    <span class="comment">// 在区块外，ml自动析构，实现解锁</span></div></pre></td></tr></table></figure>
 <p>然而，如何处理<code>Lock</code>对象的拷贝？</p>
 <ul>
 <li>情景一，禁止复制。就像上例，很多时候对互斥锁的复制毫无道理。我们可以使用条款6中的trick禁止类的copying行为发生。</li>
@@ -388,16 +389,20 @@
 <p>另外，除非必要，不要使用原始数组。STL中的<code>vector</code>和<code>string</code>是替代数组的不错选择。</p>
 <h2 id="17-以独立语句将newed对象置于智能指针"><a href="#17-以独立语句将newed对象置于智能指针" class="headerlink" title="17 以独立语句将newed对象置于智能指针"></a>17 以独立语句将newed对象置于智能指针</h2><p>以独立语句将newed对象存储于智能指针，否则一旦发生异常，有可能导致难以察觉的内存泄露。</p>
 <p>书中给出了一个例子，是由于逗号表达式的执行顺序不定造成的。</p>
-<p>如下面的函数声明：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">int priority() &#123; /*some code*/&#125;</div><div class="line">void process(shared_ptr&lt;Widget&gt; pw, int priority) &#123; /*some code*/&#125;</div></pre></td></tr></table></figure></p>
-<p>在使用时，也许你会这样调用<code>process</code>函数。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">process(new Widget(), priority());</div></pre></td></tr></table></figure></p>
-<p>首先，这样是不能通过编译器的。因为<code>shared_ptr</code>的构造函数是<code>explicit</code>的，不能够隐式将原始指针转换为<code>shared_ptr</code>对象。但是改为下面的代码就没问题了吗？：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">process(shared_ptr&lt;Widget&gt;(new Widget()), priority());</div></pre></td></tr></table></figure></p>
+<p>如下面的函数声明：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">priority</span><span class="params">()</span> </span>&#123; <span class="comment">/*some code*/</span>&#125;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">process</span><span class="params">(<span class="built_in">shared_ptr</span>&lt;Widget&gt; pw, <span class="keyword">int</span> priority)</span> </span>&#123; <span class="comment">/*some code*/</span>&#125;</div></pre></td></tr></table></figure>
+<p>在使用时，也许你会这样调用<code>process</code>函数。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">process(<span class="keyword">new</span> Widget(), priority());</div></pre></td></tr></table></figure>
+<p>首先，这样是不能通过编译器的。因为<code>shared_ptr</code>的构造函数是<code>explicit</code>的，不能够隐式将原始指针转换为<code>shared_ptr</code>对象。但是改为下面的代码就没问题了吗？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">process(<span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget()), priority());</div></pre></td></tr></table></figure>
 <p>由于C++中函数参数的核算顺序是不确定的，所以可能发生：</p>
 <ul>
 <li>new出来一个Widget资源</li>
 <li>调用<code>priority()</code>函数，注意此时可能引发异常，使得Widget资源无法回收</li>
 <li>构造<code>shared_ptr</code>对象</li>
 </ul>
-<p>问题已经很明确了。所以我们应该首先确保资源确实被智能指针获取到了，使用下面的独立语句更好。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">auto pw = shared_ptr&lt;Widget&gt;(new Widget());</div><div class="line">process(pw, priority());</div></pre></td></tr></table></figure></p>
+<p>问题已经很明确了。所以我们应该首先确保资源确实被智能指针获取到了，使用下面的独立语句更好。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">auto</span> pw = <span class="built_in">shared_ptr</span>&lt;Widget&gt;(<span class="keyword">new</span> Widget());</div><div class="line">process(pw, priority());</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -537,7 +542,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">29</span>
+                <span class="site-state-item-count">30</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
