@@ -91,7 +91,8 @@
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="身在天朝，GFW是一个很蛋疼的东西。有人说GFW挡住了天朝与世界其他地方的交流，尤其给科研造成了很多不便；也有人认为GFW挡住了美利坚的“坚船利炮”（Google，Facebook，Tweet等），让中国的互联网企业高速发展。这两种思路都很有道理，然而GFW对计算机相关行业人员造成不便倒也是千真万确，让人在无数次404之后，脱口而出F*。也有人打趣，会不会FQ，已经成为了CS入行的第一道关卡，正好">
 <meta property="og:image" content="https://xmfbit.github.io/img/god_use_vpn.png">
-<meta property="og:updated_time" content="2017-05-01T07:07:06.000Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/ipsec_ios_vpn_setting.png">
+<meta property="og:updated_time" content="2017-05-20T12:41:39.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="在DigitalOcean上配置Shadowsocks实现IPV4/IPV6翻墙">
 <meta name="twitter:description" content="身在天朝，GFW是一个很蛋疼的东西。有人说GFW挡住了天朝与世界其他地方的交流，尤其给科研造成了很多不便；也有人认为GFW挡住了美利坚的“坚船利炮”（Google，Facebook，Tweet等），让中国的互联网企业高速发展。这两种思路都很有道理，然而GFW对计算机相关行业人员造成不便倒也是千真万确，让人在无数次404之后，脱口而出F*。也有人打趣，会不会FQ，已经成为了CS入行的第一道关卡，正好">
@@ -372,6 +373,14 @@
 <p>编辑<code>/etc/rc.local</code>文件，在<code>exit 0</code>之前添加如下命令。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ssserver -c /etc/shadowsocks.json -d start  # 这里的json文件名要相对应</div></pre></td></tr></table></figure></p>
 <p>之后，使用<code>reboot</code>命令重启即可。</p>
 <h2 id="客户端配置"><a href="#客户端配置" class="headerlink" title="客户端配置"></a>客户端配置</h2><p>客户端使用ss，编辑服务器，按照json文件中的内容填写即可。注意密码相对应。</p>
+<h2 id="IOS平台设置"><a href="#IOS平台设置" class="headerlink" title="IOS平台设置"></a>IOS平台设置</h2><p>终于把Pad上的翻墙搞定了。。。参考资料为GitHub的相关页面，基本为傻瓜式操作。</p>
+<ul>
+<li><a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/README-zh.md" target="_blank" rel="external">IPsec VPN 服务器一键安装脚本</a></li>
+<li><a href="https://github.com/hwdsl2/setup-ipsec-vpn/blob/master/docs/clients-zh.md" target="_blank" rel="external">配置 IPsec/L2TP VPN 客户端</a></li>
+</ul>
+<p>首先，使用如下命令在VPN服务器上搭建IPsec服务：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://git.io/vpnsetup -O vpnsetup.sh &amp;&amp; sudo sh vpnsetup.sh</div></pre></td></tr></table></figure>
+<p>然后按照下面的步骤在IOS平台上进行设置。<br><img src="/img/ipsec_ios_vpn_setting.png" alt=""></p>
 
       
     </div>
@@ -568,7 +577,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#申请机器"><span class="nav-number">1.</span> <span class="nav-text">申请机器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装ss"><span class="nav-number">2.</span> <span class="nav-text">安装ss</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑配置文件"><span class="nav-number">3.</span> <span class="nav-text">编辑配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑启动项，设置自动启动"><span class="nav-number">4.</span> <span class="nav-text">编辑启动项，设置自动启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端配置"><span class="nav-number">5.</span> <span class="nav-text">客户端配置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#申请机器"><span class="nav-number">1.</span> <span class="nav-text">申请机器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安装ss"><span class="nav-number">2.</span> <span class="nav-text">安装ss</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑配置文件"><span class="nav-number">3.</span> <span class="nav-text">编辑配置文件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编辑启动项，设置自动启动"><span class="nav-number">4.</span> <span class="nav-text">编辑启动项，设置自动启动</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端配置"><span class="nav-number">5.</span> <span class="nav-text">客户端配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IOS平台设置"><span class="nav-number">6.</span> <span class="nav-text">IOS平台设置</span></a></li></ol></div>
             
 
           </div>
