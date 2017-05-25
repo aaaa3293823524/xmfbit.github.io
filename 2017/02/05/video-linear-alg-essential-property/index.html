@@ -91,7 +91,8 @@
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
 <meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
-<meta property="og:updated_time" content="2017-05-01T07:07:06.000Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential_linear_equation.png">
+<meta property="og:updated_time" content="2017-05-25T05:24:48.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="B站视频“线性代数的本质”观后感">
 <meta name="twitter:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
@@ -367,7 +368,7 @@
 <li>变换前后原点不动</li>
 <li>变换前后平行等距线仍然保持平行等距（但是距离值可能会变）。</li>
 </ul>
-<h2 id="线性变换与矩阵的关系"><a href="#线性变换与矩阵的关系" class="headerlink" title="线性变换与矩阵的关系"></a>线性变换与矩阵的关系</h2><p>视频在阐述线性变换和矩阵关系的时候一带而过，不是很好。下面是我写的一个补充说明。</p>
+<h2 id="线性变换与矩阵的关系"><a href="#线性变换与矩阵的关系" class="headerlink" title="线性变换与矩阵的关系"></a>线性变换与矩阵的关系</h2><p>视频在阐述线性变换和矩阵关系的时候一带而过，不是很清楚（所以还是要去看严肃的教材啊）。下面是我写的一个补充说明。这也是整个视频系列的基础。</p>
 <p>在由一组基向量$\alpha_i, i = 1,2,\dots,n$张成的线性空间$\mathcal{V}$上，任何一个向量$v$都可以表示为这组基的线性组合，也就是</p>
 <script type="math/tex; mode=display">v = \sum_{i=1}^{n}k_i\alpha_i</script><p>则线性变换$\mathcal{T}$对$v$作用之后，有，</p>
 <script type="math/tex; mode=display">u = \mathcal{T}(v) = \mathcal{T}(\sum_{i=1}^{n}k_i\alpha_i)</script><p>根据线性变换的叠加性，有，</p>
@@ -382,7 +383,15 @@
 <p>所以，对于任意向量$x$，$Ax$的结果就是组成矩阵$A$的各列向量的线性组合。这个由矩阵$A$的各列张成的空间叫做矩阵的列空间。</p>
 <p>而那些使得方程$Ax=0$成立的$x$，张成的空间为矩阵的核空间。</p>
 <p>矩阵的秩的意义就是矩阵列空间的维数。</p>
+<p>同时，从这个角度看来，解决多元线性方程组的过程就变成了这样一个问题：即给定代表线性变换的矩阵以及变换后的向量，求解变换前向量。这个转换如下所示：<br><img src="/img/video_linear_alg_essential_linear_equation.png" alt="线性方程组与矩阵乘法"></p>
+<p>既然矩阵代表了某种线性变换，那么很自然的，可以想到，我们可以求取这个线性变换的逆变换，这个逆变换作用到$v$上，就可以得到原始的向量$x$了（而且这样的向量只有一个）！自然，这个逆变换也是有矩阵与其对应的，这个矩阵就是原矩阵的逆矩阵。那么是不是所有的矩阵都有逆矩阵呢？我们可以通过行列式来分析。</p>
 <h2 id="行列式"><a href="#行列式" class="headerlink" title="行列式"></a>行列式</h2><p>仍然考虑二维矩阵，我们已经知道它表示了二维平面上的线性变换。而矩阵行列式的意义，就表明了变换前后，单位面积的正方形被放缩的比例。如果变换之后，$i$向量跑到了$j$向量的左手边，那么需要加上负号，表明在这个变换过程中，二维平面其实进过了一次翻转。</p>
+<p>我们已经知道，行列式为$0$的矩阵实际对线性空间进行了“降维打击”。以二维平面举例，变换之后变成了一条直线（甚至变成了一个点），也就是说对于任意给定的一个变换后向量，有这样两种情况：</p>
+<ul>
+<li>当这个向量不在这条直线上的时候，说明没有原始向量与其对应（否则矛盾），此时原方程组无解。</li>
+<li>当这个向量在这条直线上的时候，说明很多的原始向量（而且必然是无穷多）与其对应，此时原方程组有无穷多组解。</li>
+</ul>
+<p>你不能将一条直线“解压缩”为原始平面，所以行列式为$0$的矩阵，不存在逆矩阵。</p>
 <h2 id="点积叉积和对偶性"><a href="#点积叉积和对偶性" class="headerlink" title="点积叉积和对偶性"></a>点积叉积和对偶性</h2><p>这部分的对偶性这个概念比较玄一些，这里就不讲了。。。对于向量的点积，我们已经知道，</p>
 <script type="math/tex; mode=display">\langle v, u \rangle = \sum_{i=1}^{n}v_iu_i</script><p>从几何的角度看，向量的点积是将向量$u$向向量$v$的方向投影（有正负），投影长度乘上$v$的长度得到的。</p>
 <p>按照上面矩阵乘法的思路，$u$可以看做代表一个从2维到1维的线性变换（也就是从$\mathbb{R}^2$到$\mathbb{R}$）。而根据上述矩阵变换和矩阵乘法的对应关系可知，变换后的结果就等于$v$的两个分量分别乘上两个基向量（也就是$u$的两个分量），这样我们就得到了向量点积的数值计算方法。</p>
@@ -525,7 +534,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">33</span>
+                <span class="site-state-item-count">34</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
