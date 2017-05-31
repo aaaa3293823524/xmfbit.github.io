@@ -95,7 +95,16 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_bellman_equation_figure.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_bellman_equation_matrix.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_bellman_equation_solution.png">
-<meta property="og:updated_time" content="2017-05-31T13:21:19.000Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_vq_relationship.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_vq_relationship2.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_vv_relationship.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_qq_relationship.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_optimal_policy.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_optimal_vq_relationship.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_optimal_vq_relationship2.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_optimal_vv_relationship.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp_optimal_qq_relationship.png">
+<meta property="og:updated_time" content="2017-05-31T15:23:34.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Silver RL课程 - MDP">
 <meta name="twitter:description" content="Silver在英国UCL讲授强化学习的slide总结。背景介绍部分略去不表，第一篇首先介绍强化学习中重要的数学基础-马尔科夫决策过程（MDP）。">
@@ -364,7 +373,7 @@
 
       
         <p>Silver在英国UCL讲授强化学习的slide总结。背景介绍部分略去不表，第一篇首先介绍强化学习中重要的数学基础-马尔科夫决策过程（MDP）。<br><img src="/img/silver_rl_mdp.png" alt="MDP"><br><a id="more"></a></p>
-<h2 id="马尔科夫性质"><a href="#马尔科夫性质" class="headerlink" title="马尔科夫性质"></a>马尔科夫性质</h2><p>不严谨的说法，马尔科夫性质是指未来与过去无关，只与当前的状态有关。我们说某个State是Markov的，等价于下面的等式成立：</p>
+<h2 id="马尔科夫性质"><a href="#马尔科夫性质" class="headerlink" title="马尔科夫性质"></a>马尔科夫性质</h2><p>不严谨地来说，马尔科夫性质是指未来与过去无关，只与当前的状态有关。我们说某个State是Markov的，等价于下面的等式成立：</p>
 <script type="math/tex; mode=display">P[S_{t+1}|S_t] = P[S_{t+1}|S_1, \dots, S_t]</script><p>定义状态转移概率（State Transition Probability）如下：</p>
 <script type="math/tex; mode=display">P_{ss^\prime} = P[S_{t+1}=s^\prime|S_t=s]</script><p>前后两个时刻的状态不同取值的状态转移概率可以写成一个矩阵的形式。矩阵中的任意元素$P_{i,j}$表示$t$时刻状态$i$在$t+1$时刻转移到状态$j$的概率。矩阵满足行和为$1$的约束。</p>
 <p>下面，我们从马尔科夫性质展开，逐步地加入一些额外的参量，一步步引出强化学习中的马尔科夫决策过程。</p>
@@ -387,7 +396,7 @@
 <li>人类行为倾向于即时奖励。</li>
 <li>如果马氏过程是存在终止的，有的时候也可以使用$\gamma=1$，也就是不打折。</li>
 </ul>
-<h2 id="值函数"><a href="#值函数" class="headerlink" title="值函数"></a>值函数</h2><p>值函数（Value function）的意义是给出了状态$s$的长期回报，以期望的形式（条件期望），如下：</p>
+<h2 id="值函数"><a href="#值函数" class="headerlink" title="值函数"></a>值函数</h2><p>值函数（Value function）的意义是以期望的形式（条件期望）给出了状态$s$的长期回报，如下：</p>
 <script type="math/tex; mode=display">v(s) = E[G_t|S_t=s]</script><p>值函数可以分为两个部分，即时奖励$R_{t+1}$和后续状态的折旧值函数。如下所示：<br><img src="/img/silver_mdp_value_function.png" alt="推导过程"></p>
 <p>最后一步推导时，第二项的变形从直觉上推断还是比较容易的，但是还是把比较严格的推导过程写在下面：</p>
 <script type="math/tex; mode=display">\begin{aligned}
@@ -411,13 +420,34 @@ E[G_{t+1}|S_t = s]  &= \sum_{s^\prime\in S}E[G_{t+1}|S_{t+1}=s^\prime]P(S_{t+1}=
 <li>$P_{ss^\prime}^a = P(S_{t+1}=s^\prime|S_t=s, A_t=a)$是状态转移概率矩阵。</li>
 <li>$R_{s}^a = E[R_{t+1}|S_t=s, A_t=a]$是奖励函数（与动作也挂钩）</li>
 </ul>
-<h2 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h2><p>策略（Policy）$\pi$是指在给定状态情况下，采取动作的概率分布，如下：</p>
+<h3 id="策略"><a href="#策略" class="headerlink" title="策略"></a>策略</h3><p>策略（Policy）$\pi$是指在给定状态情况下，采取动作的概率分布，如下：</p>
 <script type="math/tex; mode=display">\pi(a|s)=P(A_t=a|S_t=s)</script><p>对于一个智能体，如果策略确定了，那么它对环境的表现也就决定了。MDP的策略与历史无关，只与当前的状态有关。同时，策略是平稳过程，与时间无关。例如，无论在开局，还是终局，只要棋盘上的落子一样（也就是状态一样），那么围棋程序应该给出相同的落子动作决策。</p>
-<p>当我们给定一个MDP和相应的策略$\pi$时，状态转移过程$S_1,S_2,\dots$是一个马氏过程$(S, P^\pi)$（上标$\pi$表示$P$由$\pi$决定）。而状态和奖励构成的过程$S_1,R_1,\dots$是一个马氏奖赏过程$(S, P^\pi, R^\pi, \gamma)$。其中，</p>
+<p>当我们给定一个MDP和相应的策略$\pi$时，状态转移过程$S_1,S_2,\dots$是一个马氏过程$(S, P^\pi)$（上标$\pi$表示$P$由$\pi$决定）。而状态和奖励构成的过程$S_1,R_1,\dots$是一个马氏奖赏过程$(S, P^\pi, R^\pi, \gamma)$。具体来说，如下（就是全概率公式）：</p>
 <script type="math/tex; mode=display">\begin{aligned}
 P_{ss^\prime}^\pi &= \sum_{a\in A}\pi(a|s)P_{ss^\prime}^a\\
 R_s^\pi &=\sum_{a\in A}\pi(a|s)R_s^a
-\end{aligned}</script>
+\end{aligned}</script><h3 id="值函数-1"><a href="#值函数-1" class="headerlink" title="值函数"></a>值函数</h3><p>MDP的值函数$v_\pi(s)$是指在当前状态$s$出发，使用策略$\pi$得到的回报期望，即，</p>
+<script type="math/tex; mode=display">v_\pi(s) = E_\pi[G_t|S_t=s]</script><p>引入“动作-值”函数（action-value function）$q_\pi(s,a)$，意义是从当前状态$s$出发，执行动作$a$，再使用策略$\pi$得到的回报期望，即，</p>
+<script type="math/tex; mode=display">q_\pi(s,a) = E_\pi[G_t|S_t=s,A_t=a]</script><h3 id="贝尔曼方程"><a href="#贝尔曼方程" class="headerlink" title="贝尔曼方程"></a>贝尔曼方程</h3><p>两者的关系如下如所示（通过全概率公式联系）：<br><img src="/img/silver_rl_mdp_vq_relationship.png" alt="Q函数和值函数的关系"></p>
+<p>注意上图描述的是$t$时刻的状态$s$下，$v(s)$和$q(s,a)$的关系。我们继续顺着状态链往前，可以得到下图所示$q(s,a)$和$t+1$时刻的状态$s^\prime$的值函数$v(s^\prime)$之间的关系。同样是一个全概率公式：<br><img src="/img/silver_rl_mdp_vq_relationship2.png" alt="相邻时刻Q函数和值函数的关系"></p>
+<p>综合上面两幅图中给出的关系，我们有相邻时刻值函数$v(s)$和$v(s^\prime)$的关系：<br><img src="/img/silver_rl_mdp_vv_relationship.png" alt="相邻时刻值函数关系"></p>
+<p>同样，相邻时刻Q函数的关系：<br><img src="/img/silver_rl_mdp_qq_relationship.png" alt="相邻时刻Q函数关系"></p>
+<p>写成紧凑的矩阵形式：</p>
+<script type="math/tex; mode=display">v_\pi = R^\pi + \gamma P^\pi v_\pi</script><p>这个方程的解是：</p>
+<script type="math/tex; mode=display">v_\pi = (1-\gamma P^\pi)^{-1}R^\pi</script><p>和上面对策略函数的分解类似，我们有下面两式成立：</p>
+<script type="math/tex; mode=display">v_\pi(s) = E_\pi[R_{t+1} + \gamma v_\pi(sS_{t+1})]</script><h3 id="最优值函数"><a href="#最优值函数" class="headerlink" title="最优值函数"></a>最优值函数</h3><p>最优的值函数是指在所有的策略中，使得$v_\pi(s)$取得最大值的那个，即：</p>
+<script type="math/tex; mode=display">v_\ast(s) = \max_\pi v_\pi(s)</script><p>最优Q函数的定义同理：</p>
+<script type="math/tex; mode=display">q_\ast(s,a) = \max_\pi q_\pi(s,a)</script><p>定义策略$\pi$集合上的一个偏序为</p>
+<script type="math/tex; mode=display">\pi > \pi^\prime \quad \text{if} \quad v_\pi(s) > v_{\pi^\prime}(s), \forall s</script><p>如果我们已经知道了最优的值函数，那么我们可以在每一步选取动作的时候，选取那个使得当前Q函数取得最大值的动作即可。这很straight forward，用数学语言表达就是：</p>
+<p><img src="/img/silver_rl_mdp_optimal_policy.png" alt="最优策略的取法"><br>同样地，对于最优值函数，也有贝尔曼递归方程成立。下面是一个形象化的推导，和上面导出贝尔曼方程的思路是一样的。<br><img src="/img/silver_rl_mdp_optimal_vq_relationship.png" alt=""><br><img src="/img/silver_rl_mdp_optimal_vq_relationship2.png" alt=""><br><img src="/img/silver_rl_mdp_optimal_vv_relationship.png" alt=""><br><img src="/img/silver_rl_mdp_optimal_qq_relationship.png" alt=""></p>
+<p>常用的求解方法包括：</p>
+<ul>
+<li>值迭代（Value Iteration）</li>
+<li>策略迭代（Policy Iteration）</li>
+<li>Q Learning</li>
+<li>Sarsa</li>
+</ul>
+
       
     </div>
 
@@ -609,7 +639,7 @@ R_s^\pi &=\sum_{a\in A}\pi(a|s)R_s^a
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫性质"><span class="nav-number">1.</span> <span class="nav-text">马尔科夫性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫过程"><span class="nav-number">2.</span> <span class="nav-text">马尔科夫过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫奖赏过程"><span class="nav-number">3.</span> <span class="nav-text">马尔科夫奖赏过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#值函数"><span class="nav-number">4.</span> <span class="nav-text">值函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫决策过程"><span class="nav-number">5.</span> <span class="nav-text">马尔科夫决策过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#策略"><span class="nav-number">6.</span> <span class="nav-text">策略</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫性质"><span class="nav-number">1.</span> <span class="nav-text">马尔科夫性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫过程"><span class="nav-number">2.</span> <span class="nav-text">马尔科夫过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫奖赏过程"><span class="nav-number">3.</span> <span class="nav-text">马尔科夫奖赏过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#值函数"><span class="nav-number">4.</span> <span class="nav-text">值函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫决策过程"><span class="nav-number">5.</span> <span class="nav-text">马尔科夫决策过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#策略"><span class="nav-number">5.1.</span> <span class="nav-text">策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#值函数-1"><span class="nav-number">5.2.</span> <span class="nav-text">值函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#贝尔曼方程"><span class="nav-number">5.3.</span> <span class="nav-text">贝尔曼方程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最优值函数"><span class="nav-number">5.4.</span> <span class="nav-text">最优值函数</span></a></li></ol></li></ol></div>
             
 
           </div>
