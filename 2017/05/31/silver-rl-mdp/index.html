@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="tool," />
+  <meta name="keywords" content="reinforcement learning," />
 
 
 
@@ -84,18 +84,19 @@
 
 
 
-<meta name="description" content="Jupyter Notebook可以很方便地记录代码和内容，很适合边写笔记边写示例代码进行学习总结。在本机使用时，只需在相应文件夹下使用jupyter notebook命令即可在浏览器中打开笔记页面，进行编辑。而本篇文章记述了如何在远端登录并使用Jupyter笔记本。这样，就可以利用服务器较强的运算能力来搞事情了。">
+<meta name="description" content="Silver在英国UCL讲授强化学习的slide总结。背景介绍部分略去不表，第一篇首先介绍强化学习中重要的数学基础-马尔科夫决策过程（MDP）。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="远程登录Jupyter笔记本">
-<meta property="og:url" content="https://xmfbit.github.io/2017/02/26/jupyternotebook-remote-useage/index.html">
+<meta property="og:title" content="Silver RL课程 - MDP">
+<meta property="og:url" content="https://xmfbit.github.io/2017/05/31/silver-rl-mdp/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="Jupyter Notebook可以很方便地记录代码和内容，很适合边写笔记边写示例代码进行学习总结。在本机使用时，只需在相应文件夹下使用jupyter notebook命令即可在浏览器中打开笔记页面，进行编辑。而本篇文章记述了如何在远端登录并使用Jupyter笔记本。这样，就可以利用服务器较强的运算能力来搞事情了。">
-<meta property="og:image" content="https://xmfbit.github.io/img/jupyternotebook_logo.png">
-<meta property="og:updated_time" content="2017-05-28T15:02:12.000Z">
+<meta property="og:description" content="Silver在英国UCL讲授强化学习的slide总结。背景介绍部分略去不表，第一篇首先介绍强化学习中重要的数学基础-马尔科夫决策过程（MDP）。">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_rl_mdp.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/silver_mdp_value_function.png">
+<meta property="og:updated_time" content="2017-05-31T06:13:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="远程登录Jupyter笔记本">
-<meta name="twitter:description" content="Jupyter Notebook可以很方便地记录代码和内容，很适合边写笔记边写示例代码进行学习总结。在本机使用时，只需在相应文件夹下使用jupyter notebook命令即可在浏览器中打开笔记页面，进行编辑。而本篇文章记述了如何在远端登录并使用Jupyter笔记本。这样，就可以利用服务器较强的运算能力来搞事情了。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/jupyternotebook_logo.png">
+<meta name="twitter:title" content="Silver RL课程 - MDP">
+<meta name="twitter:description" content="Silver在英国UCL讲授强化学习的slide总结。背景介绍部分略去不表，第一篇首先介绍强化学习中重要的数学基础-马尔科夫决策过程（MDP）。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/silver_rl_mdp.png">
 
 
 
@@ -123,13 +124,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2017/02/26/jupyternotebook-remote-useage/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/05/31/silver-rl-mdp/"/>
 
 
 
 
 
-  <title> 远程登录Jupyter笔记本 | 来呀，快活呀~ </title>
+  <title> Silver RL课程 - MDP | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -284,7 +285,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/02/26/jupyternotebook-remote-useage/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/05/31/silver-rl-mdp/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -308,7 +309,7 @@
             
             
               
-                远程登录Jupyter笔记本
+                Silver RL课程 - MDP
               
             
           </h1>
@@ -323,8 +324,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-26T19:53:11+08:00">
-                2017-02-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-05-31T13:03:31+08:00">
+                2017-05-31
               </time>
             
 
@@ -359,18 +360,33 @@
       
 
       
-        <p>Jupyter Notebook可以很方便地记录代码和内容，很适合边写笔记边写示例代码进行学习总结。在本机使用时，只需在相应文件夹下使用<code>jupyter notebook</code>命令即可在浏览器中打开笔记页面，进行编辑。而本篇文章记述了如何在远端登录并使用Jupyter笔记本。这样，就可以利用服务器较强的运算能力来搞事情了。<br><img src="/img/jupyternotebook_logo.png" alt="jupyternotebook"><br><a id="more"></a></p>
-<h2 id="配置jupter-notebook"><a href="#配置jupter-notebook" class="headerlink" title="配置jupter notebook"></a>配置jupter notebook</h2><p>登录远程服务器后，使用如下命令生成配置文件。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jupyter notebook --generate-config</div></pre></td></tr></table></figure>
-<p>并对其内容进行修改。我主要修改了两处地方：</p>
+        <p>Silver在英国UCL讲授强化学习的slide总结。背景介绍部分略去不表，第一篇首先介绍强化学习中重要的数学基础-马尔科夫决策过程（MDP）。<br><img src="/img/silver_rl_mdp.png" alt="MDP"><br><a id="more"></a></p>
+<h2 id="马尔科夫性质"><a href="#马尔科夫性质" class="headerlink" title="马尔科夫性质"></a>马尔科夫性质</h2><p>不严谨的说法，马尔科夫性质是指未来与过去无关，只与当前的状态有关。我们说某个State是Markov的，等价于下面的等式成立：</p>
+<script type="math/tex; mode=display">P[S_{t+1}|S_t] = P[S_{t+1}|S_1, \dots, S_t]</script><p>定义状态转移概率（State Transition Probability）如下：</p>
+<script type="math/tex; mode=display">P_{ss^\prime} = P[S_{t+1}=s^\prime|S_t=s]</script><p>前后两个时刻的状态不同取值的状态转移概率可以写成一个矩阵的形式。矩阵中的任意元素$P_{i,j}$表示$t$时刻状态$i$在$t+1$时刻转移到状态$j$的概率。矩阵满足行和为$1$的约束。</p>
+<p>下面，我们从马尔科夫性质展开，逐步地加入一些额外的参量，一步步引出强化学习中的马尔科夫决策过程。</p>
+<h3 id="马尔科夫过程"><a href="#马尔科夫过程" class="headerlink" title="马尔科夫过程"></a>马尔科夫过程</h3><p>马尔科夫过程（或者叫做马尔科夫链）是指随机过程中的状态满足马尔科夫性质。我们可以使用二元组$(S, P)$来描述马氏过程。其中，</p>
 <ul>
-<li><code>c.NotebookApp.ip=&#39;*&#39;</code>，即不限制ip访问</li>
-<li><code>c.NotebookApp.password = u&#39;hash_value&#39;</code></li>
+<li>$S$是一个有限状态集合。</li>
+<li>$P$是状态转移矩阵，定义如上。</li>
 </ul>
-<p>上面的<code>hash_value</code>是由用户给定的密码生成的。可以使用<code>ipython</code>中的命令轻松搞定。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> notebook.auth <span class="keyword">import</span> passwd</div><div class="line">passwd()</div><div class="line"><span class="string">"""</span></div><div class="line">这里会要求用户输入密码并确认，之后生成的hash值就是要填写到上面的</div><div class="line">"""</div></pre></td></tr></table></figure>
-<h2 id="启动notebook"><a href="#启动notebook" class="headerlink" title="启动notebook"></a>启动notebook</h2><p>之后，在远程服务器上启动笔记本<code>jupyter notebook</code>。接着，在本地机器上访问<code>远程服务器ip:8888</code>（默认端口为<code>8888</code>，也可以在配置文件中修改），输入密码即可访问远程笔记本。</p>
-<p>本篇内容参考自博客<a href="http://blog.leanote.com/post/jevonswang/远程访问jupyter-notebook" target="_blank" rel="external">远程访问jupyter notebook</a>。</p>
+<h3 id="马尔科夫奖赏过程"><a href="#马尔科夫奖赏过程" class="headerlink" title="马尔科夫奖赏过程"></a>马尔科夫奖赏过程</h3><p>马尔科夫奖赏过程（不知道如何翻译，Markov reward process）在马氏过程基础上加上了状态转移过程中的奖赏reward。可以使用四元组$(S, P, R, \gamma)$来表示。其中，</p>
+<ul>
+<li>$R$代表奖励函数，$R_s = E[R_{t+1}|S_t=s]$，是指当前状态为$s$时，下一步状态转移过程中的期望奖励。</li>
+<li>$\gamma$是折旧率（discount），$\gamma \in [0,1]$</li>
+</ul>
+<p>定义回报（Return）为当前时刻往后得到的折旧总奖励，即：</p>
+<script type="math/tex; mode=display">G_t = R_{t+1}+\gamma R_{t+2}+... = \sum_{k=0}^{\infty}\gamma^kR_{t+k+1}</script><p>折旧率的引入，有以下几点考虑：</p>
+<ul>
+<li>在有环存在的马氏过程中，避免了无穷大回报的出现。</li>
+<li>未来的不确定性对当前的影响较小。</li>
+<li>事实上的考虑，例如投资市场上，即时的奖励比迟滞的奖励能够有更多的利息。</li>
+<li>人类行为倾向于即时奖励。</li>
+<li>如果马氏过程是存在终止的，有的时候也可以使用$\gamma=1$，也就是不打折。</li>
+</ul>
+<h3 id="值函数"><a href="#值函数" class="headerlink" title="值函数"></a>值函数</h3><p>值函数（Value function）的意义是给出了状态$s$的长期回报，以期望的形式（条件期望），如下：</p>
+<script type="math/tex; mode=display">v(s) = E[G_t|S_t=s]</script><p>值函数可以分为两个部分，即时奖励$R_{t+1}$和后续状态的折旧值函数。如下所示：<br><img src="/img/silver_mdp_value_function.png" alt="推导过程"></p>
+<p>最后一步推导时，</p>
 
       
     </div>
@@ -394,7 +410,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/tool/" rel="tag"># tool</a>
+            <a href="/tags/reinforcement-learning/" rel="tag"># reinforcement learning</a>
           
         </div>
       
@@ -403,8 +419,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/25/pytorch-tutor-01/" rel="next" title="PyTorch简介">
-                <i class="fa fa-chevron-left"></i> PyTorch简介
+              <a href="/2017/05/25/hinton-nnml-02/" rel="next" title="Neural Network for Machine Learning - Lecture 02">
+                <i class="fa fa-chevron-left"></i> Neural Network for Machine Learning - Lecture 02
               </a>
             
           </div>
@@ -412,10 +428,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/04/pytorch-mnist-example/" rel="prev" title="toy demo - PyTorch + MNIST">
-                toy demo - PyTorch + MNIST <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -567,7 +579,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置jupter-notebook"><span class="nav-number">1.</span> <span class="nav-text">配置jupter notebook</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动notebook"><span class="nav-number">2.</span> <span class="nav-text">启动notebook</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#马尔科夫性质"><span class="nav-number">1.</span> <span class="nav-text">马尔科夫性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#马尔科夫过程"><span class="nav-number">1.1.</span> <span class="nav-text">马尔科夫过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#马尔科夫奖赏过程"><span class="nav-number">1.2.</span> <span class="nav-text">马尔科夫奖赏过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#值函数"><span class="nav-number">1.3.</span> <span class="nav-text">值函数</span></a></li></ol></li></ol></div>
             
 
           </div>
