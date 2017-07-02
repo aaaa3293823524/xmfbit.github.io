@@ -90,10 +90,12 @@
 <meta property="og:url" content="https://xmfbit.github.io/2017/06/23/effective-cpp-07/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="模板是C++联邦中的重要成员。要想用好STL，必须了解模板。同时，模板元编程也是C++中的黑科技。">
-<meta property="og:updated_time" content="2017-06-23T12:27:18.000Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/effective_cpp_07_joke.jpg">
+<meta property="og:updated_time" content="2017-07-02T06:29:53.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective CPP 阅读 - Chapter 7 模板与泛型编程">
 <meta name="twitter:description" content="模板是C++联邦中的重要成员。要想用好STL，必须了解模板。同时，模板元编程也是C++中的黑科技。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/effective_cpp_07_joke.jpg">
 
 
 
@@ -357,7 +359,8 @@
       
 
       
-        <p>模板是C++联邦中的重要成员。要想用好STL，必须了解模板。同时，模板元编程也是C++中的黑科技。<br><a id="more"></a></p>
+        <p>模板是C++联邦中的重要成员。要想用好STL，必须了解模板。同时，模板元编程也是C++中的黑科技。</p>
+<p><img src="/img/effective_cpp_07_joke.jpg" alt="来自大师的嘲讽~"><br><a id="more"></a></p>
 <h2 id="41-了解隐式接口和编译器多态"><a href="#41-了解隐式接口和编译器多态" class="headerlink" title="41 了解隐式接口和编译器多态"></a>41 了解隐式接口和编译器多态</h2><p>OOP总是以显式接口和运行期多态解决问题。通过虚函数，运行期将根据变量（指针或引用）的动态类型决定究竟调用哪一个函数。</p>
 <p>而在模板与泛型世界中，例如下面的代码。没有明确指出，但是要求类型<code>T</code>支持操作符<code>&lt;</code>。隐式接口不基于函数的声明，而是由有效表达式组成。</p>
 <p>同时，模板的具现化（instantiated）是在编译期发生的。通过模板具现化和函数重载，实现了多态。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div><div class="line"><span class="function"><span class="keyword">bool</span> <span class="title">fun</span><span class="params">(<span class="keyword">const</span> T&amp; a, <span class="keyword">const</span> T&amp; b)</span> </span>&#123;<span class="keyword">return</span> a &lt; b;&#125;</div></pre></td></tr></table></figure></p>
@@ -477,8 +480,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/06/25/hinton-nnml-06/" rel="prev" title="Neural Network for Machine Learning - Lecture 06">
-                Neural Network for Machine Learning - Lecture 06 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/06/25/hinton-nnml-06/" rel="prev" title="Neural Network for Machine Learning - Lecture 06 神经网络的“调教”方法">
+                Neural Network for Machine Learning - Lecture 06 神经网络的“调教”方法 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>

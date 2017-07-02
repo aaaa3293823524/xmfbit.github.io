@@ -90,6 +90,7 @@
 <meta property="og:url" content="https://xmfbit.github.io/2017/05/25/hinton-nnml-02/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="这是第二周的课程内容，主要介绍了几种神经网络的分类，详细地介绍了感知机这一最简单的模型。">
+<meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_perceptron_gragh.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_feed_forward_nn.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_recurrent_nn.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_rnn_app.png">
@@ -98,11 +99,11 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_why_training_works_1.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_margin.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/hinton_02_perceptron_xor.png">
-<meta property="og:updated_time" content="2017-06-23T12:27:18.000Z">
+<meta property="og:updated_time" content="2017-07-02T06:31:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Neural Network for Machine Learning - Lecture 02">
 <meta name="twitter:description" content="这是第二周的课程内容，主要介绍了几种神经网络的分类，详细地介绍了感知机这一最简单的模型。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/hinton_02_feed_forward_nn.png">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/hinton_02_perceptron_gragh.png">
 
 
 
@@ -366,7 +367,9 @@
       
 
       
-        <p>这是第二周的课程内容，主要介绍了几种神经网络的分类，详细地介绍了感知机这一最简单的模型。<br><a id="more"></a></p>
+        <p>这是第二周的课程内容，主要介绍了几种神经网络的分类，详细地介绍了感知机这一最简单的模型。</p>
+<p><img src="/img/hinton_02_perceptron_gragh.png" alt="Perceptron"></p>
+<a id="more"></a>
 <h2 id="Different-neural-network-archs"><a href="#Different-neural-network-archs" class="headerlink" title="Different neural network archs"></a>Different neural network archs</h2><h3 id="Feed-forward-neural-network-前馈神经网络"><a href="#Feed-forward-neural-network-前馈神经网络" class="headerlink" title="Feed-forward neural network 前馈神经网络"></a>Feed-forward neural network 前馈神经网络</h3><p>前馈神经网络可能是最常见的网络，主要由输入层，若干隐含层和输出层组成。一般，当隐含层数目超过$1$时，我们可以说网络是deep的。<br><img src="/img/hinton_02_feed_forward_nn.png" alt="前馈网络"></p>
 <h3 id="Recurrent-network"><a href="#Recurrent-network" class="headerlink" title="Recurrent network"></a>Recurrent network</h3><p>RNN内部的节点之间存在有向的环，这使得它能够使用内部状态来对动态过程建模。RNN能力强大，但是不易训练。<br><img src="/img/hinton_02_recurrent_nn.png" alt="RNN"></p>
 <p>RNN常用来对序列进行建模（modeling squence）。这里有一篇<a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/" target="_blank" rel="external">不错的介绍</a>。<br><img src="/img/hinton_02_rnn_app.png" alt="RNN modeling squences"></p>

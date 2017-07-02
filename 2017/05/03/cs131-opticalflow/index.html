@@ -84,12 +84,15 @@
 
 
 
-<meta name="description" content="光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。">
+<meta name="description" content="光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。
+是你让我的世界从那刻变成粉红色  划掉。。。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="CS131-光流估计">
 <meta property="og:url" content="https://xmfbit.github.io/2017/05/03/cs131-opticalflow/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。">
+<meta property="og:description" content="光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。
+是你让我的世界从那刻变成粉红色  划掉。。。">
+<meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_demo.jpg">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_brightnessconstancy_assumption.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_lkequation.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_lkleastsquare.png">
@@ -97,11 +100,12 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_lkharris.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_pyramid.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs131_opticalflow_assignment_crossfade.png">
-<meta property="og:updated_time" content="2017-06-23T12:27:18.000Z">
+<meta property="og:updated_time" content="2017-07-02T09:48:03.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS131-光流估计">
-<meta name="twitter:description" content="光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/cs131_opticalflow_brightnessconstancy_assumption.png">
+<meta name="twitter:description" content="光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。
+是你让我的世界从那刻变成粉红色  划掉。。。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/cs131_opticalflow_demo.jpg">
 
 
 
@@ -365,7 +369,8 @@
       
 
       
-        <p>光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。<br><a id="more"></a></p>
+        <p>光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。</p>
+<p><del>是你让我的世界从那刻变成粉红色</del>  划掉。。。<br><img src="/img/cs131_opticalflow_demo.jpg" alt="OpticalFlow可视化"><br><a id="more"></a></p>
 <h2 id="光流的计算"><a href="#光流的计算" class="headerlink" title="光流的计算"></a>光流的计算</h2><p>光流（Optical Flow），是指图像中像素强度的“表象”运动。这里的表象运动，是指图像中的像素变化并不一定是由于运动造成的，还有可能是由于外界光照的变化引起的。</p>
 <p>光流估计就是指利用时间上相邻的两帧图像，得到点的运动。满足以下几点假设：</p>
 <ul>

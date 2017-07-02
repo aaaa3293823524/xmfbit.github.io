@@ -84,19 +84,23 @@
 
 
 
-<meta name="description" content="C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？">
+<meta name="description" content="C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？
+真•面向对象编程！">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective CPP 阅读 - Chapter 6 继承与面向对象设计">
 <meta property="og:url" content="https://xmfbit.github.io/2017/06/17/effective-cpp-06/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？">
+<meta property="og:description" content="C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？
+真•面向对象编程！">
+<meta property="og:image" content="https://xmfbit.github.io/img/effectivecpp_06_joke.jpg">
 <meta property="og:image" content="https://xmfbit.github.io/img/effectivecpp_strategy_pattern.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/effectivecpp_diamond.png">
-<meta property="og:updated_time" content="2017-06-23T12:27:18.000Z">
+<meta property="og:updated_time" content="2017-07-02T09:45:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective CPP 阅读 - Chapter 6 继承与面向对象设计">
-<meta name="twitter:description" content="C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/effectivecpp_strategy_pattern.png">
+<meta name="twitter:description" content="C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？
+真•面向对象编程！">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/effectivecpp_06_joke.jpg">
 
 
 
@@ -360,7 +364,8 @@
       
 
       
-        <p>C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？<br><a id="more"></a></p>
+        <p>C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？</p>
+<p>真•面向对象编程！<br><img src="/img/effectivecpp_06_joke.jpg" alt="面向对象编程"><br><a id="more"></a></p>
 <h2 id="32-确定public继承塑模出Is-a的关系"><a href="#32-确定public继承塑模出Is-a的关系" class="headerlink" title="32 确定public继承塑模出Is-a的关系"></a>32 确定<code>public</code>继承塑模出Is-a的关系</h2><p>请把这条规则记在心中：<code>public</code>继承意味着Is-a（XX是X的一种）的关系。适用于base class上的东西也一定能够用在derived class身上。因为每一个derived class对象也是一个base class的对象。</p>
 <p>不过，在实际使用时，可能并不是那么简单。举个例子，在鸟类这个基类中定义了<code>fly()</code>这一虚函数，而企鹅很显然是一种鸟，但是却没有飞翔的能力。类似的情况需要在编程实践中灵活处理。</p>
 <h2 id="33-避免遮掩继承而来的名称"><a href="#33-避免遮掩继承而来的名称" class="headerlink" title="33 避免遮掩继承而来的名称"></a>33 避免遮掩继承而来的名称</h2><p>这个题材实际和作用域有关。当C++遇到某个名称时，会首先在local域中寻找，如果找到，就不再继续寻找。这样，derived class中的名称可能会遮盖base class中的名称。</p>

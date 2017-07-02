@@ -309,7 +309,7 @@
               
                 
                 <a class="post-title-link" href="/2017/06/25/hinton-nnml-06/" itemprop="url">
-                  Neural Network for Machine Learning - Lecture 06
+                  Neural Network for Machine Learning - Lecture 06 神经网络的“调教”方法
                 </a>
               
             
@@ -362,7 +362,9 @@
 
       
         
-          <p>第六周的课程主要讲解了用于神经网络训练的梯度下降方法，首先对比了SGD，full batch GD和mini batch SGD方法，然后给出了几个用于神经网络训练的trick，主要包括输入数据预处理（零均值，单位方差以及PCA解耦），学习率的自适应调节以及网络权重的初始化方法（可以参考各大框架中实现的Xavier初始化方法等）。这篇文章主要记录了后续讲解的几种GD变种方法，如何合理利用梯度信息达到更好的训练效果。</p>
+          <p>第六周的课程主要讲解了用于神经网络训练的梯度下降方法，首先对比了SGD，full batch GD和mini batch SGD方法，然后给出了几个用于神经网络训练的trick，主要包括输入数据预处理（零均值，单位方差以及PCA解耦），学习率的自适应调节以及网络权重的初始化方法（可以参考各大框架中实现的Xavier初始化方法等）。这篇文章主要记录了后续讲解的几种GD变种方法，如何合理利用梯度信息达到更好的训练效果。由于Hinton这门课确实时间已经很久了，所以文章末尾会结合一篇不错的总结性质的<a href="http://sebastianruder.com/optimizing-gradient-descent/index.html">博客</a>和对应的<a href="https://arxiv.org/abs/1609.04747">论文</a>以及PyTorch中的相关代码，对目前流行的梯度下降方法做个总结。</p>
+<p>下图即来自上面的这篇博客。</p>
+<p><img src="/img/contours_evaluation_optimizers.gif" alt="几种优化方法的可视化"><br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/06/25/hinton-nnml-06/#more" rel="contents">
@@ -485,7 +487,8 @@
 
       
         
-          <p>模板是C++联邦中的重要成员。要想用好STL，必须了解模板。同时，模板元编程也是C++中的黑科技。<br>
+          <p>模板是C++联邦中的重要成员。要想用好STL，必须了解模板。同时，模板元编程也是C++中的黑科技。</p>
+<p><img src="/img/effective_cpp_07_joke.jpg" alt="来自大师的嘲讽~"><br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/06/23/effective-cpp-07/#more" rel="contents">
@@ -608,7 +611,8 @@
 
       
         
-          <p>C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？<br>
+          <p>C++中允许多重继承，并且可以指定继承是否是public or private等。成员函数也可以是虚函数或者非虚函数。如何在OOP这一C++联邦中的重要一员的规则下，写出易于拓展，易于维护且高效的代码？</p>
+<p>真•面向对象编程！<br><img src="/img/effectivecpp_06_joke.jpg" alt="面向对象编程"><br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/06/17/effective-cpp-06/#more" rel="contents">
@@ -977,7 +981,8 @@
 
       
         
-          <p>这是第二周的课程内容，主要介绍了几种神经网络的分类，详细地介绍了感知机这一最简单的模型。<br>
+          <p>这是第二周的课程内容，主要介绍了几种神经网络的分类，详细地介绍了感知机这一最简单的模型。</p>
+<p><img src="/img/hinton_02_perceptron_gragh.png" alt="Perceptron"></p>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/05/25/hinton-nnml-02/#more" rel="contents">
@@ -1346,7 +1351,8 @@
 
       
         
-          <p>光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。<br>
+          <p>光流法是通过检测图像像素点的强度随时间的变化进而推断出物体移动速度及方向的方法。由于成像物体与相机之间存在相对运动，导致其成像后的像素强度值不同。通过连续观测运动物体图像序列帧间的像素强度变化，就可以估计物体的运动信息。</p>
+<p><del>是你让我的世界从那刻变成粉红色</del>  划掉。。。<br><img src="/img/cs131_opticalflow_demo.jpg" alt="OpticalFlow可视化"><br>
           <!--noindex-->
           <div class="post-button text-center">
             <a class="btn" href="/2017/05/03/cs131-opticalflow/#more" rel="contents">
