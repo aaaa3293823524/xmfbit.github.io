@@ -93,7 +93,7 @@
 <meta property="og:description" content="Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的讨论。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。
 下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型">
 <meta property="og:image" content="https://xmfbit.github.io/img/focal_loss_different_model_comparison.jpg">
-<meta property="og:updated_time" content="2017-08-21T08:54:56.000Z">
+<meta property="og:updated_time" content="2017-08-21T10:26:49.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Focal Loss论文阅读 - Focal Loss for Dense Object Detection">
 <meta name="twitter:description" content="Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的讨论。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。
@@ -363,10 +363,21 @@
 
       
         <p>Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的<a href="https://www.zhihu.com/question/63581984" target="_blank" rel="external">讨论</a>。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。</p>
-<p>下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型。不过图上没有加入YOLO的对比。YOLO的速度仍然是其一大优势。</p>
+<p>下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型。不过图上没有加入YOLO的对比。YOLO的速度仍然是其一大优势，但是精度和其他方法相比，仍然不高。</p>
 <p><img src="/img/focal_loss_different_model_comparison.jpg" alt="不同模型关于精度和速度的比较"><br><a id="more"></a></p>
-<h2 id="为什么要有Focal-Loss？"><a href="#为什么要有Focal-Loss？" class="headerlink" title="为什么要有Focal Loss？"></a>为什么要有Focal Loss？</h2><p>目前主流的检测算法可以分为两类：one-state和two-stage。前者以YOLO和SSD为代表，后者以RCNN系列为代表。后者的特点是分类器是在一个稀疏的候选目标中进行分类（背景和对应类别），而这是通过前面的proposal过程实现的。例如Seletive Search或者RPN。与之相反，前者是输出一个稠密的proposal，</p>
-
+<h2 id="为什么要有Focal-Loss？"><a href="#为什么要有Focal-Loss？" class="headerlink" title="为什么要有Focal Loss？"></a>为什么要有Focal Loss？</h2><p>目前主流的检测算法可以分为两类：one-state和two-stage。前者以YOLO和SSD为代表，后者以RCNN系列为代表。后者的特点是分类器是在一个稀疏的候选目标中进行分类（背景和对应类别），而这是通过前面的proposal过程实现的。例如Seletive Search或者RPN。相对于后者，这种方法是在一个稀疏集合内做分类。与之相反，前者是输出一个稠密的proposal，然后丢进分类器中，直接进行类别分类。后者使用的方法结构一般较为简单，速度较快，但是目前存在的问题是精度不高，普遍不如前者的方法。</p>
+<p>论文作者指出，之所以做稠密分类的后者精度不够高，核心问题（central issus）是稠密proposal中前景和背景的极度不平衡。以我更熟悉的YOLO举例子，比如在PASCAL VOC数据集中，每张图片上标注的目标可能也就几个。但是YOLO V2最后一层的输出是$13 \times 13 \times 5$，也就是$845$个候选目标！大量（简单易区分）的负样本在loss中占据了很大比重，使得有用的loss不能回传回来。</p>
+<p>基于此，作者将经典的交叉熵损失做了变形（见下），给那些易于被分类的简单例子小的权重，给不易区分的难例更大的权重。同时，作者提出了一个新的one-stage的检测器RetinaNet，达到了速度和精度很好地trade-off。</p>
+<script type="math/tex; mode=display">\text{FL}(p_t) = -(1-p_t)^\gamma \log(p_t)</script><h2 id="物体检测的两种主流方法"><a href="#物体检测的两种主流方法" class="headerlink" title="物体检测的两种主流方法"></a>物体检测的两种主流方法</h2><p>在深度学习之前，经典的物体检测方法为滑动窗，并使用人工设计的特征。HoG和DPM等方法是其中比较有名的。</p>
+<p>R-CNN系的方法是目前最为流行的物体检测方法之一，同时也是目前精度最高的方法。在R-CNN系方法中，正负类别不平衡这个问题通过前面的proposal解决了。通过EdgeBoxes，Selective Search，DeepMask，RPN等方法，过滤掉了大多数的背景，实际传给后续网络的proposal的数量是比较少的（1-2K）。</p>
+<p>在YOLO，SSD等方法中，需要直接对feature map的大量proposal（100K）进行检测，而且这些proposal很多都在feature map上重叠。大量的负样本带来两个问题：</p>
+<ul>
+<li>过于简单，有效信息过少，使得训练效率低；</li>
+<li>简单的负样本在训练过程中压倒性优势，使得模型发生退化。</li>
+</ul>
+<p>在Faster-RCNN方法中，Huber Loss被用来降低outlier的影响（较大error的样本，也就是难例，传回来的梯度做了clipping，也只能是$1$）。而FocalLoss是对inner中简单的那些样本对loss的贡献进行限制。即使这些简单样本数量很多，也不让它们在训练中占到优势。</p>
+<h2 id="Focal-Loss"><a href="#Focal-Loss" class="headerlink" title="Focal Loss"></a>Focal Loss</h2><p>Focal Loss从交叉熵损失而来。二分类的交叉熵损失如下：</p>
+<script type="math/tex; mode=display">\text{CE}(p, y) = \begin{cases}-\log(p) \quad &\text{if}\quad y = 1\\ -\log(1-p) &\text{otherwise}\end{cases}</script>
       
     </div>
 
@@ -573,7 +584,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要有Focal-Loss？"><span class="nav-number">1.</span> <span class="nav-text">为什么要有Focal Loss？</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要有Focal-Loss？"><span class="nav-number">1.</span> <span class="nav-text">为什么要有Focal Loss？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#物体检测的两种主流方法"><span class="nav-number">2.</span> <span class="nav-text">物体检测的两种主流方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Focal-Loss"><span class="nav-number">3.</span> <span class="nav-text">Focal Loss</span></a></li></ol></div>
             
 
           </div>
