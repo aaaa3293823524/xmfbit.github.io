@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="math," />
+  <meta name="keywords" content="deep learning,paper," />
 
 
 
@@ -84,19 +84,21 @@
 
 
 
-<meta name="description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
+<meta name="description" content="Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的讨论。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。
+下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型">
 <meta property="og:type" content="article">
-<meta property="og:title" content="B站视频“线性代数的本质”观后感">
-<meta property="og:url" content="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/index.html">
+<meta property="og:title" content="Focal Loss论文阅读 - Focal Loss for Dense Object Detection">
+<meta property="og:url" content="https://xmfbit.github.io/2017/08/14/focal-loss-paper/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
-<meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential_linear_equation.png">
-<meta property="og:updated_time" content="2017-08-10T05:22:40.000Z">
+<meta property="og:description" content="Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的讨论。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。
+下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型">
+<meta property="og:image" content="https://xmfbit.github.io/img/focal_loss_different_model_comparison.jpg">
+<meta property="og:updated_time" content="2017-08-21T08:54:56.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="B站视频“线性代数的本质”观后感">
-<meta name="twitter:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
+<meta name="twitter:title" content="Focal Loss论文阅读 - Focal Loss for Dense Object Detection">
+<meta name="twitter:description" content="Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的讨论。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。
+下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/focal_loss_different_model_comparison.jpg">
 
 
 
@@ -124,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/08/14/focal-loss-paper/"/>
 
 
 
 
 
-  <title> B站视频“线性代数的本质”观后感 | 来呀，快活呀~ </title>
+  <title> Focal Loss论文阅读 - Focal Loss for Dense Object Detection | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -285,7 +287,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/08/14/focal-loss-paper/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -309,7 +311,7 @@
             
             
               
-                B站视频“线性代数的本质”观后感
+                Focal Loss论文阅读 - Focal Loss for Dense Object Detection
               
             
           </h1>
@@ -324,8 +326,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-05T19:16:32+08:00">
-                2017-02-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-14T22:43:55+08:00">
+                2017-08-14
               </time>
             
 
@@ -360,41 +362,10 @@
       
 
       
-        <p>线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：<a href="http://www.bilibili.com/video/av6731067/index_1.html" target="_blank" rel="external">线性代数的本质</a>。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。<br><img src="/img/video_linear_alg_essential.png" alt=""></p>
-<a id="more"></a>
-<h2 id="从线性空间和线性变换讲起"><a href="#从线性空间和线性变换讲起" class="headerlink" title="从线性空间和线性变换讲起"></a>从线性空间和线性变换讲起</h2><p>BIT的教学水平，不同的老师参差不齐。所幸的是，大一教授线性代数一课的吴惠彬老师，是一位既有深厚学问又善于教课的老师。我们所用的教材，正是吴老师主编的。和这个视频不同，教材是以线性方程组入手来介绍矩阵，而后引入到线性空间和线性变换。吴老师还曾经告诫大家，线性空间和线性变换一章较为抽象晦涩，不易理解。当然，很多年过去了，我也在研究生阶段继续修了线性代数的深入课程，如今想来，其实线性变换和矩阵的联系更为紧密一些。但是我们的教材之所以不用线性变换为引子，可能正是由于对于大一新生来说，过去十二年所受的基础教育都是操作一些看得见摸得着的数和几何体，一时难以接受线性空间这种东西吧~而也正是从这门课和高数开始，思考问题的方式和初等数学不一样了。我们更多地考察运动和极限，将具有共性的东西抽象出来，研究它们的等价性质。</p>
-<p>而抽象这个问题，在本视频中，通过将问题聚焦在二维（偶有提及三维）平面并辅之以动画的形式避开了（所以这个视频也只能算是有趣的不严肃的科普性质）。视频从线性空间入手，首先介绍了向量和基的概念，而后引入出贯穿视频系列始终的<strong>线性变换</strong>。什么是线性变换呢？从“数”的角度来看，定义在线性空间上，满足叠加性和齐次性就是线性变换。而本视频则从“形”的角度出发（注意，这也是本视频贯穿始终的指导思想：用“形”来思考），给出了下面两个条件：</p>
-<ul>
-<li>变换前后原点不动</li>
-<li>变换前后平行等距线仍然保持平行等距（但是距离值可能会变）。</li>
-</ul>
-<h2 id="线性变换与矩阵的关系"><a href="#线性变换与矩阵的关系" class="headerlink" title="线性变换与矩阵的关系"></a>线性变换与矩阵的关系</h2><p>视频在阐述线性变换和矩阵关系的时候一带而过，不是很清楚（所以还是要去看严肃的教材啊）。下面是我写的一个补充说明。这也是整个视频系列的基础。</p>
-<p>在由一组基向量$\alpha_i, i = 1,2,\dots,n$张成的线性空间$\mathcal{V}$上，任何一个向量$v$都可以表示为这组基的线性组合，也就是</p>
-<script type="math/tex; mode=display">v = \sum_{i=1}^{n}k_i\alpha_i</script><p>则线性变换$\mathcal{T}$对$v$作用之后，有，</p>
-<script type="math/tex; mode=display">u = \mathcal{T}(v) = \mathcal{T}(\sum_{i=1}^{n}k_i\alpha_i)</script><p>根据线性变换的叠加性，有，</p>
-<script type="math/tex; mode=display">u = \sum_{i=1}^{n}k_i\mathcal{T}(\alpha_i)</script><p>设$\alpha_i$经过线性变换$\mathcal{T}$作用后，变换为$\beta_i$，那么，</p>
-<script type="math/tex; mode=display">u = \sum_{i=1}^{n}k_i\beta_i</script><p>也就是说，</p>
-<script type="math/tex; mode=display">u = \begin{bmatrix}\mathcal{T}(\alpha_1), \mathcal{T}(\alpha_2), \cdots, \mathcal{T}(\alpha_n)\end{bmatrix}
-\begin{bmatrix}k_1\\\\ k_2\\\\ \vdots\\\\ k_n\end{bmatrix}</script><p>上式说明，一个抽象的线性变换可以使用一个具体的矩阵来代表。这个矩阵的列，就是线性变换之后的那组基。</p>
-<p>举个例子，旋转变换。如果旋转$\frac{\pi}{4}$，那么原来坐标轴方向的单位向量的$i$和$j$分别转到了$(\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})$和$(-\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})$。所以描述这个线性变换的矩阵为</p>
-<script type="math/tex; mode=display">A = \begin{bmatrix}\frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2}\\\\ \frac{\sqrt{2}}{2}& \frac{\sqrt{2}}{2}\end{bmatrix}</script><p>矩阵$A$的两列分别为变换后的基向量坐标。</p>
-<h2 id="矩阵乘法"><a href="#矩阵乘法" class="headerlink" title="矩阵乘法"></a>矩阵乘法</h2><p>那么矩阵乘法的意义也就有了，那就是对向量做线性变换。例如上面的矩阵$A$与$x = \begin{bmatrix}-1\\ 0\end{bmatrix}$相乘，就是求取向量$-1i+0j$在旋转变换之后的新坐标。这时候，$-1$和$0$就是上面推导过程中的$k_1$和$k_2$，所以，</p>
-<script type="math/tex; mode=display">Ax = -1\begin{bmatrix}\frac{\sqrt{2}}{2}\\\\ \frac{\sqrt{2}}{2}\end{bmatrix} + 0\begin{bmatrix}-\frac{\sqrt{2}}{2}\\\\\frac{\sqrt{2}}{2}\end{bmatrix}</script><p>而矩阵与矩阵相乘呢？只要把右边的矩阵按列分块即可。其实这是矩阵与多个向量相乘的简写形式。</p>
-<p>所以，对于任意向量$x$，$Ax$的结果就是组成矩阵$A$的各列向量的线性组合。这个由矩阵$A$的各列张成的空间叫做矩阵的列空间。</p>
-<p>而那些使得方程$Ax=0$成立的$x$，张成的空间为矩阵的核空间。</p>
-<p>矩阵的秩的意义就是矩阵列空间的维数。</p>
-<p>同时，从这个角度看来，解决多元线性方程组的过程就变成了这样一个问题：即给定代表线性变换的矩阵以及变换后的向量，求解变换前向量。这个转换如下所示：<br><img src="/img/video_linear_alg_essential_linear_equation.png" alt="线性方程组与矩阵乘法"></p>
-<p>既然矩阵代表了某种线性变换，那么很自然的，可以想到，我们可以求取这个线性变换的逆变换，这个逆变换作用到$v$上，就可以得到原始的向量$x$了（而且这样的向量只有一个）！自然，这个逆变换也是有矩阵与其对应的，这个矩阵就是原矩阵的逆矩阵。那么是不是所有的矩阵都有逆矩阵呢？我们可以通过行列式来分析。</p>
-<h2 id="行列式"><a href="#行列式" class="headerlink" title="行列式"></a>行列式</h2><p>仍然考虑二维矩阵，我们已经知道它表示了二维平面上的线性变换。而矩阵行列式的意义，就表明了变换前后，单位面积的正方形被放缩的比例。如果变换之后，$i$向量跑到了$j$向量的左手边，那么需要加上负号，表明在这个变换过程中，二维平面其实进过了一次翻转。</p>
-<p>我们已经知道，行列式为$0$的矩阵实际对线性空间进行了“降维打击”。以二维平面举例，变换之后变成了一条直线（甚至变成了一个点），也就是说对于任意给定的一个变换后向量，有这样两种情况：</p>
-<ul>
-<li>当这个向量不在这条直线上的时候，说明没有原始向量与其对应（否则矛盾），此时原方程组无解。</li>
-<li>当这个向量在这条直线上的时候，说明很多的原始向量（而且必然是无穷多）与其对应，此时原方程组有无穷多组解。</li>
-</ul>
-<p>你不能将一条直线“解压缩”为原始平面，所以行列式为$0$的矩阵，不存在逆矩阵。</p>
-<h2 id="点积叉积和对偶性"><a href="#点积叉积和对偶性" class="headerlink" title="点积叉积和对偶性"></a>点积叉积和对偶性</h2><p>这部分的对偶性这个概念比较玄一些，这里就不讲了。。。对于向量的点积，我们已经知道，</p>
-<script type="math/tex; mode=display">\langle v, u \rangle = \sum_{i=1}^{n}v_iu_i</script><p>从几何的角度看，向量的点积是将向量$u$向向量$v$的方向投影（有正负），投影长度乘上$v$的长度得到的。</p>
-<p>按照上面矩阵乘法的思路，$u$可以看做代表一个从2维到1维的线性变换（也就是从$\mathbb{R}^2$到$\mathbb{R}$）。而根据上述矩阵变换和矩阵乘法的对应关系可知，变换后的结果就等于$v$的两个分量分别乘上两个基向量（也就是$u$的两个分量），这样我们就得到了向量点积的数值计算方法。</p>
+        <p>Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的<a href="https://www.zhihu.com/question/63581984" target="_blank" rel="external">讨论</a>。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。</p>
+<p>下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型。不过图上没有加入YOLO的对比。YOLO的速度仍然是其一大优势。</p>
+<p><img src="/img/focal_loss_different_model_comparison.jpg" alt="不同模型关于精度和速度的比较"><br><a id="more"></a></p>
+<h2 id="为什么要有Focal-Loss？"><a href="#为什么要有Focal-Loss？" class="headerlink" title="为什么要有Focal Loss？"></a>为什么要有Focal Loss？</h2><p>目前主流的检测算法可以分为两类：one-state和two-stage。前者以YOLO和SSD为代表，后者以RCNN系列为代表。后者的特点是分类器是在一个稀疏的候选目标中进行分类（背景和对应类别），而这是通过前面的proposal过程实现的。例如Seletive Search或者RPN。与之相反，前者是输出一个稠密的proposal，</p>
 
       
     </div>
@@ -418,7 +389,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/math/" rel="tag"># math</a>
+            <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          
+            <a href="/tags/paper/" rel="tag"># paper</a>
           
         </div>
       
@@ -427,8 +400,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/04/yolo-paper/" rel="next" title="YOLO 论文阅读">
-                <i class="fa fa-chevron-left"></i> YOLO 论文阅读
+              <a href="/2017/08/10/install-ubuntu-in-dell/" rel="next" title="DELL 游匣7559安装Ubuntu和CUDA记录">
+                <i class="fa fa-chevron-left"></i> DELL 游匣7559安装Ubuntu和CUDA记录
               </a>
             
           </div>
@@ -437,8 +410,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/02/05/cs131-kmeans/" rel="prev" title="CS131-KMeans聚类">
-                CS131-KMeans聚类 <i class="fa fa-chevron-right"></i>
+              <a href="/2017/08/21/debugging-with-ipdb/" rel="prev" title="使用IPDB调试Python代码">
+                使用IPDB调试Python代码 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -600,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从线性空间和线性变换讲起"><span class="nav-number">1.</span> <span class="nav-text">从线性空间和线性变换讲起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性变换与矩阵的关系"><span class="nav-number">2.</span> <span class="nav-text">线性变换与矩阵的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵乘法"><span class="nav-number">3.</span> <span class="nav-text">矩阵乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行列式"><span class="nav-number">4.</span> <span class="nav-text">行列式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点积叉积和对偶性"><span class="nav-number">5.</span> <span class="nav-text">点积叉积和对偶性</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要有Focal-Loss？"><span class="nav-number">1.</span> <span class="nav-text">为什么要有Focal Loss？</span></a></li></ol></div>
             
 
           </div>

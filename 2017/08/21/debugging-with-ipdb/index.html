@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="math," />
+  <meta name="keywords" content="python," />
 
 
 
@@ -84,19 +84,16 @@
 
 
 
-<meta name="description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
+<meta name="description" content="IPDB是什么？IPDB（Ipython Debugger），和GDB类似，是一款集成了Ipython的Python代码命令行调试工具，可以看做PDB的升级版。这篇文章总结IPDB的使用方法，主要是若干命令的使用。更多详细的教程或文档还请参考Google。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="B站视频“线性代数的本质”观后感">
-<meta property="og:url" content="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/index.html">
+<meta property="og:title" content="使用IPDB调试Python代码">
+<meta property="og:url" content="https://xmfbit.github.io/2017/08/21/debugging-with-ipdb/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
-<meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
-<meta property="og:image" content="https://xmfbit.github.io/img/video_linear_alg_essential_linear_equation.png">
-<meta property="og:updated_time" content="2017-08-10T05:22:40.000Z">
+<meta property="og:description" content="IPDB是什么？IPDB（Ipython Debugger），和GDB类似，是一款集成了Ipython的Python代码命令行调试工具，可以看做PDB的升级版。这篇文章总结IPDB的使用方法，主要是若干命令的使用。更多详细的教程或文档还请参考Google。">
+<meta property="og:updated_time" content="2017-08-21T08:55:29.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="B站视频“线性代数的本质”观后感">
-<meta name="twitter:description" content="线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：线性代数的本质。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/video_linear_alg_essential.png">
+<meta name="twitter:title" content="使用IPDB调试Python代码">
+<meta name="twitter:description" content="IPDB是什么？IPDB（Ipython Debugger），和GDB类似，是一款集成了Ipython的Python代码命令行调试工具，可以看做PDB的升级版。这篇文章总结IPDB的使用方法，主要是若干命令的使用。更多详细的教程或文档还请参考Google。">
 
 
 
@@ -124,13 +121,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2017/08/21/debugging-with-ipdb/"/>
 
 
 
 
 
-  <title> B站视频“线性代数的本质”观后感 | 来呀，快活呀~ </title>
+  <title> 使用IPDB调试Python代码 | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -285,7 +282,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/02/05/video-linear-alg-essential-property/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2017/08/21/debugging-with-ipdb/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -309,7 +306,7 @@
             
             
               
-                B站视频“线性代数的本质”观后感
+                使用IPDB调试Python代码
               
             
           </h1>
@@ -324,8 +321,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-02-05T19:16:32+08:00">
-                2017-02-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-21T15:53:16+08:00">
+                2017-08-21
               </time>
             
 
@@ -360,41 +357,33 @@
       
 
       
-        <p>线性代数对于现代科技的重要性不言而喻，在机器学习领域也是重要的工具。最近，在B站上发现了这样的一个视频：<a href="http://www.bilibili.com/video/av6731067/index_1.html" target="_blank" rel="external">线性代数的本质</a>。这个视频共有十集左右，每集大约10分钟，从线性空间入手，介绍线性变换，并由此介绍矩阵的相关性质，动画做的很棒，翻译得也很好，用了几天时间零散地把几集视频看完，记录一些心得。<br><img src="/img/video_linear_alg_essential.png" alt=""></p>
-<a id="more"></a>
-<h2 id="从线性空间和线性变换讲起"><a href="#从线性空间和线性变换讲起" class="headerlink" title="从线性空间和线性变换讲起"></a>从线性空间和线性变换讲起</h2><p>BIT的教学水平，不同的老师参差不齐。所幸的是，大一教授线性代数一课的吴惠彬老师，是一位既有深厚学问又善于教课的老师。我们所用的教材，正是吴老师主编的。和这个视频不同，教材是以线性方程组入手来介绍矩阵，而后引入到线性空间和线性变换。吴老师还曾经告诫大家，线性空间和线性变换一章较为抽象晦涩，不易理解。当然，很多年过去了，我也在研究生阶段继续修了线性代数的深入课程，如今想来，其实线性变换和矩阵的联系更为紧密一些。但是我们的教材之所以不用线性变换为引子，可能正是由于对于大一新生来说，过去十二年所受的基础教育都是操作一些看得见摸得着的数和几何体，一时难以接受线性空间这种东西吧~而也正是从这门课和高数开始，思考问题的方式和初等数学不一样了。我们更多地考察运动和极限，将具有共性的东西抽象出来，研究它们的等价性质。</p>
-<p>而抽象这个问题，在本视频中，通过将问题聚焦在二维（偶有提及三维）平面并辅之以动画的形式避开了（所以这个视频也只能算是有趣的不严肃的科普性质）。视频从线性空间入手，首先介绍了向量和基的概念，而后引入出贯穿视频系列始终的<strong>线性变换</strong>。什么是线性变换呢？从“数”的角度来看，定义在线性空间上，满足叠加性和齐次性就是线性变换。而本视频则从“形”的角度出发（注意，这也是本视频贯穿始终的指导思想：用“形”来思考），给出了下面两个条件：</p>
-<ul>
-<li>变换前后原点不动</li>
-<li>变换前后平行等距线仍然保持平行等距（但是距离值可能会变）。</li>
-</ul>
-<h2 id="线性变换与矩阵的关系"><a href="#线性变换与矩阵的关系" class="headerlink" title="线性变换与矩阵的关系"></a>线性变换与矩阵的关系</h2><p>视频在阐述线性变换和矩阵关系的时候一带而过，不是很清楚（所以还是要去看严肃的教材啊）。下面是我写的一个补充说明。这也是整个视频系列的基础。</p>
-<p>在由一组基向量$\alpha_i, i = 1,2,\dots,n$张成的线性空间$\mathcal{V}$上，任何一个向量$v$都可以表示为这组基的线性组合，也就是</p>
-<script type="math/tex; mode=display">v = \sum_{i=1}^{n}k_i\alpha_i</script><p>则线性变换$\mathcal{T}$对$v$作用之后，有，</p>
-<script type="math/tex; mode=display">u = \mathcal{T}(v) = \mathcal{T}(\sum_{i=1}^{n}k_i\alpha_i)</script><p>根据线性变换的叠加性，有，</p>
-<script type="math/tex; mode=display">u = \sum_{i=1}^{n}k_i\mathcal{T}(\alpha_i)</script><p>设$\alpha_i$经过线性变换$\mathcal{T}$作用后，变换为$\beta_i$，那么，</p>
-<script type="math/tex; mode=display">u = \sum_{i=1}^{n}k_i\beta_i</script><p>也就是说，</p>
-<script type="math/tex; mode=display">u = \begin{bmatrix}\mathcal{T}(\alpha_1), \mathcal{T}(\alpha_2), \cdots, \mathcal{T}(\alpha_n)\end{bmatrix}
-\begin{bmatrix}k_1\\\\ k_2\\\\ \vdots\\\\ k_n\end{bmatrix}</script><p>上式说明，一个抽象的线性变换可以使用一个具体的矩阵来代表。这个矩阵的列，就是线性变换之后的那组基。</p>
-<p>举个例子，旋转变换。如果旋转$\frac{\pi}{4}$，那么原来坐标轴方向的单位向量的$i$和$j$分别转到了$(\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})$和$(-\frac{\sqrt{2}}{2},\frac{\sqrt{2}}{2})$。所以描述这个线性变换的矩阵为</p>
-<script type="math/tex; mode=display">A = \begin{bmatrix}\frac{\sqrt{2}}{2} & -\frac{\sqrt{2}}{2}\\\\ \frac{\sqrt{2}}{2}& \frac{\sqrt{2}}{2}\end{bmatrix}</script><p>矩阵$A$的两列分别为变换后的基向量坐标。</p>
-<h2 id="矩阵乘法"><a href="#矩阵乘法" class="headerlink" title="矩阵乘法"></a>矩阵乘法</h2><p>那么矩阵乘法的意义也就有了，那就是对向量做线性变换。例如上面的矩阵$A$与$x = \begin{bmatrix}-1\\ 0\end{bmatrix}$相乘，就是求取向量$-1i+0j$在旋转变换之后的新坐标。这时候，$-1$和$0$就是上面推导过程中的$k_1$和$k_2$，所以，</p>
-<script type="math/tex; mode=display">Ax = -1\begin{bmatrix}\frac{\sqrt{2}}{2}\\\\ \frac{\sqrt{2}}{2}\end{bmatrix} + 0\begin{bmatrix}-\frac{\sqrt{2}}{2}\\\\\frac{\sqrt{2}}{2}\end{bmatrix}</script><p>而矩阵与矩阵相乘呢？只要把右边的矩阵按列分块即可。其实这是矩阵与多个向量相乘的简写形式。</p>
-<p>所以，对于任意向量$x$，$Ax$的结果就是组成矩阵$A$的各列向量的线性组合。这个由矩阵$A$的各列张成的空间叫做矩阵的列空间。</p>
-<p>而那些使得方程$Ax=0$成立的$x$，张成的空间为矩阵的核空间。</p>
-<p>矩阵的秩的意义就是矩阵列空间的维数。</p>
-<p>同时，从这个角度看来，解决多元线性方程组的过程就变成了这样一个问题：即给定代表线性变换的矩阵以及变换后的向量，求解变换前向量。这个转换如下所示：<br><img src="/img/video_linear_alg_essential_linear_equation.png" alt="线性方程组与矩阵乘法"></p>
-<p>既然矩阵代表了某种线性变换，那么很自然的，可以想到，我们可以求取这个线性变换的逆变换，这个逆变换作用到$v$上，就可以得到原始的向量$x$了（而且这样的向量只有一个）！自然，这个逆变换也是有矩阵与其对应的，这个矩阵就是原矩阵的逆矩阵。那么是不是所有的矩阵都有逆矩阵呢？我们可以通过行列式来分析。</p>
-<h2 id="行列式"><a href="#行列式" class="headerlink" title="行列式"></a>行列式</h2><p>仍然考虑二维矩阵，我们已经知道它表示了二维平面上的线性变换。而矩阵行列式的意义，就表明了变换前后，单位面积的正方形被放缩的比例。如果变换之后，$i$向量跑到了$j$向量的左手边，那么需要加上负号，表明在这个变换过程中，二维平面其实进过了一次翻转。</p>
-<p>我们已经知道，行列式为$0$的矩阵实际对线性空间进行了“降维打击”。以二维平面举例，变换之后变成了一条直线（甚至变成了一个点），也就是说对于任意给定的一个变换后向量，有这样两种情况：</p>
-<ul>
-<li>当这个向量不在这条直线上的时候，说明没有原始向量与其对应（否则矛盾），此时原方程组无解。</li>
-<li>当这个向量在这条直线上的时候，说明很多的原始向量（而且必然是无穷多）与其对应，此时原方程组有无穷多组解。</li>
-</ul>
-<p>你不能将一条直线“解压缩”为原始平面，所以行列式为$0$的矩阵，不存在逆矩阵。</p>
-<h2 id="点积叉积和对偶性"><a href="#点积叉积和对偶性" class="headerlink" title="点积叉积和对偶性"></a>点积叉积和对偶性</h2><p>这部分的对偶性这个概念比较玄一些，这里就不讲了。。。对于向量的点积，我们已经知道，</p>
-<script type="math/tex; mode=display">\langle v, u \rangle = \sum_{i=1}^{n}v_iu_i</script><p>从几何的角度看，向量的点积是将向量$u$向向量$v$的方向投影（有正负），投影长度乘上$v$的长度得到的。</p>
-<p>按照上面矩阵乘法的思路，$u$可以看做代表一个从2维到1维的线性变换（也就是从$\mathbb{R}^2$到$\mathbb{R}$）。而根据上述矩阵变换和矩阵乘法的对应关系可知，变换后的结果就等于$v$的两个分量分别乘上两个基向量（也就是$u$的两个分量），这样我们就得到了向量点积的数值计算方法。</p>
+        <p>IPDB是什么？IPDB（Ipython Debugger），和GDB类似，是一款集成了Ipython的Python代码命令行调试工具，可以看做PDB的升级版。这篇文章总结IPDB的使用方法，主要是若干命令的使用。更多详细的教程或文档还请参考Google。<br><a id="more"></a></p>
+<h2 id="安装与使用"><a href="#安装与使用" class="headerlink" title="安装与使用"></a>安装与使用</h2><p>IPDB以Python第三方库的形式给出，使用<code>pip install ipdb</code>即可轻松安装。</p>
+<p>在使用时，有两种常见方式。</p>
+<h3 id="集成到源代码中"><a href="#集成到源代码中" class="headerlink" title="集成到源代码中"></a>集成到源代码中</h3><p>通过在代码开头导入包，可以直接在代码指定位置插入断点。如下所示：<br><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> ipdb</div><div class="line"><span class="comment"># some code</span></div><div class="line">x = <span class="number">10</span></div><div class="line">ipdb.set_trace()</div><div class="line">y = <span class="number">20</span></div><div class="line"><span class="comment"># other code</span></div></pre></td></tr></table></figure></p>
+<p>则程序会在执行完<code>x = 10</code>这条语句之后停止，展开Ipython环境，就可以自由地调试了。</p>
+<h3 id="命令式"><a href="#命令式" class="headerlink" title="命令式"></a>命令式</h3><p>上面的方法很方便，但是也有不灵活的缺点。对于一段比较棘手的代码，我们可能需要按步执行，边运行边跟踪代码流并进行调试，这时候使用交互式的命令式调试方法更加有效。启动IPDB调试环境的方法也很简单：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python -m ipdb your_code.py</div></pre></td></tr></table></figure></p>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>IPDB调试环境提供的常见命令有：</p>
+<h3 id="帮助"><a href="#帮助" class="headerlink" title="帮助"></a>帮助</h3><p>帮助文档就是这样一个东西：当你写的时候觉得这TM也要写？当你看别人的东西的时候觉得这TM都没写？</p>
+<p>使用<code>h</code>即可调出IPDB的帮助。可以使用<code>help command</code>的方法查询特定命令的具体用法。</p>
+<h3 id="下一条语句"><a href="#下一条语句" class="headerlink" title="下一条语句"></a>下一条语句</h3><p>使用<code>n</code>(next)执行下一条语句。注意一个函数调用也是一个语句。如何能够实现类似“进入函数内部”的功能呢？</p>
+<h3 id="进入函数内部"><a href="#进入函数内部" class="headerlink" title="进入函数内部"></a>进入函数内部</h3><p>使用<code>s</code>(step into)进入函数调用的内部。</p>
+<h3 id="打断点"><a href="#打断点" class="headerlink" title="打断点"></a>打断点</h3><p>使用<code>b line_number</code>(break)的方式给指定的行号位置加上断点。使用<code>b file_name:line_number</code>的方法给指定的文件（还没执行到的代码可能在外部文件中）中指定行号位置打上断点。</p>
+<p>另外，打断点还支持指定条件下进入，可以查询帮助文档。</p>
+<h3 id="一直执行直到遇到下一个断点"><a href="#一直执行直到遇到下一个断点" class="headerlink" title="一直执行直到遇到下一个断点"></a>一直执行直到遇到下一个断点</h3><p>使用<code>c</code>(continue)执行代码直到遇到某个断点或程序执行完毕。</p>
+<h3 id="一直执行直到返回"><a href="#一直执行直到返回" class="headerlink" title="一直执行直到返回"></a>一直执行直到返回</h3><p>使用<code>r</code>(return)执行代码直到当前所在的这个函数返回。</p>
+<h3 id="跳过某段代码"><a href="#跳过某段代码" class="headerlink" title="跳过某段代码"></a>跳过某段代码</h3><p>使用<code>j line_number</code>(jump)可以跳过某段代码，直接执行指定行号所在的代码。</p>
+<h3 id="更多上下文"><a href="#更多上下文" class="headerlink" title="更多上下文"></a>更多上下文</h3><p>在IPDB调试环境中，默认只显示当前执行的代码行，以及其上下各一行的代码。如果想要看到更多的上下文代码，可以使用<code>l first[, second]</code>(list)命令。</p>
+<p>其中<code>first</code>指示向上最多显示的行号，<code>second</code>指示向下最多显示的行号（可以省略）。当<code>second</code>小于<code>first</code>时，<code>second</code>指的是从<code>first</code>开始的向下的行数（相对值vs绝对值）。</p>
+<p>根据<a href="https://stackoverflow.com/questions/6240887/how-can-i-make-ipdb-show-more-lines-of-context-while-debugging" target="_blank" rel="external">SO上的这个问题</a>，你还可以修改IPDB的源码，一劳永逸地改变上下文的行数。</p>
+<h3 id="我在哪里"><a href="#我在哪里" class="headerlink" title="我在哪里"></a>我在哪里</h3><p>调试兴起，可能你会忘了自己目前所在的行号。例如在打印了若干变量值后，屏幕完全被这些值占据。使用<code>w</code>或者<code>where</code>可以打印出目前所在的行号位置以及上下文信息。</p>
+<h3 id="这是啥"><a href="#这是啥" class="headerlink" title="这是啥"></a>这是啥</h3><p>我们可以使用<code>whatis variable_name</code>的方法，查看变量的类别（感觉有点鸡肋，用<code>type</code>也可以办到）。</p>
+<h3 id="列出当前函数的全部参数"><a href="#列出当前函数的全部参数" class="headerlink" title="列出当前函数的全部参数"></a>列出当前函数的全部参数</h3><p>当你身处一个函数内部的时候，可以使用<code>a</code>(argument)打印出传入函数的所有参数的值。</p>
+<h3 id="打印"><a href="#打印" class="headerlink" title="打印"></a>打印</h3><p>使用<code>p</code>(print)和<code>pp</code>(pretty print)可以打印表达式的值。</p>
+<h3 id="清除断点"><a href="#清除断点" class="headerlink" title="清除断点"></a>清除断点</h3><p>使用<code>cl</code>或者<code>clear file:line_number</code>清除断点。如果没有参数，则清除所有断点。</p>
+<h3 id="再来一次"><a href="#再来一次" class="headerlink" title="再来一次"></a>再来一次</h3><p>使用<code>restart</code>重新启动调试器，断点等信息都会保留。<code>restart</code>实际是<code>run</code>的别名，使用<code>run args</code>的方式传入参数。</p>
+<h3 id="退出"><a href="#退出" class="headerlink" title="退出"></a>退出</h3><p>使用<code>q</code>退出调试，并清除所有信息。</p>
+<p>当然，这并不是IPDB的全部。其他的命令还请参照帮助文档。文档在手，天下我有！</p>
 
       
     </div>
@@ -418,7 +407,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/math/" rel="tag"># math</a>
+            <a href="/tags/python/" rel="tag"># python</a>
           
         </div>
       
@@ -427,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/02/04/yolo-paper/" rel="next" title="YOLO 论文阅读">
-                <i class="fa fa-chevron-left"></i> YOLO 论文阅读
+              <a href="/2017/08/14/focal-loss-paper/" rel="next" title="Focal Loss论文阅读 - Focal Loss for Dense Object Detection">
+                <i class="fa fa-chevron-left"></i> Focal Loss论文阅读 - Focal Loss for Dense Object Detection
               </a>
             
           </div>
@@ -436,10 +425,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/02/05/cs131-kmeans/" rel="prev" title="CS131-KMeans聚类">
-                CS131-KMeans聚类 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -600,7 +585,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从线性空间和线性变换讲起"><span class="nav-number">1.</span> <span class="nav-text">从线性空间和线性变换讲起</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线性变换与矩阵的关系"><span class="nav-number">2.</span> <span class="nav-text">线性变换与矩阵的关系</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#矩阵乘法"><span class="nav-number">3.</span> <span class="nav-text">矩阵乘法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行列式"><span class="nav-number">4.</span> <span class="nav-text">行列式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#点积叉积和对偶性"><span class="nav-number">5.</span> <span class="nav-text">点积叉积和对偶性</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装与使用"><span class="nav-number">1.</span> <span class="nav-text">安装与使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#集成到源代码中"><span class="nav-number">1.1.</span> <span class="nav-text">集成到源代码中</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令式"><span class="nav-number">1.2.</span> <span class="nav-text">命令式</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用命令"><span class="nav-number">2.</span> <span class="nav-text">常用命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#帮助"><span class="nav-number">2.1.</span> <span class="nav-text">帮助</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下一条语句"><span class="nav-number">2.2.</span> <span class="nav-text">下一条语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#进入函数内部"><span class="nav-number">2.3.</span> <span class="nav-text">进入函数内部</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打断点"><span class="nav-number">2.4.</span> <span class="nav-text">打断点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一直执行直到遇到下一个断点"><span class="nav-number">2.5.</span> <span class="nav-text">一直执行直到遇到下一个断点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一直执行直到返回"><span class="nav-number">2.6.</span> <span class="nav-text">一直执行直到返回</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#跳过某段代码"><span class="nav-number">2.7.</span> <span class="nav-text">跳过某段代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更多上下文"><span class="nav-number">2.8.</span> <span class="nav-text">更多上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我在哪里"><span class="nav-number">2.9.</span> <span class="nav-text">我在哪里</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#这是啥"><span class="nav-number">2.10.</span> <span class="nav-text">这是啥</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列出当前函数的全部参数"><span class="nav-number">2.11.</span> <span class="nav-text">列出当前函数的全部参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#打印"><span class="nav-number">2.12.</span> <span class="nav-text">打印</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#清除断点"><span class="nav-number">2.13.</span> <span class="nav-text">清除断点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#再来一次"><span class="nav-number">2.14.</span> <span class="nav-text">再来一次</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#退出"><span class="nav-number">2.15.</span> <span class="nav-text">退出</span></a></li></ol></li></ol></div>
             
 
           </div>
