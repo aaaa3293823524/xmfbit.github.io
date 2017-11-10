@@ -3,6 +3,13 @@
   
     
     <entry>
+      <title><![CDATA[shell编程]]></title>
+      <url>%2F2017%2F11%2F10%2Fshell-programming%2F</url>
+      <content type="text"><![CDATA[介绍基本的shell编程方法，参考的教程是Linux Shell Scripting Tutorial, A Beginner’s handbook。 变量变量是代码的基本组成元素。shell中的变量可以分为两类：系统变量和用户自定义变量。下面分别进行介绍。 在代码中使用变量值的时候，需要在前面加上$。echo命令可以在控制台打印相应输出。所以使用echo $var就可以输出变量var的值。 系统变量系统变量是指Linux中自带的一些变量。例如HOME,PATH等。其中PATH又叫环境变量。更多的系统变量见下表： 用户定义的变量用户自定义变量是用户命名并赋值的变量。使用下面的方法定义： 123# 注意不要在等号两边插入空格name=value# 如 n=10 变量之间的运算使用expr可以进行变量之间的运算，如下所示： 1234# 注意要在操作符两边空余空格expr 1 + 3# 由于*是特殊字符，所以乘法要使用转义expr 10 \* 2 ``和””使用``（也就是TAB键上面的那个）包起来的部分，是可执行的命令。而使用””（引号）包起来的部分，是字符串。 12345678a=`expr 10 \* 3`# output: 3echo $a# output: aecho a# output: expr 10 \* 3a="expr 10 \* 3"echo $a 读取输入使用read var1, var2, ...的方式从键盘的输入读取变量的值。 1234# input a=1read a# ouptut: 2echo `expr $a + 1` 基本概念命令的返回值当bash命令成功执行后，返回给系统的返回值为0；否则为非零。可以据此判断上步操作的状态。使用$?可以取出上一步执行的返回值。 123456# 将echo 错输为ecohecoh "hello"# output: 非零(127)echo $?# output: 0echo $? 通配符通配符是指*,?和[...]这三类。 *可以匹配任意多的字符，?用来匹配一个字符。[...]用来匹配括号内的字符。见下表。 [...]表示法还有如下变形： 使用-用来指示范围。如[a-z]，表示a到z间任意一个字符。 使用^或!表示取反。如[!a-p]表示除了a到p间字符的其他字符。 输入输出重定向重定向是指改变命令的输出位置。使用&gt;进行输出重定向。使用&lt;进行输入重定向。例如，ls -l &gt; a.txt，将本目录下的文件信息输出到文本文件a.txt中，而不再输出到终端。 此外，&gt;&gt;同样是输出重定向。但是它会在文件末尾追加写入，不会覆盖文件的原有内容。 搭配使用&lt;和&gt;可以做文件处理。例如，tr group1 group2命令可以将group1中的字符变换为group2中对应位置的字符。使用如下命令： 1tr "[a-z]" "A-Z" &lt; ori.txt &gt; out.txt 可以将ori.txt中的小写字母转换为大写字母输出到out.txt中。 管道（pipeline）管道|可以将第一个程序的输出作为第二个程序的输入。例如： 1cat ori.txt | tr "[a-z]" "A-Z" 会将ori.txt中的小写字母转换为大写，并在终端输出。]]></content>
+    </entry>
+
+    
+    <entry>
       <title><![CDATA[过秦论]]></title>
       <url>%2F2017%2F10%2F27%2Ffuck-gfw%2F</url>
       <content type="text"><![CDATA[秦以耕战立国，起于西北，从边陲弱小诸侯，借以天时地利，用商鞅、李斯，举法家大旗。而后逐鹿中原，坑赵括，灌大梁，掳六国贵族，结束战乱，建立大一统帝国。然而，强秦却二世而亡。“始皇之心，自以为关中之固，金城千里，子孙帝王万世之业也。”封建王朝的皇帝总觉得自己的国祚能够绵延不绝，历史却一次次地打他们的脸。 秦孝公据崤函之固，拥雍州之地，君臣固守以窥周室，有席卷天下，包举宇内，囊括四海之意，并吞八荒之心。当是时也，商君佐之，内立法度，务耕织，修守战之具；外连衡而斗诸侯。于是秦人拱手而取西河之外。 孝公既没，惠文、武、昭襄蒙故业，因遗策，南取汉中，西举巴、蜀，东割膏腴之地，北收要害之郡。诸侯恐惧，会盟而谋弱秦，不爱珍器重宝肥饶之地，以致天下之士，合从缔交，相与为一。当此之时，齐有孟尝，赵有平原，楚有春申，魏有信陵。此四君者，皆明智而忠信，宽厚而爱人，尊贤而重士，约从离衡，兼韩、魏、燕、楚、齐、赵、宋、卫、中山之众。于是六国之士，有宁越、徐尚、苏秦、杜赫之属为之谋，齐明、周最、陈轸、召滑、楼缓、翟景、苏厉、乐毅之徒通其意，吴起、孙膑、带佗、倪良、王廖、田忌、廉颇、赵奢之伦制其兵。尝以十倍之地，百万之众，叩关而攻秦。秦人开关延敌，九国之师，逡巡而不敢进。秦无亡矢遗镞之费，而天下诸侯已困矣。于是从散约败，争割地而赂秦。秦有余力而制其弊，追亡逐北，伏尸百万，流血漂橹。因利乘便，宰割天下，分裂山河。强国请服，弱国入朝。 延及孝文王、庄襄王，享国之日浅，国家无事。及至始皇，奋六世之余烈，振长策而御宇内，吞二周而亡诸侯，履至尊而制六合，执敲扑而鞭笞天下，威振四海。南取百越之地，以为桂林、象郡；百越之君，俯首系颈，委命下吏。乃使蒙恬北筑长城而守藩篱，却匈奴七百余里。胡人不敢南下而牧马，士不敢弯弓而报怨。于是废先王之道，焚百家之言，以愚黔首；隳名城，杀豪杰，收天下之兵，聚之咸阳，销锋镝，铸以为金人十二，以弱天下之民。然后践华为城，因河为池，据亿丈之城，临不测之渊，以为固。良将劲弩守要害之处，信臣精卒陈利兵而谁何。天下已定，始皇之心，自以为关中之固，金城千里，子孙帝王万世之业也。 始皇既没，余威震于殊俗。然陈涉瓮牖绳枢之子，氓隶之人，而迁徙之徒也；才能不及中人，非有仲尼、墨翟之贤，陶朱、猗顿之富；蹑足行伍之间，而倔起阡陌之中，率疲弊之卒，将数百之众，转而攻秦，斩木为兵，揭竿为旗，天下云集响应，赢粮而景从。山东豪俊遂并起而亡秦族矣。 且夫天下非小弱也，雍州之地，崤函之固，自若也。陈涉之位，非尊于齐、楚、燕、赵、韩、魏、宋、卫、中山之君也；锄櫌棘矜，非铦于钩戟长铩也；谪戍之众，非抗于九国之师也；深谋远虑，行军用兵之道，非及向时之士也。然而成败异变，功业相反，何也？试使山东之国与陈涉度长絜大，比权量力，则不可同年而语矣。然秦以区区之地，致万乘之势，序八州而朝同列，百有余年矣；然后以六合为家，崤函为宫；一夫作难而七庙隳，身死人手，为天下笑者，何也？仁义不施而攻守之势异也。]]></content>
@@ -311,16 +318,16 @@
 
     
     <entry>
-      <title><![CDATA[Windows环境下使用Doxygen生成注释文档]]></title>
-      <url>%2F2016%2F12%2F16%2Fuse-doxygen%2F</url>
-      <content type="text"><![CDATA[Doxygen 是一种很好用的代码注释生成工具，然而和很多国外的工具软件一样，在中文环境下，它的使用总是会出现一些问题，也就是中文注释文档出现乱码。经过调试，终于是解决了这个问题。 安装 DoxygenDoxygen 在Windows平台下的安装比较简单，Doxygen的项目主页提供了下载和安装的使用说明，可以下载它们的官方使用手册进行阅读。对于Windows，提供了源代码编译安装和直接安装程序安装两种方式，可以自行选择。 安装成功后，使用命令行命令 1doxygen --help 就可以查看帮助文档，对应参数含义一目了然，降低了入手难度。 使用命令， 1doxygen -g doxygen_filename 就可以在当前目录下建立一个doxygen配置文件，用文本编辑器打开就可以编辑里面的配置选项。 使用命令， 1doxygen doxygen_filename 就可以生成注释文档了。 下面就来说一说对中文的支持。 生成 HTML 格式文档中文之所以乱码，很多时候是由于编码和译码格式不同，所以我们需要先知道自己代码文件的编码方式。我的代码都是建立在Visual Studio上的，可以通过VS的高级保存选项查看自己代码文件的存储编码格式。对于中文版的VS，一般应该是GB2312。 我们打开 Doxygen 的配置文件，将里面的 INPUT_ENCODING 改为我们代码文件的编码格式，这里就改成 GB2312。 这样一来，编译出来的 HTML 页面就不会有中文乱码了。 生成Latex 格式文档生成 Latex 需要本机上安装有 Latex 的编译环境。如果是中文用户，推荐的是CTEX套件，可以到他们的网站上去下载。 可以看到，Doxygen为Latex文件的编译生成了make文件，我们在命令行窗口中执行make命令就可以完成编译，然而这时候会发现编译出错，pdf文档无法生成。 打开生成的refman.latex文档，添加宏包 CJKutf8。然后找到 \begin{document}一行，将其改为 12\begin&#123;document&#125;\begin&#123;CJK&#125;&#123;UTF8&#125;&#123;gbsn&#125; 也就是说为正文提供了CJK环境，这样中文文本就可以正常编译了。 相应的，我们要将结尾的 \end{document)改为：12\end&#123;CJK&#125;\end&#123;document&#125; 这样，运行make命令之后，就可以看到中文的注释文档了。]]></content>
+      <title><![CDATA[Hello World]]></title>
+      <url>%2F2016%2F12%2F16%2Fhello-world%2F</url>
+      <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment Code highlightHello World! 1234#include &lt;iostream&gt;int main() &#123; std::cout &lt;&lt; "HelloWorld\n";&#125; 1print 'HelloWorld' Latex Support by MathjaxMass-energy equation by Einstein: $E = mc^2$ a linear equation: \mathbf{A}\mathbf{v} = \mathbf{y}]]></content>
     </entry>
 
     
     <entry>
-      <title><![CDATA[Hello World]]></title>
-      <url>%2F2016%2F12%2F16%2Fhello-world%2F</url>
-      <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment Code highlightHello World! 1234#include &lt;iostream&gt;int main() &#123; std::cout &lt;&lt; "HelloWorld\n";&#125; 1print 'HelloWorld' Latex Support by MathjaxMass-energy equation by Einstein: $E = mc^2$ a linear equation: \mathbf{A}\mathbf{v} = \mathbf{y}]]></content>
+      <title><![CDATA[Windows环境下使用Doxygen生成注释文档]]></title>
+      <url>%2F2016%2F12%2F16%2Fuse-doxygen%2F</url>
+      <content type="text"><![CDATA[Doxygen 是一种很好用的代码注释生成工具，然而和很多国外的工具软件一样，在中文环境下，它的使用总是会出现一些问题，也就是中文注释文档出现乱码。经过调试，终于是解决了这个问题。 安装 DoxygenDoxygen 在Windows平台下的安装比较简单，Doxygen的项目主页提供了下载和安装的使用说明，可以下载它们的官方使用手册进行阅读。对于Windows，提供了源代码编译安装和直接安装程序安装两种方式，可以自行选择。 安装成功后，使用命令行命令 1doxygen --help 就可以查看帮助文档，对应参数含义一目了然，降低了入手难度。 使用命令， 1doxygen -g doxygen_filename 就可以在当前目录下建立一个doxygen配置文件，用文本编辑器打开就可以编辑里面的配置选项。 使用命令， 1doxygen doxygen_filename 就可以生成注释文档了。 下面就来说一说对中文的支持。 生成 HTML 格式文档中文之所以乱码，很多时候是由于编码和译码格式不同，所以我们需要先知道自己代码文件的编码方式。我的代码都是建立在Visual Studio上的，可以通过VS的高级保存选项查看自己代码文件的存储编码格式。对于中文版的VS，一般应该是GB2312。 我们打开 Doxygen 的配置文件，将里面的 INPUT_ENCODING 改为我们代码文件的编码格式，这里就改成 GB2312。 这样一来，编译出来的 HTML 页面就不会有中文乱码了。 生成Latex 格式文档生成 Latex 需要本机上安装有 Latex 的编译环境。如果是中文用户，推荐的是CTEX套件，可以到他们的网站上去下载。 可以看到，Doxygen为Latex文件的编译生成了make文件，我们在命令行窗口中执行make命令就可以完成编译，然而这时候会发现编译出错，pdf文档无法生成。 打开生成的refman.latex文档，添加宏包 CJKutf8。然后找到 \begin{document}一行，将其改为 12\begin&#123;document&#125;\begin&#123;CJK&#125;&#123;UTF8&#125;&#123;gbsn&#125; 也就是说为正文提供了CJK环境，这样中文文本就可以正常编译了。 相应的，我们要将结尾的 \end{document)改为：12\end&#123;CJK&#125;\end&#123;document&#125; 这样，运行make命令之后，就可以看到中文的注释文档了。]]></content>
     </entry>
 
     
