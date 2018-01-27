@@ -94,7 +94,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-inq-quantize-set.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-inq-algorithm-demo.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-inq-different-quantize.png">
-<meta property="og:updated_time" content="2018-01-25T09:04:38.894Z">
+<meta property="og:updated_time" content="2018-01-25T09:07:55.551Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Incremental Network Quantization 论文阅读">
 <meta name="twitter:description" content="卷积神经网络虽然已经在很多任务上取得了很棒的效果，但是模型大小和运算量限制了它们在移动设备和嵌入式设备上的使用。模型量化压缩等问题自然引起了大家的关注。Incremental Network Quantization这篇文章关注的是如何使用更少的比特数进行模型参数量化以达到压缩模型，减少模型大小同时使得模型精度无损。如下图所示，使用5bit位数，INQ在多个模型上都取得了不逊于原始FP32模型的精">
@@ -371,7 +371,7 @@
 <p>如何确定$n_1$呢（由上式可知，有了$b$和$n_1$，$n_2$就确定了）。作者考虑了待量化权重中的最大值，我们需要设置$n_1$，使其刚好不溢出。所以有：</p>
 <script type="math/tex; mode=display">n_1 = \lfloor \log_2(4s/3) \rfloor</script><p>其中，$s$是权重当中绝对值最大的那个，即$s = \max \vert W_l\vert$。</p>
 <p>之后做最近舍入就可以了。对于小于最小分辨力$2^{n_2}$的那些权重，将其直接截断为$0$。</p>
-<h2 id="训练方法"><a href="#训练方法" class="headerlink" title="训练方法"></a>训练方法</h2><p>量化完成周，网络的精度必然会下降。我们需要对其进行调整，使其精度能够恢复原始模型的水平。为此，作者提出了三个主要步骤，迭代地进行。即 weight partition（权重划分）, group-wise quantization（分组量化） 和re-training（训练）。</p>
+<h2 id="训练方法"><a href="#训练方法" class="headerlink" title="训练方法"></a>训练方法</h2><p>量化完成后，网络的精度必然会下降。我们需要对其进行调整，使其精度能够恢复原始模型的水平。为此，作者提出了三个主要步骤，迭代地进行。即 weight partition（权重划分）, group-wise quantization（分组量化） 和re-training（训练）。</p>
 <p>re-training好理解，就是量化之后要继续做finetuning。前面两个名词解释如下：weight partition是指我们不是对整个权重一股脑地做量化，而是将其划分为两个不相交的集合。group-wise quantization是指对其中一个集合中的权重做量化，另一组集合中的权重不变，仍然为FP32。注意，在re-training中，我们只对没有量化的那组参数做参数更新。下面是论文中的表述。</p>
 <blockquote>
 <p>Weight partition is to divide the weights in each layer of a pre-trained full-precision CNN model into two disjoint groups which play comple- mentary roles in our INQ. The weights in the first group are responsible for forming a low-precision base for the original model, thus they are quantized by using Equation (4). The weights in the second group adapt to compensate for the loss in model accuracy, thus they are the ones to be re-trained.</p>
