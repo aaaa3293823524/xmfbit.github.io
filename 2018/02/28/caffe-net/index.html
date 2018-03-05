@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="caffe," />
 
 
 
@@ -84,15 +84,18 @@
 
 
 
-<meta name="description" content="相与枕藉乎舟中，不知东方之既白">
-<meta property="og:type" content="website">
-<meta property="og:title" content="来呀，快活呀~">
-<meta property="og:url" content="https://xmfbit.github.io/archives/page/3/index.html">
+<meta name="description" content="Caffe中使用Net实现神经网络，这篇文章对应Caffe代码总结Net的实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Caffe中的Net实现">
+<meta property="og:url" content="https://xmfbit.github.io/2018/02/28/caffe-net/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="相与枕藉乎舟中，不知东方之既白">
+<meta property="og:description" content="Caffe中使用Net实现神经网络，这篇文章对应Caffe代码总结Net的实现。">
+<meta property="og:image" content="https://xmfbit.github.io/img/caffe-net-demo.jpg">
+<meta property="og:updated_time" content="2018-02-28T03:25:55.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="来呀，快活呀~">
-<meta name="twitter:description" content="相与枕藉乎舟中，不知东方之既白">
+<meta name="twitter:title" content="Caffe中的Net实现">
+<meta name="twitter:description" content="Caffe中使用Net实现神经网络，这篇文章对应Caffe代码总结Net的实现。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/caffe-net-demo.jpg">
 
 
 
@@ -120,13 +123,13 @@
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/archives/page/3/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2018/02/28/caffe-net/"/>
 
 
 
 
 
-  <title> 归档 | 来呀，快活呀~ </title>
+  <title> Caffe中的Net实现 | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -156,7 +159,7 @@
     
   
 
-  <div class="container one-collumn sidebar-position-left  page-archive  ">
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -271,402 +274,176 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <span class="archive-move-on"></span>
-
-    <span class="archive-page-counter">
-      
-      
-       
-        
-      好! 目前共计 57 篇日志。 继续努力。
-    </span>
-
+  <div id="posts" class="posts-expand">
     
-
-      
-      
-      
-
-      
-        
-        <div class="collection-title">
-          <h2 class="archive-year motion-element" id="archive-year-2017">2017</h2>
-        </div>
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/06/17/effective-cpp-06/" itemprop="url">
-              
-                <span itemprop="name">Effective CPP 阅读 - Chapter 6 继承与面向对象设计</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-06-17T10:40:19+08:00"
-              content="2017-06-17" >
-          06-17
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/06/06/silver-rl-dp/" itemprop="url">
-              
-                <span itemprop="name">Silver RL课程 - DP Planning</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-06-06T16:57:49+08:00"
-              content="2017-06-06" >
-          06-06
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/31/silver-rl-mdp/" itemprop="url">
-              
-                <span itemprop="name">Silver RL课程 - MDP</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-31T13:03:31+08:00"
-              content="2017-05-31" >
-          05-31
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/25/hinton-nnml-02/" itemprop="url">
-              
-                <span itemprop="name">Neural Network for Machine Learning - Lecture 02</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-25T13:26:33+08:00"
-              content="2017-05-25" >
-          05-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/04/ubuntu-cannot-mount-exfat-disk/" itemprop="url">
-              
-                <span itemprop="name">Ubuntu Cannot Mount exfat格式硬盘的解决办法</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-04T18:36:29+08:00"
-              content="2017-05-04" >
-          05-04
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/03/hinton-nnml-01/" itemprop="url">
-              
-                <span itemprop="name">Neural Network for Machine Learning - Lecture 01</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-03T20:56:36+08:00"
-              content="2017-05-03" >
-          05-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/03/cs131-opticalflow/" itemprop="url">
-              
-                <span itemprop="name">CS131-光流估计</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-03T16:39:18+08:00"
-              content="2017-05-03" >
-          05-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/05/01/effective-cpp-05/" itemprop="url">
-              
-                <span itemprop="name">Effective CPP 阅读 - Chapter 5 实现</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-05-01T14:56:54+08:00"
-              content="2017-05-01" >
-          05-01
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/29/effective-cpp-04/" itemprop="url">
-              
-                <span itemprop="name">Effective CPP 阅读 - Chapter 4 设计与声明</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-29T17:29:33+08:00"
-              content="2017-04-29" >
-          04-29
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-      
-      
-      
-
-      
-      
-
-      
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h1 class="post-title">
-        
-            <a class="post-title-link" href="/2017/04/25/effective-cpp-03/" itemprop="url">
-              
-                <span itemprop="name">Effective CPP阅读 - Chapter 3 资源管理</span>
-              
-            </a>
-        
-      </h1>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2017-04-25T13:35:43+08:00"
-              content="2017-04-25" >
-          04-25
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
-    
-
-  </section>
 
   
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/archives/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/archives/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/archives/page/6/">6</a><a class="extend next" rel="next" href="/archives/page/4/"><i class="fa fa-angle-right"></i></a>
-  </nav>
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2018/02/28/caffe-net/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="一个脱离了高级趣味的人">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/avatar/liumengli.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="来呀，快活呀~">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="来呀，快活呀~" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Caffe中的Net实现
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-28T10:16:43+08:00">
+                2018-02-28
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
 
 
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Caffe中使用<code>Net</code>实现神经网络，这篇文章对应Caffe代码总结<code>Net</code>的实现。<br><img src="/img/caffe-net-demo.jpg" width="300" height="200" alt="Net示意" align="center"><br><a id="more"></a></p>
+<h2 id="proto中定义的参数"><a href="#proto中定义的参数" class="headerlink" title="proto中定义的参数"></a>proto中定义的参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">message NetParameter &#123;</div><div class="line">  // net的名字</div><div class="line">  optional string name = 1; // consider giving the network a name</div><div class="line">  // 以下几个都是弃用的参数，为了定义输入的blob（大小）</div><div class="line">  // 下面有使用推荐`InputParameter`进行输入设置的方法</div><div class="line">  // DEPRECATED. See InputParameter. The input blobs to the network.</div><div class="line">  repeated string input = 3;</div><div class="line">  // DEPRECATED. See InputParameter. The shape of the input blobs.</div><div class="line">  repeated BlobShape input_shape = 8;</div><div class="line"></div><div class="line">  // 4D input dimensions -- deprecated.  Use &quot;input_shape&quot; instead.</div><div class="line">  // If specified, for each input blob there should be four</div><div class="line">  // values specifying the num, channels, height and width of the input blob.</div><div class="line">  // Thus, there should be a total of (4 * #input) numbers.</div><div class="line">  repeated int32 input_dim = 4;</div><div class="line">  </div><div class="line">  // Whether the network will force every layer to carry out backward operation.</div><div class="line">  // If set False, then whether to carry out backward is determined</div><div class="line">  // automatically according to the net structure and learning rates.</div><div class="line">  optional bool force_backward = 5 [default = false];</div><div class="line">  // The current &quot;state&quot; of the network, including the phase, level, and stage.</div><div class="line">  // Some layers may be included/excluded depending on this state and the states</div><div class="line">  // specified in the layers&apos; include and exclude fields.</div><div class="line">  optional NetState state = 6;</div><div class="line"></div><div class="line">  // Print debugging information about results while running Net::Forward,</div><div class="line">  // Net::Backward, and Net::Update.</div><div class="line">  optional bool debug_info = 7 [default = false];</div><div class="line"></div><div class="line">  // The layers that make up the net.  Each of their configurations, including</div><div class="line">  // connectivity and behavior, is specified as a LayerParameter.</div><div class="line">  repeated LayerParameter layer = 100;  // ID 100 so layers are printed last.</div><div class="line"></div><div class="line">  // DEPRECATED: use &apos;layer&apos; instead.</div><div class="line">  repeated V1LayerParameter layers = 2;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="Input的定义"><a href="#Input的定义" class="headerlink" title="Input的定义"></a>Input的定义</h3><p>在<code>train</code>和<code>deploy</code>的时候，输入的定义常常是不同的。在<code>train</code>时，我们需要提供数据$x$和真实值$y$，这样网络的输出$\hat{y} = \mathcal{F}_\theta (x)$与真实值$y$计算损失，完成bp，更新网络参数$\theta$。</p>
+<p>在<code>deploy</code>时，推荐使用<code>InputLayer</code>定义网络的输入，下面是<code>$CAFFE/models/bvlc_alexnet/deploy.prototxt</code>中的输入定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">layer &#123;</div><div class="line">  name: &quot;data&quot;</div><div class="line">  type: &quot;Input&quot;</div><div class="line">  // 该层layer的输出blob名称为data，供后续layer使用</div><div class="line">  top: &quot;data&quot;</div><div class="line">  // 定义输入blob的大小：10 x 3 x 227 x 227</div><div class="line">  // 说明batch size = 10</div><div class="line">  // 输入彩色图像，channel = 3, RGB</div><div class="line">  // 输入image的大小：227 x 227</div><div class="line">  input_param &#123; shape: &#123; dim: 10 dim: 3 dim: 227 dim: 227 &#125; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h2 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h2><p><code>Net</code>的描述头文件位于<code>$CAFFE/include/caffe/net.hpp</code>中。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/caffe/" rel="tag"># caffe</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/27/bug-pycaffe-jupyternotebook-awaiting-for-data/" rel="next" title="捉bug记 - JupyterNotebook中使用pycaffe加载多个模型一直等待的现象">
+                <i class="fa fa-chevron-left"></i> 捉bug记 - JupyterNotebook中使用pycaffe加载多个模型一直等待的现象
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <!-- JiaThis Button BEGIN -->
+<div class="jiathis_style">
+  <a class="jiathis_button_tsina"></a>
+  <a class="jiathis_button_tqq"></a>
+  <a class="jiathis_button_weixin"></a>
+  <a class="jiathis_button_cqq"></a>
+  <a class="jiathis_button_douban"></a>
+  <a class="jiathis_button_renren"></a>
+  <a class="jiathis_button_qzone"></a>
+  <a class="jiathis_button_kaixin001"></a>
+  <a class="jiathis_button_copy"></a>
+  <a href="http://www.jiathis.com/share" class="jiathis jiathis_txt jiathis_separator jtico jtico_jiathis" target="_blank"></a>
+  <a class="jiathis_counter_style"></a>
+</div>
+<script type="text/javascript" >
+  var jiathis_config={
+    hideMore:false
+  }
+</script>
+<script type="text/javascript" src="http://v3.jiathis.com/code/jia.js" charset="utf-8"></script>
+<!-- JiaThis Button END -->
+
+      
+    </div>
+  </div>
 
 
           </div>
@@ -674,6 +451,12 @@
 
 
           
+  <div class="comments" id="comments">
+    
+        <div id="lv-container" data-id="city" data-uid="MTAyMC8yODMwOS80ODgx"></div>
+    
+  </div>
+
 
         </div>
         
@@ -693,8 +476,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/avatar/liumengli.jpg"
@@ -763,6 +555,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#proto中定义的参数"><span class="nav-number">1.</span> <span class="nav-text">proto中定义的参数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Input的定义"><span class="nav-number">1.1.</span> <span class="nav-text">Input的定义</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#头文件"><span class="nav-number">2.</span> <span class="nav-text">头文件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
@@ -862,11 +670,9 @@
   
 
   
-  
-    <script type="text/javascript" id="motion.page.archive">
-      $('.archive-year').velocity('transition.slideLeftIn');
-    </script>
-  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
 
 
   
@@ -912,6 +718,10 @@
 
   
 
+  
+      <!-- UY BEGIN -->
+      <script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid="></script>
+      <!-- UY END -->
   
 
 

@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="paper,deep learning," />
+  <meta name="keywords" content="deep learning,paper," />
 
 
 
@@ -93,7 +93,8 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-ssldnn.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-ssldnn-random-sparity-is-bad.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-ssldnn-lenet-penalizing-unimportant-filter-channel.png">
-<meta property="og:updated_time" content="2018-02-26T01:34:10.408Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-ssldnn-experiment-on-lenet.png">
+<meta property="og:updated_time" content="2018-02-28T02:16:07.281Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文 - Learning Structured Sparsity in Deep Neural Networks">
 <meta name="twitter:description" content="DNN的稀疏化？用L1正则项不就好了？在很多场合，这种方法的确可行。但是当试图使用FPGA/AISC加速DNN的前向计算时，我们希望DNN的参数能有一些结构化的稀疏性质。这样才能减少不必要的cache missing等问题。在这篇文章中，作者提出了一种结构化稀疏的方法，能够在不损失精度的前提下，对深度神经网络进行稀疏化，达到加速的目的。本文作者温伟，目前是杜克大学Chen Yiran组的博士生，做">
@@ -388,9 +389,13 @@
 <script type="math/tex; mode=display">E(W) = E_D(W) + \lambda_n \sum_{l=1}^{L}(\sum_{n_l=1}^{N_l}\Vert W^{(l)}_{n_l,:,:,:}\Vert_g) + \lambda_c\sum_{l=1}^{L}(\sum_{cl=1}^{C_l}\Vert W^{(l)}_{:,c_l,:,:}\Vert_g)</script><h3 id="任意形状的filter"><a href="#任意形状的filter" class="headerlink" title="任意形状的filter"></a>任意形状的filter</h3><p>所谓任意形状的filter，就是将filter中的一些权重置为$0$。可以使用下面的分组方法：</p>
 <script type="math/tex; mode=display">E(W) = E_D(W) + \lambda_s \sum_{l=1}^{L}(\sum_{c_l=1}^{C_l}\sum_{m_l=1}^{M_l}\sum_{k_l=1}^{K_l})\Vert W^{(l)}_{:,c_l,m_l,k_l} \Vert_g</script><h3 id="网络深度"><a href="#网络深度" class="headerlink" title="网络深度"></a>网络深度</h3><p>损失函数如下：</p>
 <script type="math/tex; mode=display">E(W) = E_D(W) + \lambda_d \sum_{l=1}^{L}\Vert W^{(l)}\Vert_g</script><p>不过要注意的是，某个layer被稀疏掉了，会切断信息的流通。所以受ResNet启发，加上了short-cut结构。即使SSL移去了该layer所有的filter，上层的feature map仍然可以传导到后面。</p>
+<h3 id="两类特殊的稀疏规则"><a href="#两类特殊的稀疏规则" class="headerlink" title="两类特殊的稀疏规则"></a>两类特殊的稀疏规则</h3><p>特意提出下面两种稀疏规则，下面的实验即是基于这两种特殊的稀疏结构。</p>
+<h4 id="2D-filter-sparsity"><a href="#2D-filter-sparsity" class="headerlink" title="2D filter sparsity"></a>2D filter sparsity</h4><p>卷积层中的3D卷积可以看做是2D卷积的组合（做卷积的时候spatial和channel是不相交的）。这种结构化稀疏是将该卷积层中的每个2D的filter，$W^{(l)}_{n_l,c_l,:,:}$，看做一个group，做group LASSO。这相当于是上述filter-wise和channel-wise的组合。</p>
+<h4 id="filter-wise和shape-wise的组合加速GEMM"><a href="#filter-wise和shape-wise的组合加速GEMM" class="headerlink" title="filter-wise和shape-wise的组合加速GEMM"></a>filter-wise和shape-wise的组合加速GEMM</h4><p>在Caffe中，3D的权重tensor是reshape成了一个行向量，然后$N<em>l$个filter的行向量堆叠在一起，就成了一个2D的矩阵。这个矩阵的每一列对应的是$W^{(l)}</em>{:,c_l,m_l,k_l}$，称为shape sparsity。两者组合，矩阵的零行和零列可以被抽去，相当于GEMM的矩阵行列数少了，起到了加速的效果。</p>
 <h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p>分别在MNIST，CIFAR10和ImageNet上做了实验，使用公开的模型做baseline，并以此为基础使用SSL训练。</p>
 <h3 id="LeNet-amp-MLP-MNIST"><a href="#LeNet-amp-MLP-MNIST" class="headerlink" title="LeNet&amp;MLP@MNIST"></a>LeNet&amp;MLP@MNIST</h3><p>分别使用Caffe中实现的LeNet和MLP做实验。</p>
 <h4 id="LeNet"><a href="#LeNet" class="headerlink" title="LeNet"></a>LeNet</h4><p>限制SSL为filter-wise和channel-wise稀疏化，来惩罚不重要的filter。下表中，LeNet-1是baseline，2和3是使用不同强度得到的稀疏化结果。可以看到，精度基本没有损失($0.1%$)，但是filter和channel数量都有了较大减少，FLOP大大减少，加速效果比较明显。<br><img src="/img/paper-ssldnn-lenet-penalizing-unimportant-filter-channel.png" alt="实验结果1"></p>
+<p>将网络<code>conv1</code>的filter可视化如下。可以看到，对于LeNet2来说，大多数filter都被稀疏掉了。<br><img src="/img/paper-ssldnn-experiment-on-lenet.png" alt="LeNet的实验结果"></p>
 
       
     </div>
@@ -414,9 +419,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/paper/" rel="tag"># paper</a>
-          
             <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          
+            <a href="/tags/paper/" rel="tag"># paper</a>
           
         </div>
       
@@ -532,7 +537,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">55</span>
+                <span class="site-state-item-count">57</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -598,7 +603,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LASSO"><span class="nav-number">2.</span> <span class="nav-text">LASSO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构化稀疏"><span class="nav-number">3.</span> <span class="nav-text">结构化稀疏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL"><span class="nav-number">4.</span> <span class="nav-text">SSL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#惩罚不重要的filter和channel"><span class="nav-number">4.1.</span> <span class="nav-text">惩罚不重要的filter和channel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意形状的filter"><span class="nav-number">4.2.</span> <span class="nav-text">任意形状的filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络深度"><span class="nav-number">4.3.</span> <span class="nav-text">网络深度</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">5.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet-amp-MLP-MNIST"><span class="nav-number">5.1.</span> <span class="nav-text">LeNet&MLP@MNIST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LeNet"><span class="nav-number">5.1.1.</span> <span class="nav-text">LeNet</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#摘要"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LASSO"><span class="nav-number">2.</span> <span class="nav-text">LASSO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结构化稀疏"><span class="nav-number">3.</span> <span class="nav-text">结构化稀疏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL"><span class="nav-number">4.</span> <span class="nav-text">SSL</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#惩罚不重要的filter和channel"><span class="nav-number">4.1.</span> <span class="nav-text">惩罚不重要的filter和channel</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#任意形状的filter"><span class="nav-number">4.2.</span> <span class="nav-text">任意形状的filter</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#网络深度"><span class="nav-number">4.3.</span> <span class="nav-text">网络深度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#两类特殊的稀疏规则"><span class="nav-number">4.4.</span> <span class="nav-text">两类特殊的稀疏规则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2D-filter-sparsity"><span class="nav-number">4.4.1.</span> <span class="nav-text">2D filter sparsity</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#filter-wise和shape-wise的组合加速GEMM"><span class="nav-number">4.4.2.</span> <span class="nav-text">filter-wise和shape-wise的组合加速GEMM</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实验"><span class="nav-number">5.</span> <span class="nav-text">实验</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LeNet-amp-MLP-MNIST"><span class="nav-number">5.1.</span> <span class="nav-text">LeNet&MLP@MNIST</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#LeNet"><span class="nav-number">5.1.1.</span> <span class="nav-text">LeNet</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
