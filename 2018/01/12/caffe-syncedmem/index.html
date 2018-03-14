@@ -74,6 +74,8 @@
 
 
 
+  <link rel="alternate" href="/atom.xml" title="来呀，快活呀~" type="application/atom+xml" />
+
 
 
 
@@ -94,7 +96,7 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
 Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内存（Host）和显存（device）之间同步。这篇博客对Caffe中SyncedMem的实现做一总结。">
 <meta property="og:image" content="https://xmfbit.github.io/img/caffe_syncedmem_blob_flow.jpg">
 <meta property="og:image" content="https://xmfbit.github.io/img/caffe_syncedmem_transfer.png">
-<meta property="og:updated_time" content="2018-02-26T11:19:41.529Z">
+<meta property="og:updated_time" content="2018-03-14T03:06:35.161Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Caffe 中的 SyncedMem介绍">
 <meta name="twitter:description" content="Blob是Caffe中的基本数据结构，类似于TensorFlow和PyTorch中的Tensor。图像读入后作为Blob，开始在各个Layer之间传递，最终得到输出。下面这张图展示了Blob和Layer之间的关系： 
@@ -532,6 +534,13 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
 
         </nav>
 
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
         
 
         <div class="links-of-author motion-element">

@@ -74,6 +74,8 @@
 
 
 
+  <link rel="alternate" href="/atom.xml" title="来呀，快活呀~" type="application/atom+xml" />
+
 
 
 
@@ -91,7 +93,7 @@
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="Caffe中使用Net实现神经网络，这篇文章对应Caffe代码总结Net的实现。">
 <meta property="og:image" content="https://xmfbit.github.io/img/caffe-net-demo.jpg">
-<meta property="og:updated_time" content="2018-02-28T03:25:55.000Z">
+<meta property="og:updated_time" content="2018-03-14T03:21:12.267Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Caffe中的Net实现">
 <meta name="twitter:description" content="Caffe中使用Net实现神经网络，这篇文章对应Caffe代码总结Net的实现。">
@@ -361,7 +363,7 @@
       
         <p>Caffe中使用<code>Net</code>实现神经网络，这篇文章对应Caffe代码总结<code>Net</code>的实现。<br><img src="/img/caffe-net-demo.jpg" width="300" height="200" alt="Net示意" align="center"><br><a id="more"></a></p>
 <h2 id="proto中定义的参数"><a href="#proto中定义的参数" class="headerlink" title="proto中定义的参数"></a>proto中定义的参数</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line">message NetParameter &#123;</div><div class="line">  // net的名字</div><div class="line">  optional string name = 1; // consider giving the network a name</div><div class="line">  // 以下几个都是弃用的参数，为了定义输入的blob（大小）</div><div class="line">  // 下面有使用推荐`InputParameter`进行输入设置的方法</div><div class="line">  // DEPRECATED. See InputParameter. The input blobs to the network.</div><div class="line">  repeated string input = 3;</div><div class="line">  // DEPRECATED. See InputParameter. The shape of the input blobs.</div><div class="line">  repeated BlobShape input_shape = 8;</div><div class="line"></div><div class="line">  // 4D input dimensions -- deprecated.  Use &quot;input_shape&quot; instead.</div><div class="line">  // If specified, for each input blob there should be four</div><div class="line">  // values specifying the num, channels, height and width of the input blob.</div><div class="line">  // Thus, there should be a total of (4 * #input) numbers.</div><div class="line">  repeated int32 input_dim = 4;</div><div class="line">  </div><div class="line">  // Whether the network will force every layer to carry out backward operation.</div><div class="line">  // If set False, then whether to carry out backward is determined</div><div class="line">  // automatically according to the net structure and learning rates.</div><div class="line">  optional bool force_backward = 5 [default = false];</div><div class="line">  // The current &quot;state&quot; of the network, including the phase, level, and stage.</div><div class="line">  // Some layers may be included/excluded depending on this state and the states</div><div class="line">  // specified in the layers&apos; include and exclude fields.</div><div class="line">  optional NetState state = 6;</div><div class="line"></div><div class="line">  // Print debugging information about results while running Net::Forward,</div><div class="line">  // Net::Backward, and Net::Update.</div><div class="line">  optional bool debug_info = 7 [default = false];</div><div class="line"></div><div class="line">  // The layers that make up the net.  Each of their configurations, including</div><div class="line">  // connectivity and behavior, is specified as a LayerParameter.</div><div class="line">  repeated LayerParameter layer = 100;  // ID 100 so layers are printed last.</div><div class="line"></div><div class="line">  // DEPRECATED: use &apos;layer&apos; instead.</div><div class="line">  repeated V1LayerParameter layers = 2;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="Input的定义"><a href="#Input的定义" class="headerlink" title="Input的定义"></a>Input的定义</h3><p>在<code>train</code>和<code>deploy</code>的时候，输入的定义常常是不同的。在<code>train</code>时，我们需要提供数据$x$和真实值$y$，这样网络的输出$\hat{y} = \mathcal{F}_\theta (x)$与真实值$y$计算损失，完成bp，更新网络参数$\theta$。</p>
+<h3 id="Input的定义"><a href="#Input的定义" class="headerlink" title="Input的定义"></a>Input的定义</h3><p>在<code>train</code>和<code>deploy</code>的时候，输入的定义常常是不同的。在<code>train</code>时，我们需要提供数据$x$和真实值$y$，这样网络的输出$\hat{y} = \mathcal{F}_\theta (x)$与真实值$y$计算损失，bp，更新网络参数$\theta$。</p>
 <p>在<code>deploy</code>时，推荐使用<code>InputLayer</code>定义网络的输入，下面是<code>$CAFFE/models/bvlc_alexnet/deploy.prototxt</code>中的输入定义：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">layer &#123;</div><div class="line">  name: &quot;data&quot;</div><div class="line">  type: &quot;Input&quot;</div><div class="line">  // 该层layer的输出blob名称为data，供后续layer使用</div><div class="line">  top: &quot;data&quot;</div><div class="line">  // 定义输入blob的大小：10 x 3 x 227 x 227</div><div class="line">  // 说明batch size = 10</div><div class="line">  // 输入彩色图像，channel = 3, RGB</div><div class="line">  // 输入image的大小：227 x 227</div><div class="line">  input_param &#123; shape: &#123; dim: 10 dim: 3 dim: 227 dim: 227 &#125; &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <h2 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h2><p><code>Net</code>的描述头文件位于<code>$CAFFE/include/caffe/net.hpp</code>中。</p>
 
@@ -518,6 +520,13 @@
 
         </nav>
 
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
         
 
         <div class="links-of-author motion-element">
