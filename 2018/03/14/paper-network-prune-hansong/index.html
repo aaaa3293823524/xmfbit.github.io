@@ -68,7 +68,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="caffe," />
+  <meta name="keywords" content="deep learning,paper," />
 
 
 
@@ -86,22 +86,25 @@
 
 
 
-<meta name="description" content="Blob是Caffe中的基本数据结构，类似于TensorFlow和PyTorch中的Tensor。图像读入后作为Blob，开始在各个Layer之间传递，最终得到输出。下面这张图展示了Blob和Layer之间的关系： 
-Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内存（Host）和显存（device）之间同步。这篇博客对Caffe中SyncedMem的实现做一总结。">
+<meta name="description" content="参考资料
+HanSong的个人主页：Homepage
+HanSong的博士论文：Efficient Methods and Hardware for Deep Learning
+后续的Deep Compression论文：DEEP COMPRESSION- COMPRESSING DEEP NEURAL NETWORKS WITH PRUNING, TRAINED QUANTIZATION AND">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Caffe 中的 SyncedMem介绍">
-<meta property="og:url" content="https://xmfbit.github.io/2018/01/12/caffe-syncedmem/index.html">
+<meta property="og:title" content="论文 - Learning both Weights and Connections for Efficient Neural Networks">
+<meta property="og:url" content="https://xmfbit.github.io/2018/03/14/paper-network-prune-hansong/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
-<meta property="og:description" content="Blob是Caffe中的基本数据结构，类似于TensorFlow和PyTorch中的Tensor。图像读入后作为Blob，开始在各个Layer之间传递，最终得到输出。下面这张图展示了Blob和Layer之间的关系： 
-Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内存（Host）和显存（device）之间同步。这篇博客对Caffe中SyncedMem的实现做一总结。">
-<meta property="og:image" content="https://xmfbit.github.io/img/caffe_syncedmem_blob_flow.jpg">
-<meta property="og:image" content="https://xmfbit.github.io/img/caffe_syncedmem_transfer.png">
-<meta property="og:updated_time" content="2018-03-14T06:04:00.123Z">
+<meta property="og:description" content="参考资料
+HanSong的个人主页：Homepage
+HanSong的博士论文：Efficient Methods and Hardware for Deep Learning
+后续的Deep Compression论文：DEEP COMPRESSION- COMPRESSING DEEP NEURAL NETWORKS WITH PRUNING, TRAINED QUANTIZATION AND">
+<meta property="og:updated_time" content="2018-03-14T08:25:56.394Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Caffe 中的 SyncedMem介绍">
-<meta name="twitter:description" content="Blob是Caffe中的基本数据结构，类似于TensorFlow和PyTorch中的Tensor。图像读入后作为Blob，开始在各个Layer之间传递，最终得到输出。下面这张图展示了Blob和Layer之间的关系： 
-Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内存（Host）和显存（device）之间同步。这篇博客对Caffe中SyncedMem的实现做一总结。">
-<meta name="twitter:image" content="https://xmfbit.github.io/img/caffe_syncedmem_blob_flow.jpg">
+<meta name="twitter:title" content="论文 - Learning both Weights and Connections for Efficient Neural Networks">
+<meta name="twitter:description" content="参考资料
+HanSong的个人主页：Homepage
+HanSong的博士论文：Efficient Methods and Hardware for Deep Learning
+后续的Deep Compression论文：DEEP COMPRESSION- COMPRESSING DEEP NEURAL NETWORKS WITH PRUNING, TRAINED QUANTIZATION AND">
 
 
 
@@ -129,13 +132,13 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
 
 
 
-  <link rel="canonical" href="https://xmfbit.github.io/2018/01/12/caffe-syncedmem/"/>
+  <link rel="canonical" href="https://xmfbit.github.io/2018/03/14/paper-network-prune-hansong/"/>
 
 
 
 
 
-  <title> Caffe 中的 SyncedMem介绍 | 来呀，快活呀~ </title>
+  <title> 论文 - Learning both Weights and Connections for Efficient Neural Networks | 来呀，快活呀~ </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -290,7 +293,7 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2018/01/12/caffe-syncedmem/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2018/03/14/paper-network-prune-hansong/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -314,7 +317,7 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
             
             
               
-                Caffe 中的 SyncedMem介绍
+                论文 - Learning both Weights and Connections for Efficient Neural Networks
               
             
           </h1>
@@ -329,8 +332,8 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-01-12T14:05:59+08:00">
-                2018-01-12
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-14T16:18:53+08:00">
+                2018-03-14
               </time>
             
 
@@ -365,17 +368,12 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
       
 
       
-        <p><code>Blob</code>是Caffe中的基本数据结构，类似于TensorFlow和PyTorch中的Tensor。图像读入后作为<code>Blob</code>，开始在各个<code>Layer</code>之间传递，最终得到输出。下面这张图展示了<code>Blob</code>和<code>Layer</code>之间的关系：<br> <img src="/img/caffe_syncedmem_blob_flow.jpg" width="300" height="200" alt="blob的流动" align="center"></p>
-<p>Caffe中的<code>Blob</code>在实现的时候，使用了<code>SyncedMem</code>管理内存，并在内存（Host）和显存（device）之间同步。这篇博客对Caffe中<code>SyncedMem</code>的实现做一总结。<br><a id="more"></a></p>
-<h2 id="SyncedMem的作用"><a href="#SyncedMem的作用" class="headerlink" title="SyncedMem的作用"></a>SyncedMem的作用</h2><p><code>Blob</code>是一个多维的数组，可以位于内存，也可以位于显存（当使用GPU时）。一方面，我们需要对底层的内存进行管理，包括何何时开辟内存空间。另一方面，我们的训练数据常常是首先由硬盘读取到内存中，而训练又经常使用GPU，最终结果的保存或可视化又要求数据重新传回内存，所以涉及到Host和Device内存的同步问题。</p>
-<h2 id="同步的实现思路"><a href="#同步的实现思路" class="headerlink" title="同步的实现思路"></a>同步的实现思路</h2><p>在<code>SyncedMem</code>的实现代码中，作者使用一个枚举量<code>head_</code>来标记当前的状态。如下所示：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// in SyncedMem</span></div><div class="line"><span class="keyword">enum</span> SyncedHead &#123; UNINITIALIZED, HEAD_AT_CPU, HEAD_AT_GPU, SYNCED &#125;;</div><div class="line"><span class="comment">// 使用过Git吗？ 在Git中那个标志着repo最新版本状态的变量就叫 HEAD</span></div><div class="line"><span class="comment">// 这里也是一样，标志着最新的数据位于哪里</span></div><div class="line">SyncedHead head_;</div></pre></td></tr></table></figure>
-<p>这样，利用<code>head_</code>变量，就可以构建一个状态转移图，在不同状态切换时进行必要的同步操作等。<br><img src="/img/caffe_syncedmem_transfer.png" alt="状态转换图"></p>
-<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p><code>SyncedMem</code>的类声明如下：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/**</span></div><div class="line"> * @brief Manages memory allocation and synchronization between the host (CPU)</div><div class="line"> *        and device (GPU).</div><div class="line"> *</div><div class="line"> * TODO(dox): more thorough description.</div><div class="line"> */</div><div class="line"><span class="keyword">class</span> SyncedMemory &#123;</div><div class="line"> <span class="keyword">public</span>:</div><div class="line">  SyncedMemory();</div><div class="line">  <span class="function"><span class="keyword">explicit</span> <span class="title">SyncedMemory</span><span class="params">(<span class="keyword">size_t</span> size)</span></span>;</div><div class="line">  ~SyncedMemory();</div><div class="line">  <span class="comment">// 获取CPU data指针</span></div><div class="line">  <span class="function"><span class="keyword">const</span> <span class="keyword">void</span>* <span class="title">cpu_data</span><span class="params">()</span></span>;</div><div class="line">  <span class="comment">// 设置CPU data指针</span></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">set_cpu_data</span><span class="params">(<span class="keyword">void</span>* data)</span></span>;</div><div class="line">  <span class="comment">// 获取GPU data指针</span></div><div class="line">  <span class="function"><span class="keyword">const</span> <span class="keyword">void</span>* <span class="title">gpu_data</span><span class="params">()</span></span>;</div><div class="line">  <span class="comment">// 设置GPU data指针</span></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">set_gpu_data</span><span class="params">(<span class="keyword">void</span>* data)</span></span>;</div><div class="line">  <span class="comment">// 获取CPU data指针，并在后续将改变指针所指向内存的值</span></div><div class="line">  <span class="function"><span class="keyword">void</span>* <span class="title">mutable_cpu_data</span><span class="params">()</span></span>;</div><div class="line">  <span class="comment">// 获取GPU data指针，并在后续将改变指针所指向内存的值</span></div><div class="line">  <span class="function"><span class="keyword">void</span>* <span class="title">mutable_gpu_data</span><span class="params">()</span></span>;</div><div class="line">  <span class="comment">// CPU 和 GPU的同步状态：未初始化，在CPU（未同步），在GPU（未同步），已同步</span></div><div class="line">  <span class="keyword">enum</span> SyncedHead &#123; UNINITIALIZED, HEAD_AT_CPU, HEAD_AT_GPU, SYNCED &#125;;</div><div class="line">  <span class="function">SyncedHead <span class="title">head</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> head_; &#125;</div><div class="line">  <span class="comment">// 内存大小</span></div><div class="line">  <span class="keyword">size_t</span> size() &#123; <span class="keyword">return</span> size_; &#125;</div><div class="line"></div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CPU_ONLY</span></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">async_gpu_push</span><span class="params">(<span class="keyword">const</span> cudaStream_t&amp; stream)</span></span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line"></div><div class="line"> <span class="keyword">private</span>:</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">check_device</span><span class="params">()</span></span>;</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">to_cpu</span><span class="params">()</span></span>;</div><div class="line">  <span class="function"><span class="keyword">void</span> <span class="title">to_gpu</span><span class="params">()</span></span>;</div><div class="line">  <span class="keyword">void</span>* cpu_ptr_;</div><div class="line">  <span class="keyword">void</span>* gpu_ptr_;</div><div class="line">  <span class="keyword">size_t</span> size_;</div><div class="line">  SyncedHead head_;</div><div class="line">  <span class="keyword">bool</span> own_cpu_data_;</div><div class="line">  <span class="keyword">bool</span> cpu_malloc_use_cuda_;</div><div class="line">  <span class="keyword">bool</span> own_gpu_data_;</div><div class="line">  <span class="comment">// GPU设备编号</span></div><div class="line">  <span class="keyword">int</span> device_;</div><div class="line"></div><div class="line">  DISABLE_COPY_AND_ASSIGN(SyncedMemory);</div><div class="line">&#125;;  <span class="comment">// class SyncedMemory</span></div></pre></td></tr></table></figure>
-<p>我们以<code>to_cpu()</code>为例，看一下如何在不同状态之间切换。</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">inline</span> <span class="keyword">void</span> SyncedMemory::to_gpu() &#123;</div><div class="line">  <span class="comment">// 检查设备状态（使用条件编译，只在DEBUG中使能）</span></div><div class="line">  check_device();</div><div class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> CPU_ONLY</span></div><div class="line">  <span class="keyword">switch</span> (head_) &#123;</div><div class="line">  <span class="keyword">case</span> UNINITIALIZED:</div><div class="line">    <span class="comment">// 还没有初始化呢~所以内存啥的还没开</span></div><div class="line">    <span class="comment">// 先在GPU上开块显存吧~</span></div><div class="line">    CUDA_CHECK(cudaMalloc(&amp;gpu_ptr_, size_));</div><div class="line">    caffe_gpu_memset(size_, <span class="number">0</span>, gpu_ptr_);</div><div class="line">    <span class="comment">// 接着，改变状态标志</span></div><div class="line">    head_ = HEAD_AT_GPU;</div><div class="line">    own_gpu_data_ = <span class="literal">true</span>;</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">  <span class="keyword">case</span> HEAD_AT_CPU:</div><div class="line">    <span class="comment">// 数据在CPU上~如果需要，先在显存上开内存</span></div><div class="line">    <span class="keyword">if</span> (gpu_ptr_ == <span class="literal">NULL</span>) &#123;</div><div class="line">      CUDA_CHECK(cudaMalloc(&amp;gpu_ptr_, size_));</div><div class="line">      own_gpu_data_ = <span class="literal">true</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">// 数据拷贝</span></div><div class="line">    caffe_gpu_memcpy(size_, cpu_ptr_, gpu_ptr_);</div><div class="line">    <span class="comment">// 改变状态变量</span></div><div class="line">    head_ = SYNCED;</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">  <span class="comment">// 已经在GPU或者已经同步了，什么都不做</span></div><div class="line">  <span class="keyword">case</span> HEAD_AT_GPU:</div><div class="line">  <span class="keyword">case</span> SYNCED:</div><div class="line">    <span class="keyword">break</span>;</div><div class="line">  &#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">else</span></span></div><div class="line">  <span class="comment">// NO_GPU 是一个宏，打印FATAL ERROR日志信息</span></div><div class="line">  <span class="comment">// 编译选项没有开GPU支持，只能说 无可奉告</span></div><div class="line">  NO_GPU;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<p>注意到，除了<code>head_</code>以外，<code>SyncedMemory</code>中还有<code>own_gpu_data_</code>（同样，也有<code>own_cpu_data_</code>）的成员。这个变量是用来标志当前CPU或GPU上有没有分配内存，从而当我们使用<code>set_c/gpu_data</code>或析构函数被调用的时候，能够正确释放内存/显存的。</p>
+        <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
+<li>HanSong的个人主页：<a href="http://stanford.edu/~songhan/" target="_blank" rel="external">Homepage</a></li>
+<li>HanSong的博士论文：<a href="https://purl.stanford.edu/qf934gh3708" target="_blank" rel="external">Efficient Methods and Hardware for Deep Learning</a></li>
+<li>后续的Deep Compression论文：<a href="https://arxiv.org/abs/1510.00149" target="_blank" rel="external">DEEP COMPRESSION- COMPRESSING DEEP NEURAL NETWORKS WITH PRUNING, TRAINED QUANTIZATION AND HUFFMAN CODING</a></li>
+<li>Deep Compression AlexNet: <a href="https://github.com/songhan/Deep-Compression-AlexNet" target="_blank" rel="external">Deep-Compression-AlexNet</a></li>
+</ul>
 
       
     </div>
@@ -399,7 +397,9 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
       
         <div class="post-tags">
           
-            <a href="/tags/caffe/" rel="tag"># caffe</a>
+            <a href="/tags/deep-learning/" rel="tag"># deep learning</a>
+          
+            <a href="/tags/paper/" rel="tag"># paper</a>
           
         </div>
       
@@ -408,8 +408,8 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/01/08/caffe-batch-norm/" rel="next" title="Caffe中的BatchNorm实现">
-                <i class="fa fa-chevron-left"></i> Caffe中的BatchNorm实现
+              <a href="/2018/02/28/caffe-net/" rel="next" title="Caffe中的Net实现">
+                <i class="fa fa-chevron-left"></i> Caffe中的Net实现
               </a>
             
           </div>
@@ -417,10 +417,6 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/01/25/inq-paper/" rel="prev" title="Incremental Network Quantization 论文阅读">
-                Incremental Network Quantization 论文阅读 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -588,7 +584,7 @@ Caffe中的Blob在实现的时候，使用了SyncedMem管理内存，并在内�
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#SyncedMem的作用"><span class="nav-number">1.</span> <span class="nav-text">SyncedMem的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步的实现思路"><span class="nav-number">2.</span> <span class="nav-text">同步的实现思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现"><span class="nav-number">3.</span> <span class="nav-text">具体实现</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考资料"><span class="nav-number">1.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
             
 
           </div>
