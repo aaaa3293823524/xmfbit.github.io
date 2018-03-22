@@ -95,7 +95,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-least-square-normal-equation.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-some-useful-matrix-derivatives.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-sigmoid.png">
-<meta property="og:updated_time" content="2018-03-21T07:53:32.260Z">
+<meta property="og:updated_time" content="2018-03-21T13:25:02.494Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS229 简单的监督学习方法">
 <meta name="twitter:description" content="回过头去复习一下基础的监督学习算法，主要包括最小二乘法和logistic回归。">
@@ -372,18 +372,18 @@
 <script type="math/tex; mode=display">\begin{aligned}\nabla_\theta J(\theta) &= \frac{1}{2}\nabla_\theta (\theta^T x - y)^2 \\
 &= (\theta^T x - y) x\end{aligned}</script><p>由于这里的损失函数是一个凸函数，所以梯度下降方法能够保证到达全局的极值点。</p>
 <p>上面的梯度下降只是对单个样本来做的。实际上，我们可以取整个训练集或者训练集的一部分，计算平均损失函数$J(\theta) = \frac{1}{N}\sum_{i=1}^{N}J_i(\theta)$，做梯度下降，道理是一样的，只不过相差了常数因子$\frac{1}{N}$。</p>
-<h3 id="正则方程"><a href="#正则方程" class="headerlink" title="正则方程"></a>正则方程</h3><p>除了梯度下降方法之外，上述问题还存在着解析解。我们将所有的样本输入$x^{(i)}$作为行向量，构成矩阵$X \in \mathbb{R}^{N\times m}$。其中，$N$为样本总数，$d$为单个样本的特征个数。那么，对于参数$\theta\in\mathbb{R}^{d\times 1}$来说，$X\theta$的第$i$行就可以给出模型对第$i$个样本的预测结果。我们将ground truth排成一个$N\times 1$的矩阵，那么，损失函数可以写作：</p>
+<h3 id="正则方程"><a href="#正则方程" class="headerlink" title="正则方程"></a>正则方程</h3><p>除了梯度下降方法之外，上述问题还存在着解析解。我们将所有的样本输入$x^{(i)}$作为行向量，构成矩阵$X \in \mathbb{R}^{N\times d}$。其中，$N$为样本总数，$d$为单个样本的特征个数。那么，对于参数$\theta\in\mathbb{R}^{d\times 1}$来说，$X\theta$的第$i$行就可以给出模型对第$i$个样本的预测结果。我们将ground truth排成一个$N\times 1$的矩阵，那么，损失函数可以写作：</p>
 <script type="math/tex; mode=display">J(\theta) = \frac{1}{2N} \Vert X\theta-y \Vert_2^2</script><p>将$\Vert x\Vert_2^2$写作$x^T x$，同时略去常数项，我们有：</p>
-<script type="math/tex; mode=display">\begin{aligned}J &= (X\theta - y)^T (X\theta - y)
+<script type="math/tex; mode=display">\begin{aligned}J &= (X\theta - y)^T (X\theta - y) \\
 &= \theta^T X^T X\theta - 2\theta^T x^T y +y^T y\end{aligned}</script><p>对其求导，有：</p>
 <script type="math/tex; mode=display">\nabla_\theta J = X^T X\theta - X^T y</script><p><img src="/img/cs229-supervised-learning-least-square-normal-equation.png" alt="具体计算过程贴图"></p>
 <p>这其中，主要用到的矩阵求导性质如下：<br><img src="/img/cs229-supervised-learning-some-useful-matrix-derivatives.png" alt="一些典型求导结果"><br>令导数为$0$，求得极值点处：</p>
 <script type="math/tex; mode=display">\theta^* = (X^TX)^{-1}X^T y</script><h3 id="概率解释"><a href="#概率解释" class="headerlink" title="概率解释"></a>概率解释</h3><p>这里对上述做法给出一个概率论上的解释。首先我们要引入似然函数（likelihood function）的概念。</p>
 <p>似然函数是一个关于模型参数$\theta$的函数，它描述了某个参数$\theta$下，给出输入$x$，得到输出$y$的概率。用具体的公式表示如下：</p>
 <script type="math/tex; mode=display">L(\theta) = \prod_{i=1}^{N}P(y^{(i)}|x^{(i)};\theta)</script><p>假设线性模型的预测结果和ground truth之间的误差服从Gaussian分布，也就是说，</p>
-<script type="math/tex; mode=display">y - \theta^T x  =  \epsilon \sim \mathcal{N}</script><p>那么上面的似然函数可以写作：</p>
+<script type="math/tex; mode=display">y - \theta^T x  =  \epsilon \sim \mathcal{N}(0, \sigma^2)</script><p>那么上面的似然函数可以写作：</p>
 <script type="math/tex; mode=display">L(\theta) = \prod_{i=1}^{N}\frac{1}{\sqrt{2\pi\sigma}}\exp(\frac{(y^{(i)}-\theta^T x^{(i)})^2}{2\sigma^2})</script><p>如何估计参数$\theta$呢？我们可以认为，参数$\theta$使得出现样本点$(x^{(i)}, y^{(i)})$的概率变大，所以才能被我们观测到。自然，我们需要使得似然函数$L(\theta)$取得极大值，也就是说：</p>
-<script type="math/tex; mode=display">\theta^* = \arg\max L(\theta)</script><p>通过引入$\log(\cdot)$，可以将连乘变成连加，这样，实际上我们操作的是对数似然函数$\log L(\theta)$。有：</p>
+<script type="math/tex; mode=display">\theta^* = \arg\max L(\theta)</script><p>通过引入$\log(\cdot)$，可以将连乘变成连加，同时不改变函数的单调性。这样，实际上我们操作的是对数似然函数$\log L(\theta)$。有：</p>
 <script type="math/tex; mode=display">\begin{aligned} \mathcal{l} &= \log L(\theta) \\
 &= \sum_{i=1}^{N}\log \frac{1}{\sqrt{2\pi\sigma^2}} \exp (\frac{(y^{(i)}-\theta^T x^{(i)})^2}{2\sigma^2})\\
 &= N\log\frac{1}{\sqrt{2\pi\sigma^2}} -\frac{1}{\sigma^2}\frac{1}{2}\sum_{i=1}^{N}(y^{(i)}-\theta^T x^{(i)})^2 \end{aligned}</script><p>略去前面的常数项不管，后面一项正好是最小二乘法的损失函数。要想最大化对数似然函数，也就是要最小化上面的损失函数。</p>
@@ -396,9 +396,9 @@
 <h3 id="logistic回归-1"><a href="#logistic回归-1" class="headerlink" title="logistic回归"></a>logistic回归</h3><p>logistic函数的输出既然是在$(0,1)$上，我们可以将其作为概率。也就是说，我们认为它的输出是样本点属于类别$1$的概率：</p>
 <script type="math/tex; mode=display">\begin{aligned}P(y=1|x) &= h_\theta(x) \\
 P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑些：</p>
-<script type="math/tex; mode=display">P(y|x) = (h_\theta(x))^y (1-h_\theta(x))*(1-y)</script><p>我们仍然使用上述极大似然的估计方法，求取参数$\theta$，为求简练，隐去了上标$(i)$。</p>
-<script type="math/tex; mode=display">\begin{aligned}L(\theta) &= \prod_{i=1}^{N}P(y|x;\theta)
-&=\prod (h_\theta(x))^y (1-h_\theta(x))*(1-y) \end{aligned}</script><p>取对数：</p>
+<script type="math/tex; mode=display">P(y|x) = (h_\theta(x))^y (1-h_\theta(x))^(1-y)</script><p>我们仍然使用上述极大似然的估计方法，求取参数$\theta$，为求简练，隐去了上标$(i)$。</p>
+<script type="math/tex; mode=display">\begin{aligned}L(\theta) &= \prod_{i=1}^{N}P(y|x;\theta) \\
+&=\prod (h_\theta(x))^y (1-h_\theta(x))^(1-y) \end{aligned}</script><p>取对数：</p>
 <script type="math/tex; mode=display">\log L(\theta) = \sum_{i=1}^{N}y\log(h(x)) + (1-y)\log(1-h(x))</script><p>所以，我们的损失函数为$J(\theta) = - [y\log(h(x)) + (1-y)\log(1-h(x))]$。把$h(x)$换成$P$，岂不就是深度学习中常用的交叉损失熵在二分类下的特殊情况？</p>
 <p>回到logistic回归，使用梯度下降，我们可以得到更新参数的策略：</p>
 <script type="math/tex; mode=display">\theta_{i+1} = \theta_i - \alpha (h_\theta(x) - y)x</script><p>啊哈！形式和最小二乘法完全一样。只不过要注意，现在的$h_\theta(x)$已经变成了一个非线性函数。</p>
@@ -447,6 +447,10 @@ P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑�
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/22/paper-xception/" rel="prev" title="论文 - Xception(Deep Learning with Depthwise separable Convolution)">
+                论文 - Xception(Deep Learning with Depthwise separable Convolution) <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -541,7 +545,7 @@ P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">60</span>
+                <span class="site-state-item-count">61</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
