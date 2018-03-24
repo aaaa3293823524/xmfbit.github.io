@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://xmfbit.github.io/"/>
-  <updated>2018-03-22T01:49:42.474Z</updated>
+  <updated>2018-03-24T06:05:29.436Z</updated>
   <id>https://xmfbit.github.io/</id>
   
   <author>
@@ -17,11 +17,51 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>论文 - Xception(Deep Learning with Depthwise separable Convolution)</title>
+    <title>论文 - SqueezeNet, AlexNet-level accuracy with 50x fewer parameters and &lt;0.5MB model size</title>
+    <link href="https://xmfbit.github.io/2018/03/24/paper-squeezenet/"/>
+    <id>https://xmfbit.github.io/2018/03/24/paper-squeezenet/</id>
+    <published>2018-03-24T06:02:53.000Z</published>
+    <updated>2018-03-24T06:05:29.436Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://arxiv.org/abs/1602.07360" target="_blank" rel="external">SqueezeNet</a>由HanSong等人提出，和AlexNet相比，用少于$50$倍的参数量，在ImageNet上实现了comparable的accuracy。比较本文和HanSoing其他的工作，可以看出，其他工作，如Deep Compression是对已有的网络进行压缩，减小模型size；而SqueezeNet是从网络设计入手，从设计之初就考虑如何使用较少的参数实现较好的性能。可以说是模型压缩的两个不同思路。</p><a id="more"></a><h2 id="模型压缩相关工作"><a href="#模型压缩相关工作" class="headerlink" title="模型压缩相关工作"></a>模型压缩相关工作</h2><p>模型压缩的好处主要有以下几点：</p><ul><li>更好的分布式训练。server之间的通信往往限制了分布式训练的提速比例，较少的网络参数能够降低对server间通信需求。</li><li>云端向终端的部署，需要更低的带宽，例如手机app更新或无人车的软件包更新。</li><li>更易于在FPGA等硬件上部署，因为它们往往都有着非常受限的片上RAM。</li></ul><p>相关工作主要有两个方向，即模型压缩和模型结构自身探索。</p><p>模型压缩方面的工作主要有，使用SVD分解，Deep Compression等。模型结构方面比较有意义的工作是GoogLeNet的Inception module（可在博客内搜索<em>Xception</em>发现Xception的作者是如何受此启发发明Xception结构的）。</p><p>本文的作者从网络设计角度出发，提出了名为SqueezeNet的网络结构，使用比AlexNet少$50$倍的参数，在ImageNet上取得了comparable的结果。此外，还探究了CNN的arch是如何影响model size和最终的accuracy的。主要从两个方面进行了探索，分别是<em>CNN microarch</em>和<em>CNN macroarch</em>。前者意为在更小的粒度上，如每一层的layer怎么设计，来考察；后者是在更为宏观的角度，如一个CNN中的不同layer该如何组织来考察。</p><h2 id="SqueezeNet"><a href="#SqueezeNet" class="headerlink" title="SqueezeNet"></a>SqueezeNet</h2><p>为了简单，下文简称<em>SNet</em>。SNet的基本组成是叫做<em>Fire</em>的module。我们知道，对于一个CONV layer，它的参数数量计算应该是：$K \time K \times M \times N$。其中，$K$是filter的spatial size，$M$和$N$分别是输入feature map和输出activation的channel size。由此，设计SNet时，作者的依据主要是以下几点：</p><ul><li>把$3\times 3$的卷积替换成$1\times 1$，相当于减小上式中的$K$。</li><li>减少$3\times 3$filter对应的输入feature map的channel，相当于减少上式的$M$。</li><li>delayed downsample。使得activation的feature map能够足够大，这样对提高accuracy有益。CNN中的downsample主要是通过CONV layer或pooling layer中stride设置大于$1$得到的，作者指出，应将这种操作尽量后移。</li></ul><blockquote><p>Our intuition is that large activation maps (due to delayed downsampling) can lead to higher classification accuracy, with all else held equal.</p></blockquote><h3 id="Fire-Module"><a href="#Fire-Module" class="headerlink" title="Fire Module"></a>Fire Module</h3><p>Fire Module是SNet的基本组成单元，如下图所示。可以分为两个部分，一个是上面的<em>squeeze</em>部分，是一组$1\times 1$的卷积，用来将输入的channel squeeze到一个较小的值。后面是<em>expand</em>部分，由$1\times 1$和$3\times 3$卷积mix起来。使用$s<em>{1 x 1}$，$e</em>{1x1}$和$e<em>{3x3}$表示squeeze和expand中两种不同卷积的channel数量，令$s</em>{1x1} &lt; e<em>{1x1} + e</em>{3x3}$，用来实现上述策略2.<br><img src="/img/paper-squeezenet-fire-module.png" alt="Fire Module示意"></p><p>下面，对照PyTorch实现的SNet代码看下Fire的实现，注意上面说的CONV后面都接了ReLU。<br><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Fire</span><span class="params">(nn.Module)</span>:</span></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self, inplanes, squeeze_planes,</span></span></div><div class="line">                 expand1x1_planes, expand3x3_planes):</div><div class="line">        super(Fire, self).__init__()</div><div class="line">        self.inplanes = inplanes</div><div class="line">        <span class="comment">## squeeze 部分</span></div><div class="line">        self.squeeze = nn.Conv2d(inplanes, squeeze_planes, kernel_size=<span class="number">1</span>)</div><div class="line">        self.squeeze_activation = nn.ReLU(inplace=<span class="keyword">True</span>)</div><div class="line">        <span class="comment">## expand 1x1 部分</span></div><div class="line">        self.expand1x1 = nn.Conv2d(squeeze_planes, expand1x1_planes,</div><div class="line">                                   kernel_size=<span class="number">1</span>)</div><div class="line">        self.expand1x1_activation = nn.ReLU(inplace=<span class="keyword">True</span>)</div><div class="line">        <span class="comment">## expand 3x3部分</span></div><div class="line">        self.expand3x3 = nn.Conv2d(squeeze_planes, expand3x3_planes,</div><div class="line">                                   kernel_size=<span class="number">3</span>, padding=<span class="number">1</span>)</div><div class="line">        self.expand3x3_activation = nn.ReLU(inplace=<span class="keyword">True</span>)</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span><span class="params">(self, x)</span>:</span></div><div class="line">        x = self.squeeze_activation(self.squeeze(x))</div><div class="line">        <span class="comment">## 将expand 部分1x1和3x3的cat到一起</span></div><div class="line">        <span class="keyword">return</span> torch.cat([</div><div class="line">            self.expand1x1_activation(self.expand1x1(x)),</div><div class="line">            self.expand3x3_activation(self.expand3x3(x))], <span class="number">1</span>)</div></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://arxiv.org/abs/1602.07360&quot;&gt;SqueezeNet&lt;/a&gt;由HanSong等人提出，和AlexNet相比，用少于$50$倍的参数量，在ImageNet上实现了comparable的accuracy。比较本文和HanSoing其他的工作，可以看出，其他工作，如Deep Compression是对已有的网络进行压缩，减小模型size；而SqueezeNet是从网络设计入手，从设计之初就考虑如何使用较少的参数实现较好的性能。可以说是模型压缩的两个不同思路。&lt;/p&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>论文 - MobileNets, Efficient Convolutional Neural Networks for Mobile Vision Applications</title>
+    <link href="https://xmfbit.github.io/2018/03/23/paper-mobilenet/"/>
+    <id>https://xmfbit.github.io/2018/03/23/paper-mobilenet/</id>
+    <published>2018-03-23T02:53:43.000Z</published>
+    <updated>2018-03-24T06:06:39.578Z</updated>
+    
+    <content type="html"><![CDATA[<p><a href="https://arxiv.org/abs/1704.04861" target="_blank" rel="external">MobileNet</a>是建立在Depthwise Separable Conv基础之上的一个轻量级网络。在本论文中，作者定量计算了使用这一技术带来的计算量节省，提出了MobileNet的结构，同时提出了两个简单的超参数，可以灵活地进行模型性能和inference时间的折中。后续改进的<a href="https://arxiv.org/abs/1801.04381" target="_blank" rel="external">MobileNet v2</a>以后讨论。<br><a id="more"></a></p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;a href=&quot;https://arxiv.org/abs/1704.04861&quot;&gt;MobileNet&lt;/a&gt;是建立在Depthwise Separable Conv基础之上的一个轻量级网络。在本论文中，作者定量计算了使用这一技术带来的计算量节省，提出了MobileNet的结构，同时提出了两个简单的超参数，可以灵活地进行模型性能和inference时间的折中。后续改进的&lt;a href=&quot;https://arxiv.org/abs/1801.04381&quot;&gt;MobileNet v2&lt;/a&gt;以后讨论。&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="deep learning" scheme="https://xmfbit.github.io/tags/deep-learning/"/>
+    
+      <category term="paper" scheme="https://xmfbit.github.io/tags/paper/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>论文 - Xception, Deep Learning with Depthwise separable Convolution</title>
     <link href="https://xmfbit.github.io/2018/03/22/paper-xception/"/>
     <id>https://xmfbit.github.io/2018/03/22/paper-xception/</id>
     <published>2018-03-22T01:44:38.000Z</published>
-    <updated>2018-03-22T01:49:42.474Z</updated>
+    <updated>2018-03-24T06:06:52.599Z</updated>
     
     <content type="html"><![CDATA[<p>在MobileNet, ShuffleMet等轻量级网络中，<strong>depthwise separable conv</strong>是一个很流行的设计。借助<a href="https://arxiv.org/abs/1610.02357" target="_blank" rel="external">Xception: Deep Learning with Depthwise separable Convolution</a>，对这种分解卷积的思路做一个总结。<br><a id="more"></a></p><h2 id="起源"><a href="#起源" class="headerlink" title="起源"></a>起源</h2><p>自从AlexNet以来，DNN的网络设计经过了ZFNet-&gt;VGGNet-&gt;GoogLeNet-&gt;ResNet等几个发展阶段。本文作者的思路正是受GoogLeNet中Inception结构启发。Inception结构是最早有别于VGG等“直筒型”结构的网络module。以Inception V3为例，一个典型的Inception模块长下面这个样子：<br><img src="/img/paper-xception-inception-module.png" alt="一个典型的Inception结构"></p><p>对于一个CONV层来说，它要学习的是一个$3D$的filter，包括两个空间维度（spatial dimension），即width和height；以及一个channel dimension。这个filter和输入在$3$个维度上进行卷积操作，得到最终的输出。可以用伪代码表示如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 对于第i个filter</div><div class="line">// 计算输入中心点(x, y)对应的卷积结果</div><div class="line">sum = 0</div><div class="line">for c in 1:C</div><div class="line">  for h in 1:K</div><div class="line">    for w in 1:K</div><div class="line">      sum += in[c, y-K/2+h, x-K/2+w] * filter_i[c, h, w]</div><div class="line">out[i, y, x] = sum</div></pre></td></tr></table></figure></p><p>可以看到，在$3D$卷积中，channel这个维度和spatial的两个维度并无不同。</p><p>在Inception中，卷积操作更加轻量级。输入首先被$1\times 1$的卷积核处理，得到了跨channel的组合(cross-channel correlation)，同时将输入的channel dimension减少了$3\sim 4$倍（一会$4$个支路要做<code>concat</code>操作）。这个结果被后续的$3\times 3$卷积和$5\times 5$卷积核处理，处理方法和普通的卷积一样，见上。</p><p>由此作者想到，Inception能够work证明后面的一条假设就是：卷积的channel相关性和spatial相关性是可以解耦的，我们没必要要把它们一起完成。</p><h2 id="简化Inception，提取主要矛盾"><a href="#简化Inception，提取主要矛盾" class="headerlink" title="简化Inception，提取主要矛盾"></a>简化Inception，提取主要矛盾</h2><p>接着，为了更好地分析问题，作者将Inception结构做了简化，保留了主要结构，去掉了AVE Pooling操作，如下所示。<br><img src="/img/paper-xception-simplified-inception-module.png" alt="简化后的Inception"></p><p>好的，我们现在将底层的$3$个$1\times 1$的卷积核组合起来，其实上面的图和下图是等价的。一个“大的”$1\times 1$的卷积核（channels数目变多），它的输出结果在channel上被分为若干组（group），每组分别和不同的$3\times 3$卷积核做卷积，再将这$3$份输出拼接起来，得到最后的输出。<br><img src="/img/paper-xception-equivalent-inception-module.png" alt="另一种形式"></p><p>那么，如果我们把分组数目继续调大呢？极限情况，我们可以使得group number = channel number，如下所示：<br><img src="/img/paper-xception-extreme-version.png" alt="极限模式"></p><h2 id="Depthwise-Separable-Conv"><a href="#Depthwise-Separable-Conv" class="headerlink" title="Depthwise Separable Conv"></a>Depthwise Separable Conv</h2><p>这种结构和一种名为<strong>depthwise separable conv</strong>的技术很相似，即首先使用group conv在spatial dimension上卷积，然后使用$1\times 1$的卷积核做cross channel的卷积（又叫做<em>pointwise conv</em>）。主要有两点不同：</p><ul><li>操作的顺序。在TensorFlow等框架中，depthwise separable conv的实现是先使用channelwise的filter只在spatial dimension上做卷积，再使用$1\times 1$的卷积核做跨channel的融合。而Inception中先使用$1\times 1$的卷积核。</li><li>非线性变换的缺席。在Inception中，每个conv操作后面都有ReLU的非线性变换，而depthwise separable conv没有。</li></ul><p>第一点不同不太重要，尤其是在深层网络中，这些block都是堆叠在一起的。第二点论文后面通过实验进行了比较。可以看出，去掉中间的非线性激活，能够取得更好的结果。<br><img src="/img/paper-xception-experiment-intermediate-activation.png" alt="非线性激活的影响"></p><h2 id="Xception网络架构"><a href="#Xception网络架构" class="headerlink" title="Xception网络架构"></a>Xception网络架构</h2><p>基于上面的分析，作者认为这样的假设是合理的：cross channel的相关和spatial的相关可以<strong>完全</strong>解耦。</p><blockquote><p>we make the following hypothesis: that the mapping of cross-channels correlations and spatial correlations in the feature maps of convolutional neural networks can be <em>entirely</em> decoupled. </p></blockquote><p>Xception的结构基于ResNet，但是将其中的卷积层换成了depthwise separable conv。如下图所示。整个网络被分为了三个部分：Entry，Middle和Exit。</p><blockquote><p>The Xception architecture: the data first goes through the entry flow, then through the middle flow which is repeated eight times, and finally through the exit flow. Note that all Convolution and SeparableConvolution layers are followed by batch normalization [7] (not included in the diagram). All SeparableConvolution layers use a depth multiplier of 1 (no depth expansion).</p></blockquote><p><img src="/img/paper-xception-arch.png" alt="Xception的网络结构"></p>]]></content>
     
@@ -399,50 +439,6 @@
     
     
       <category term="tool" scheme="https://xmfbit.github.io/tags/tool/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用IPDB调试Python代码</title>
-    <link href="https://xmfbit.github.io/2017/08/21/debugging-with-ipdb/"/>
-    <id>https://xmfbit.github.io/2017/08/21/debugging-with-ipdb/</id>
-    <published>2017-08-21T07:53:16.000Z</published>
-    <updated>2018-03-15T06:54:37.452Z</updated>
-    
-    <content type="html"><![CDATA[<p>IPDB是什么？IPDB（Ipython Debugger），和GDB类似，是一款集成了Ipython的Python代码命令行调试工具，可以看做PDB的升级版。这篇文章总结IPDB的使用方法，主要是若干命令的使用。更多详细的教程或文档还请参考Google。<br><a id="more"></a></p><h2 id="安装与使用"><a href="#安装与使用" class="headerlink" title="安装与使用"></a>安装与使用</h2><p>IPDB以Python第三方库的形式给出，使用<code>pip install ipdb</code>即可轻松安装。</p><p>在使用时，有两种常见方式。</p><h3 id="集成到源代码中"><a href="#集成到源代码中" class="headerlink" title="集成到源代码中"></a>集成到源代码中</h3><p>通过在代码开头导入包，可以直接在代码指定位置插入断点。如下所示：<br><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">import</span> ipdb</div><div class="line"><span class="comment"># some code</span></div><div class="line">x = <span class="number">10</span></div><div class="line">ipdb.set_trace()</div><div class="line">y = <span class="number">20</span></div><div class="line"><span class="comment"># other code</span></div></pre></td></tr></table></figure></p><p>则程序会在执行完<code>x = 10</code>这条语句之后停止，展开Ipython环境，就可以自由地调试了。</p><h3 id="命令式"><a href="#命令式" class="headerlink" title="命令式"></a>命令式</h3><p>上面的方法很方便，但是也有不灵活的缺点。对于一段比较棘手的代码，我们可能需要按步执行，边运行边跟踪代码流并进行调试，这时候使用交互式的命令式调试方法更加有效。启动IPDB调试环境的方法也很简单：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">python -m ipdb your_code.py</div></pre></td></tr></table></figure></p><h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><p>IPDB调试环境提供的常见命令有：</p><h3 id="帮助"><a href="#帮助" class="headerlink" title="帮助"></a>帮助</h3><p>帮助文档就是这样一个东西：当你写的时候觉得这TM也要写？当你看别人的东西的时候觉得这TM都没写？</p><p>使用<code>h</code>即可调出IPDB的帮助。可以使用<code>help command</code>的方法查询特定命令的具体用法。</p><h3 id="下一条语句"><a href="#下一条语句" class="headerlink" title="下一条语句"></a>下一条语句</h3><p>使用<code>n</code>(next)执行下一条语句。注意一个函数调用也是一个语句。如何能够实现类似“进入函数内部”的功能呢？</p><h3 id="进入函数内部"><a href="#进入函数内部" class="headerlink" title="进入函数内部"></a>进入函数内部</h3><p>使用<code>s</code>(step into)进入函数调用的内部。</p><h3 id="打断点"><a href="#打断点" class="headerlink" title="打断点"></a>打断点</h3><p>使用<code>b line_number</code>(break)的方式给指定的行号位置加上断点。使用<code>b file_name:line_number</code>的方法给指定的文件（还没执行到的代码可能在外部文件中）中指定行号位置打上断点。</p><p>另外，打断点还支持指定条件下进入，可以查询帮助文档。</p><h3 id="一直执行直到遇到下一个断点"><a href="#一直执行直到遇到下一个断点" class="headerlink" title="一直执行直到遇到下一个断点"></a>一直执行直到遇到下一个断点</h3><p>使用<code>c</code>(continue)执行代码直到遇到某个断点或程序执行完毕。</p><h3 id="一直执行直到返回"><a href="#一直执行直到返回" class="headerlink" title="一直执行直到返回"></a>一直执行直到返回</h3><p>使用<code>r</code>(return)执行代码直到当前所在的这个函数返回。</p><h3 id="跳过某段代码"><a href="#跳过某段代码" class="headerlink" title="跳过某段代码"></a>跳过某段代码</h3><p>使用<code>j line_number</code>(jump)可以跳过某段代码，直接执行指定行号所在的代码。</p><h3 id="更多上下文"><a href="#更多上下文" class="headerlink" title="更多上下文"></a>更多上下文</h3><p>在IPDB调试环境中，默认只显示当前执行的代码行，以及其上下各一行的代码。如果想要看到更多的上下文代码，可以使用<code>l first[, second]</code>(list)命令。</p><p>其中<code>first</code>指示向上最多显示的行号，<code>second</code>指示向下最多显示的行号（可以省略）。当<code>second</code>小于<code>first</code>时，<code>second</code>指的是从<code>first</code>开始的向下的行数（相对值vs绝对值）。</p><p>根据<a href="https://stackoverflow.com/questions/6240887/how-can-i-make-ipdb-show-more-lines-of-context-while-debugging" target="_blank" rel="external">SO上的这个问题</a>，你还可以修改IPDB的源码，一劳永逸地改变上下文的行数。</p><h3 id="我在哪里"><a href="#我在哪里" class="headerlink" title="我在哪里"></a>我在哪里</h3><p>调试兴起，可能你会忘了自己目前所在的行号。例如在打印了若干变量值后，屏幕完全被这些值占据。使用<code>w</code>或者<code>where</code>可以打印出目前所在的行号位置以及上下文信息。</p><h3 id="这是啥"><a href="#这是啥" class="headerlink" title="这是啥"></a>这是啥</h3><p>我们可以使用<code>whatis variable_name</code>的方法，查看变量的类别（感觉有点鸡肋，用<code>type</code>也可以办到）。</p><h3 id="列出当前函数的全部参数"><a href="#列出当前函数的全部参数" class="headerlink" title="列出当前函数的全部参数"></a>列出当前函数的全部参数</h3><p>当你身处一个函数内部的时候，可以使用<code>a</code>(argument)打印出传入函数的所有参数的值。</p><h3 id="打印"><a href="#打印" class="headerlink" title="打印"></a>打印</h3><p>使用<code>p</code>(print)和<code>pp</code>(pretty print)可以打印表达式的值。</p><h3 id="清除断点"><a href="#清除断点" class="headerlink" title="清除断点"></a>清除断点</h3><p>使用<code>cl</code>或者<code>clear file:line_number</code>清除断点。如果没有参数，则清除所有断点。</p><h3 id="再来一次"><a href="#再来一次" class="headerlink" title="再来一次"></a>再来一次</h3><p>使用<code>restart</code>重新启动调试器，断点等信息都会保留。<code>restart</code>实际是<code>run</code>的别名，使用<code>run args</code>的方式传入参数。</p><h3 id="退出"><a href="#退出" class="headerlink" title="退出"></a>退出</h3><p>使用<code>q</code>退出调试，并清除所有信息。</p><p>当然，这并不是IPDB的全部。其他的命令还请参照帮助文档。文档在手，天下我有！</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;IPDB是什么？IPDB（Ipython Debugger），和GDB类似，是一款集成了Ipython的Python代码命令行调试工具，可以看做PDB的升级版。这篇文章总结IPDB的使用方法，主要是若干命令的使用。更多详细的教程或文档还请参考Google。&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="python" scheme="https://xmfbit.github.io/tags/python/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Focal Loss论文阅读 - Focal Loss for Dense Object Detection</title>
-    <link href="https://xmfbit.github.io/2017/08/14/focal-loss-paper/"/>
-    <id>https://xmfbit.github.io/2017/08/14/focal-loss-paper/</id>
-    <published>2017-08-14T14:43:55.000Z</published>
-    <updated>2018-03-15T06:54:37.455Z</updated>
-    
-    <content type="html"><![CDATA[<p>Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的<a href="https://www.zhihu.com/question/63581984" target="_blank" rel="external">讨论</a>。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。</p><p>下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型。不过图上没有加入YOLO的对比。YOLO的速度仍然是其一大优势，但是精度和其他方法相比，仍然不高。</p><p><img src="/img/focal_loss_different_model_comparison.jpg" alt="不同模型关于精度和速度的比较"><br><a id="more"></a></p><h2 id="为什么要有Focal-Loss？"><a href="#为什么要有Focal-Loss？" class="headerlink" title="为什么要有Focal Loss？"></a>为什么要有Focal Loss？</h2><p>目前主流的检测算法可以分为两类：one-state和two-stage。前者以YOLO和SSD为代表，后者以RCNN系列为代表。后者的特点是分类器是在一个稀疏的候选目标中进行分类（背景和对应类别），而这是通过前面的proposal过程实现的。例如Seletive Search或者RPN。相对于后者，这种方法是在一个稀疏集合内做分类。与之相反，前者是输出一个稠密的proposal，然后丢进分类器中，直接进行类别分类。后者使用的方法结构一般较为简单，速度较快，但是目前存在的问题是精度不高，普遍不如前者的方法。</p><p>论文作者指出，之所以做稠密分类的后者精度不够高，核心问题（central issus）是稠密proposal中前景和背景的极度不平衡。以我更熟悉的YOLO举例子，比如在PASCAL VOC数据集中，每张图片上标注的目标可能也就几个。但是YOLO V2最后一层的输出是$13 \times 13 \times 5$，也就是$845$个候选目标！大量（简单易区分）的负样本在loss中占据了很大比重，使得有用的loss不能回传回来。</p><p>基于此，作者将经典的交叉熵损失做了变形（见下），给那些易于被分类的简单例子小的权重，给不易区分的难例更大的权重。同时，作者提出了一个新的one-stage的检测器RetinaNet，达到了速度和精度很好地trade-off。</p><script type="math/tex; mode=display">\text{FL}(p_t) = -(1-p_t)^\gamma \log(p_t)</script><h2 id="物体检测的两种主流方法"><a href="#物体检测的两种主流方法" class="headerlink" title="物体检测的两种主流方法"></a>物体检测的两种主流方法</h2><p>在深度学习之前，经典的物体检测方法为滑动窗，并使用人工设计的特征。HoG和DPM等方法是其中比较有名的。</p><p>R-CNN系的方法是目前最为流行的物体检测方法之一，同时也是目前精度最高的方法。在R-CNN系方法中，正负类别不平衡这个问题通过前面的proposal解决了。通过EdgeBoxes，Selective Search，DeepMask，RPN等方法，过滤掉了大多数的背景，实际传给后续网络的proposal的数量是比较少的（1-2K）。</p><p>在YOLO，SSD等方法中，需要直接对feature map的大量proposal（100K）进行检测，而且这些proposal很多都在feature map上重叠。大量的负样本带来两个问题：</p><ul><li>过于简单，有效信息过少，使得训练效率低；</li><li>简单的负样本在训练过程中压倒性优势，使得模型发生退化。</li></ul><p>在Faster-RCNN方法中，Huber Loss被用来降低outlier的影响（较大error的样本，也就是难例，传回来的梯度做了clipping，也只能是$1$）。而FocalLoss是对inner中简单的那些样本对loss的贡献进行限制。即使这些简单样本数量很多，也不让它们在训练中占到优势。</p><h2 id="Focal-Loss"><a href="#Focal-Loss" class="headerlink" title="Focal Loss"></a>Focal Loss</h2><p>Focal Loss从交叉熵损失而来。二分类的交叉熵损失如下：</p><script type="math/tex; mode=display">\text{CE}(p, y) = \begin{cases}-\log(p) \quad &\text{if}\quad y = 1\\ -\log(1-p) &\text{otherwise}\end{cases}</script><p>对应的，多分类的交叉熵损失是这样的：</p><script type="math/tex; mode=display">\text{CE}(p, y) = -\log(p_y)</script><p>如下图所示，蓝色线为交叉熵损失函数随着$p_t$变化的曲线($p_t$意为ground truth，是标注类别所对应的概率)。可以看到，当概率大于$.5$，即认为是易分类的简单样本时，值仍然较大。这样，很多简单样本累加起来，就很可能盖住那些稀少的不易正确分类的类别。<br><img src="/img/focal_loss_vs_ce_loss.jpg" alt="FL vs CELoss"></p><p>为了改善类别样本分布不均衡的问题，已经有人提出了使用加上权重的交叉熵损失，如下（即用参数$\alpha_t$来平衡，这组参数可以是超参数，也可以由类别的比例倒数决定）。作者将其作为比较的baseline。</p><script type="math/tex; mode=display">\text{CE}(p) = -\alpha_t\log(p_t)</script><p>作者提出的则是一个自适应调节的权重，即Focal Loss，定义如下。由上图可以看到$\gamma$取不同值的时候的函数值变化。作者发现，$\gamma=2$时能够获得最佳的效果提升。</p><script type="math/tex; mode=display">\text{FL}(p_t) = -(1-p_t)^\gamma\log(p_t)</script><p>在实际实验中，作者使用的是加权之后的Focal Loss，作者发现这样能够带来些微的性能提升。</p><h2 id="模型初始化"><a href="#模型初始化" class="headerlink" title="模型初始化"></a>模型初始化</h2><p>对于一般的分类网络，初始化之后，往往其输出的预测结果是均等的（随机猜测）。然而作者认为，这种初始化方式在类别极度不均衡的时候是有害的。作者提出，应该初始化模型参数，使得初始化之后，模型输出稀有类别的概率变小（如$0.01$）。作者发现这种初始化方法对于交叉熵损失和Focal Loss的性能提升都有帮助。</p><p>在后续的模型介绍部分，作者较为详细地说明了模型初始化方法。首先，从imagenet预训练得到的base net不做调整，新加入的卷积层权重均初始化为$\sigma=0.01$的高斯分布，偏置项为$0$。对于分类网络的最后一个卷积层，将偏置项置为$b=-\log((1-\pi)/\pi)$。这里的$\pi$参数是一个超参数，其意义是在训练的初始阶段，每个anchor被分类为前景的概率。在实验中，作者实际使用的大小是$0.01$。</p><p>这样进行模型初始化造成的结果就是，在初始阶段，不会产生大量的False Positive，使得训练更加稳定。</p><h2 id="RetinaNet"><a href="#RetinaNet" class="headerlink" title="RetinaNet"></a>RetinaNet</h2><p>作者利用前面介绍的发现和结论，基于ResNet和Feature Pyramid Net（FPN）设计了一种新的one-stage检测框架，命名为RetinaNet。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;Focal Loss这篇文章是He Kaiming和Ross发表在ICCV2017上的文章。关于这篇文章在知乎上有相关的&lt;a href=&quot;https://www.zhihu.com/question/63581984&quot;&gt;讨论&lt;/a&gt;。最近一直在做强化学习相关的东西，目标检测方面很长时间不看新的东西了，把自己阅读论文的要点记录如下，也是一次对这方面进展的回顾。&lt;/p&gt;
-&lt;p&gt;下图来自于论文，是各种主流模型的比较。其中横轴是前向推断的时间，纵轴是检测器的精度。作者提出的RetinaNet在单独某个维度上都可以吊打其他模型。不过图上没有加入YOLO的对比。YOLO的速度仍然是其一大优势，但是精度和其他方法相比，仍然不高。&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/img/focal_loss_different_model_comparison.jpg&quot; alt=&quot;不同模型关于精度和速度的比较&quot;&gt;&lt;br&gt;
-    
-    </summary>
-    
-    
-      <category term="deep learning" scheme="https://xmfbit.github.io/tags/deep-learning/"/>
-    
-      <category term="paper" scheme="https://xmfbit.github.io/tags/paper/"/>
     
   </entry>
   
