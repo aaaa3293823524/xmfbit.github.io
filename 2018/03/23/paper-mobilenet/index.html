@@ -92,10 +92,20 @@
 <meta property="og:url" content="https://xmfbit.github.io/2018/03/23/paper-mobilenet/index.html">
 <meta property="og:site_name" content="来呀，快活呀~">
 <meta property="og:description" content="MobileNet是建立在Depthwise Separable Conv基础之上的一个轻量级网络。在本论文中，作者定量计算了使用这一技术带来的计算量节省，提出了MobileNet的结构，同时提出了两个简单的超参数，可以灵活地进行模型性能和inference时间的折中。后续改进的MobileNet v2以后讨论。">
-<meta property="og:updated_time" content="2018-03-24T06:06:39.578Z">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-depthwise-separable-conv.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-conv-unit.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-net-arch.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-alpha-rho-effect.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-depthwise-vs-full-conv.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-narrow-vs-shallow-net.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-alpha-compact.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-rho-compact.png">
+<meta property="og:image" content="https://xmfbit.github.io/img/paper-mobilenet-comparision-with-other-model.png">
+<meta property="og:updated_time" content="2018-03-26T06:05:26.339Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文 - MobileNets, Efficient Convolutional Neural Networks for Mobile Vision Applications">
 <meta name="twitter:description" content="MobileNet是建立在Depthwise Separable Conv基础之上的一个轻量级网络。在本论文中，作者定量计算了使用这一技术带来的计算量节省，提出了MobileNet的结构，同时提出了两个简单的超参数，可以灵活地进行模型性能和inference时间的折中。后续改进的MobileNet v2以后讨论。">
+<meta name="twitter:image" content="https://xmfbit.github.io/img/paper-mobilenet-depthwise-separable-conv.png">
 
 
 
@@ -360,6 +370,24 @@
 
       
         <p><a href="https://arxiv.org/abs/1704.04861" target="_blank" rel="external">MobileNet</a>是建立在Depthwise Separable Conv基础之上的一个轻量级网络。在本论文中，作者定量计算了使用这一技术带来的计算量节省，提出了MobileNet的结构，同时提出了两个简单的超参数，可以灵活地进行模型性能和inference时间的折中。后续改进的<a href="https://arxiv.org/abs/1801.04381" target="_blank" rel="external">MobileNet v2</a>以后讨论。<br><a id="more"></a></p>
+<h2 id="Depthwise-Separable-Conv"><a href="#Depthwise-Separable-Conv" class="headerlink" title="Depthwise Separable Conv"></a>Depthwise Separable Conv</h2><p>Depthwise Separable Conv把卷积操作拆成两个部分。第一部分，depthwise conv时，每个filter只在一个channel上进行操作。第二部分，pointwise conv是使用$1\times 1$的卷积核做channel上的combination。在Caffe等DL框架中，一般是设定卷积层的<code>group</code>参数，使其等于input的channel数来实现depthwise conv的。而pointwise conv和使用标准卷积并无不同，只是需要设置<code>kernel size = 1</code>。如下，是使用PyTorch的一个<a href="https://github.com/marvis/pytorch-mobilenet/blob/master/main.py#L67" target="_blank" rel="external">例子</a>。</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">conv_dw</span><span class="params">(inp, oup, stride)</span>:</span></div><div class="line">    <span class="keyword">return</span> nn.Sequential(</div><div class="line">        <span class="comment">## 通过设置group=input channels来实现depthwise conv</span></div><div class="line">        nn.Conv2d(inp, inp, <span class="number">3</span>, stride, <span class="number">1</span>, groups=inp, bias=<span class="keyword">False</span>),</div><div class="line">        nn.BatchNorm2d(inp),</div><div class="line">        nn.ReLU(inplace=<span class="keyword">True</span>),</div><div class="line">    </div><div class="line">        nn.Conv2d(inp, oup, <span class="number">1</span>, <span class="number">1</span>, <span class="number">0</span>, bias=<span class="keyword">False</span>),</div><div class="line">        nn.BatchNorm2d(oup),</div><div class="line">        nn.ReLU(inplace=<span class="keyword">True</span>),</div><div class="line">    )</div></pre></td></tr></table></figure>
+<p>这样做的好处就是能够大大减少计算量。假设原始conv的filter个数为$N$，kernel size大小为$D_k$，输入的维度为$D_F\times D_F\times M$，那么总的计算量是$D_K\times D_K\times M\times N\times D_F\times D_F$（设定<code>stride=1</code>，即输入输出的feature map在spatial两个维度上相同）。</p>
+<p>改成上述Depthwise Separable Conv后，计算量变为两个独立操作之和，即$D_K\times D_K\times M\times D_F \times D_F + M\times N\times D_F\times D_F$，计算量是原来的$\frac{1}{N} + \frac{1}{D_K^2} &lt; 1$。<br><img src="/img/paper-mobilenet-depthwise-separable-conv.png" alt="Depthwise Separable Conv示意图"></p>
+<p>在实际使用时，我们在两个卷积操作之间加上BN和非线性变换层，如下图所示：<br><img src="/img/paper-mobilenet-conv-unit.png" alt="Conv-BN-ReLU"></p>
+<h2 id="MobileNet"><a href="#MobileNet" class="headerlink" title="MobileNet"></a>MobileNet</h2><p>下图展示了如何使用Depthwise Separable Conv构建MobileNet。表中的<code>dw</code>表示depthwise conv，后面接的<code>stride=1</code>的conv即为pointwise conv。可以看到，网络就是这样的单元堆叠而成的。最后使用了一个全局的均值pooling，后面接上fc-1000来做分类。<br><img src="/img/paper-mobilenet-net-arch.png" alt="body arch"></p>
+<p>此外，作者指出目前的深度学习框架大多使用GEMM实现卷积层的计算（如Caffe等先使用im2col，再使用GEMM）。但是pointwis= conv其实不需要reordering，说明目前的框架这里还有提升的空间。（不清楚目前PyTorch，TensorFlow等对pointwise conv和depthwise conv的支持如何）</p>
+<p>在训练的时候，一个注意的地方是，对depthwise conv layer，weight decay的参数要小，因为这层本来就没多少个参数。</p>
+<p>这里，给出PyTorch的一个<a href="https://github.com/marvis/pytorch-mobilenet/blob/master/main.py#L78" target="_blank" rel="external">第三方实现</a>。<br><figure class="highlight py"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">self.model = nn.Sequential(</div><div class="line">    conv_bn(  <span class="number">3</span>,  <span class="number">32</span>, <span class="number">2</span>), </div><div class="line">    conv_dw( <span class="number">32</span>,  <span class="number">64</span>, <span class="number">1</span>),</div><div class="line">    conv_dw( <span class="number">64</span>, <span class="number">128</span>, <span class="number">2</span>),</div><div class="line">    conv_dw(<span class="number">128</span>, <span class="number">128</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">128</span>, <span class="number">256</span>, <span class="number">2</span>),</div><div class="line">    conv_dw(<span class="number">256</span>, <span class="number">256</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">256</span>, <span class="number">512</span>, <span class="number">2</span>),</div><div class="line">    conv_dw(<span class="number">512</span>, <span class="number">512</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">512</span>, <span class="number">512</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">512</span>, <span class="number">512</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">512</span>, <span class="number">512</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">512</span>, <span class="number">512</span>, <span class="number">1</span>),</div><div class="line">    conv_dw(<span class="number">512</span>, <span class="number">1024</span>, <span class="number">2</span>),</div><div class="line">    conv_dw(<span class="number">1024</span>, <span class="number">1024</span>, <span class="number">1</span>),</div><div class="line">    nn.AvgPool2d(<span class="number">7</span>),</div><div class="line">)</div><div class="line">self.fc = nn.Linear(<span class="number">1024</span>, <span class="number">1000</span>)</div></pre></td></tr></table></figure></p>
+<h3 id="网络设计超参数的影响"><a href="#网络设计超参数的影响" class="headerlink" title="网络设计超参数的影响"></a>网络设计超参数的影响</h3><h4 id="wider？or-thinner？"><a href="#wider？or-thinner？" class="headerlink" title="wider？or thinner？"></a>wider？or thinner？</h4><p>描述网络，除了常见的深度，还有一个指标就是宽度。网络的宽度受filter个数的影响。更多的filter，说明网络更胖，提取feature的能力”看起来“就会越强。MobileNet使用一个超参数$\alpha$来实验。某个层的filter个数越多，带来的结果就是下一层filter的input channel会变多，$\alpha$就是前后input channel的数量比例。可以得到，计算量会大致变为原来的$\alpha^2$倍。</p>
+<h4 id="resolution"><a href="#resolution" class="headerlink" title="resolution"></a>resolution</h4><p>如果输入的spatial dimension变成原来的$\rho$倍，也就是$D_F$变了，那么会对计算量带来影响。利用上面总结的计算公式不难发现，和$\alpha$一样，计算量会变成原来的$\rho^2$倍。</p>
+<p>实际中，我们令$\alpha$和$\rho$都小于$1$，构建了更少参数的mobilenet。下面是一个具体参数设置下，网络计算量和参数数目的变化情况。<br><img src="/img/paper-mobilenet-alpha-rho-effect.png" alt="具体参数设置下的reduce情况"></p>
+<h3 id="Depthwise-Separable-Conv真的可以？"><a href="#Depthwise-Separable-Conv真的可以？" class="headerlink" title="Depthwise Separable Conv真的可以？"></a>Depthwise Separable Conv真的可以？</h3><p>同样的网络结构，区别在于使用/不使用Depthwise Separable Conv技术，在ImageNet上的精度相差很少（使用这一技术，下降了$1$个点），但是参数和计算量却节省了很多。<br><img src="/img/paper-mobilenet-depthwise-vs-full-conv.png" alt="Depthwise Separable vs Full Convolution MobileNet"></p>
+<h3 id="更浅的网络还是更瘦的网络"><a href="#更浅的网络还是更瘦的网络" class="headerlink" title="更浅的网络还是更瘦的网络"></a>更浅的网络还是更瘦的网络</h3><p>如果我们要缩减网络的参数，是更浅的网络更好，还是更瘦的网络更好呢？作者设计了参数和计算量相近的两个网络进行了比较，结论是相对而言，缩减网络深度不是个好主意。<br><img src="/img/paper-mobilenet-narrow-vs-shallow-net.png" alt="Narrow vs Shallow MobileNet"></p>
+<h3 id="alpha和rho的定量影响"><a href="#alpha和rho的定量影响" class="headerlink" title="alpha和rho的定量影响"></a>alpha和rho的定量影响</h3><p>定量地比较了不同$\alpha$和$\rho$的设置下，网络的性能。$\alpha$越小，网络精度越低，而且下降速度是加快的。<br><img src="/img/paper-mobilenet-alpha-compact.png" alt="MobileNet Width Multiplier"></p>
+<p>输入图像的resolution越小，网络精度也越低。<br><img src="/img/paper-mobilenet-rho-compact.png" alt="MobileNet Resolution"></p>
+<h3 id="和其他网络的对比"><a href="#和其他网络的对比" class="headerlink" title="和其他网络的对比"></a>和其他网络的对比</h3><p>这里只贴出结果。一个值得注意的地方是，SqueezeNet虽然参数很少，但是计算量却很大。而MobileNet可以达到参数也很少。这是通过depthwise separable conv带来的好处。<br><img src="/img/paper-mobilenet-comparision-with-other-model.png" alt="与其他主流模型的比较"></p>
+<h2 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h2><p>接下来，论文讨论了MobileNet在多种不同任务上的表现，证明了它的泛化能力和良好表现。可以在网上找到很多基于MobileNet的detection，classification等的开源项目代码，这里就不再多说了。</p>
 
       
     </div>
@@ -478,8 +506,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/avatar/liumengli.jpg"
@@ -555,6 +592,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Depthwise-Separable-Conv"><span class="nav-number">1.</span> <span class="nav-text">Depthwise Separable Conv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MobileNet"><span class="nav-number">2.</span> <span class="nav-text">MobileNet</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#网络设计超参数的影响"><span class="nav-number">2.1.</span> <span class="nav-text">网络设计超参数的影响</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#wider？or-thinner？"><span class="nav-number">2.1.1.</span> <span class="nav-text">wider？or thinner？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#resolution"><span class="nav-number">2.1.2.</span> <span class="nav-text">resolution</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Depthwise-Separable-Conv真的可以？"><span class="nav-number">2.2.</span> <span class="nav-text">Depthwise Separable Conv真的可以？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更浅的网络还是更瘦的网络"><span class="nav-number">2.3.</span> <span class="nav-text">更浅的网络还是更瘦的网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#alpha和rho的定量影响"><span class="nav-number">2.4.</span> <span class="nav-text">alpha和rho的定量影响</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#和其他网络的对比"><span class="nav-number">2.5.</span> <span class="nav-text">和其他网络的对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#应用"><span class="nav-number">3.</span> <span class="nav-text">应用</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
     </div>
