@@ -95,7 +95,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-least-square-normal-equation.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-some-useful-matrix-derivatives.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-sigmoid.png">
-<meta property="og:updated_time" content="2018-03-21T13:25:02.494Z">
+<meta property="og:updated_time" content="2018-04-01T13:54:13.438Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS229 简单的监督学习方法">
 <meta name="twitter:description" content="回过头去复习一下基础的监督学习算法，主要包括最小二乘法和logistic回归。">
@@ -398,7 +398,7 @@
 P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑些：</p>
 <script type="math/tex; mode=display">P(y|x) = (h_\theta(x))^y (1-h_\theta(x))^(1-y)</script><p>我们仍然使用上述极大似然的估计方法，求取参数$\theta$，为求简练，隐去了上标$(i)$。</p>
 <script type="math/tex; mode=display">\begin{aligned}L(\theta) &= \prod_{i=1}^{N}P(y|x;\theta) \\
-&=\prod (h_\theta(x))^y (1-h_\theta(x))^(1-y) \end{aligned}</script><p>取对数：</p>
+&=\prod (h_\theta(x))^y (1-h_\theta(x))^{(1-y)} \end{aligned}</script><p>取对数：</p>
 <script type="math/tex; mode=display">\log L(\theta) = \sum_{i=1}^{N}y\log(h(x)) + (1-y)\log(1-h(x))</script><p>所以，我们的损失函数为$J(\theta) = - [y\log(h(x)) + (1-y)\log(1-h(x))]$。把$h(x)$换成$P$，岂不就是深度学习中常用的交叉损失熵在二分类下的特殊情况？</p>
 <p>回到logistic回归，使用梯度下降，我们可以得到更新参数的策略：</p>
 <script type="math/tex; mode=display">\theta_{i+1} = \theta_i - \alpha (h_\theta(x) - y)x</script><p>啊哈！形式和最小二乘法完全一样。只不过要注意，现在的$h_\theta(x)$已经变成了一个非线性函数。</p>
@@ -545,7 +545,7 @@ P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑�
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">64</span>
+                <span class="site-state-item-count">65</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -556,7 +556,7 @@ P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑�
           
             <div class="site-state-item site-state-tags">
               <a href="/tags">
-                <span class="site-state-item-count">22</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
