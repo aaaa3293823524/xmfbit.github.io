@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://xmfbit.github.io/"/>
-  <updated>2018-04-03T06:33:59.000Z</updated>
+  <updated>2018-04-04T05:11:00.599Z</updated>
   <id>https://xmfbit.github.io/</id>
   
   <author>
@@ -15,6 +15,26 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>数值优化之牛顿方法</title>
+    <link href="https://xmfbit.github.io/2018/04/03/newton-method/"/>
+    <id>https://xmfbit.github.io/2018/04/03/newton-method/</id>
+    <published>2018-04-03T13:43:16.000Z</published>
+    <updated>2018-04-04T05:11:00.599Z</updated>
+    
+    <content type="html"><![CDATA[<p>简要介绍一下优化方法中的牛顿方法（Newton’s Method）。下面的动图demo来源于<a href="https://zh.wikipedia.org/wiki/%E7%89%9B%E9%A1%BF%E6%B3%95" target="_blank" rel="external">Wiki页面</a>。<br><img src="/img/newton-method-demo.gif" width="400" height="300" alt="牛顿法动图" align="center"><br><a id="more"></a></p><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>牛顿方法，是一种用来求解方程$f(x) = 0$的根的方法。从题图可以看出它是如何使用的。</p><p>首先，需要给定根的初始值$x_0$。接下来，在函数曲线上找到其所对应的点$(x_0, f(x_0))$，并过该点做切线交$x$轴于一点$x_1$。从$x_1$出发，重复上述操作，直至收敛。</p><p>根据图上的几何关系和导数的几何意义，有：</p><script type="math/tex; mode=display">x_{n+1} = x_n - \frac{f(x_n)}{f^\prime(x_n)}</script><h2 id="优化上的应用"><a href="#优化上的应用" class="headerlink" title="优化上的应用"></a>优化上的应用</h2><p>做优化的时候，我们常常需要的是求解某个损失函数$L$的极值。在极值点处，函数的导数为$0$。所以这个问题被转换为了求解$L$的导数的零点。我们有</p><script type="math/tex; mode=display">\theta_{n+1} = \theta_n - \frac{L^\prime(\theta_n)}{L^{\prime\prime}(\theta_n)}</script><h2 id="推广到向量形式"><a href="#推广到向量形式" class="headerlink" title="推广到向量形式"></a>推广到向量形式</h2><p>机器学习中的优化问题常常是在高维空间进行，可以将其推广到向量形式：</p><script type="math/tex; mode=display">\theta_{n+1} = \theta_n - H^{-1}\nabla_\theta L(\theta_n)</script><p>其中，$H$表示海森矩阵，是一个$n\times n$的矩阵，其中元素为：</p><script type="math/tex; mode=display">H_{ij} = \frac{\partial^2 L}{\partial \theta_i \partial \theta_j}</script><p>特别地，当海森矩阵为正定时，此时的极值为极小值（可以使用二阶的泰勒展开式证明）。</p><p>PS:忘了什么是正定矩阵了吗？想想二次型的概念，对于$\forall x$不为$0$向量，都有$x^THx &gt; 0$。</p><h2 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h2><p>牛顿方法的收敛速度较SGD为快（二阶收敛），但是会涉及到求解一个$n\times n$的海森矩阵的逆，所以虽然需要的迭代次数更少，但反而可能比较耗时（$n$的大小）。</p><h2 id="L-BFGS"><a href="#L-BFGS" class="headerlink" title="L-BFGS"></a>L-BFGS</h2><p>由于牛顿方法中需要计算海森矩阵的逆，所以很多时候并不实用。大家就想出了一些近似计算$H^{-1}$的方法，如L-BFGS等。</p><p><em>推导过程待续。。。</em></p><p>L-BFGS的资料网上还是比较多的，这里有一个PyTorch中L-BFGS方法的实现：<a href="https://github.com/pytorch/pytorch/blob/master/torch/optim/lbfgs.py" target="_blank" rel="external">optim.lbfgs</a>。</p><p>这里有一篇不错的文章<a href="http://www.hankcs.com/ml/l-bfgs.html" target="_blank" rel="external">数值优化：理解L-BFGS算法</a>，本博客写作过程参考很多。</p>]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;简要介绍一下优化方法中的牛顿方法（Newton’s Method）。下面的动图demo来源于&lt;a href=&quot;https://zh.wikipedia.org/wiki/%E7%89%9B%E9%A1%BF%E6%B3%95&quot;&gt;Wiki页面&lt;/a&gt;。&lt;br&gt;&lt;img src=&quot;/img/newton-method-demo.gif&quot; width = &quot;400&quot; height = &quot;300&quot; alt=&quot;牛顿法动图&quot; align=center /&gt;&lt;br&gt;
+    
+    </summary>
+    
+    
+      <category term="math" scheme="https://xmfbit.github.io/tags/math/"/>
+    
+  </entry>
   
   <entry>
     <title>论文 - Feature Pyramid Networks for Object Detection (FPN)</title>
@@ -436,24 +456,6 @@
     
     
       <category term="扯淡" scheme="https://xmfbit.github.io/tags/%E6%89%AF%E6%B7%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Ubuntu/Mac 工具软件列表</title>
-    <link href="https://xmfbit.github.io/2017/10/22/useful-tools-list/"/>
-    <id>https://xmfbit.github.io/2017/10/22/useful-tools-list/</id>
-    <published>2017-10-22T12:12:09.000Z</published>
-    <updated>2018-03-15T06:54:37.463Z</updated>
-    
-    <content type="html"><![CDATA[<p>工作环境大部分在Ubuntu和MacOS上进行，这里是一个我觉得在这两个平台上很有用的工具的整理列表，大部分都可以在两个系统上找到。这里并不会给出具体安装方式，因为最好的文档总是软件的官方Document或者GitHub的README。<br><a id="more"></a></p><h2 id="zsh和Oh-my-zsh"><a href="#zsh和Oh-my-zsh" class="headerlink" title="zsh和Oh-my-zsh"></a>zsh和Oh-my-zsh</h2><p>如果经常在终端敲命令而且还在用系统自带的Bash？可以考虑试一下zsh替代bash，并使用<a href="https://github.com/robbyrussell/oh-my-zsh" target="_blank" rel="external">oh-my-zsh</a>武装zsh。</p><p>关于oh-my-zsh的帖子网上已经有很多，不过我还并没有用到太多的功能。oh-my-zsh中可以配置插件，不过我只是使用了<code>colored-man-pages</code>。顾名思义，它可以将使用<code>man</code>查询时的页面彩色输出。如下所示。<br><img src="/img/useful_tools_colored_man_pages.jpg" alt="彩色的cp man页面"></p><h2 id="autojump"><a href="#autojump" class="headerlink" title="autojump"></a>autojump</h2><p>使用<a href="https://github.com/wting/autojump" target="_blank" rel="external">autojump</a>，可以很方便地在已经访问过的文件夹间快速跳转。甚至都不需要输入目标文件夹的全名，支持自动联想。</p><p>除了自动跳转功能，我还将其作为终端到文件资源管理器(Mac: Finder)的跳转功能。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"># 跳转到path并使用文件资源管理器打开</div><div class="line">jo path</div></pre></td></tr></table></figure></p><h2 id="tldr"><a href="#tldr" class="headerlink" title="tldr"></a>tldr</h2><p><a href="https://github.com/tldr-pages/tldr" target="_blank" rel="external">tldr</a> (too long don’t read)是一款能够给出bash命令常用功能的工具。在Linux系统中，很多命令都有一长串参数。这其中很多都是不常用的。而我们使用时，常常是使用某几个常见的功能选项。tldr就能够给出命令的简要描述和例子。</p><p>例如，使用其查询<code>tar</code>的常用方法：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">tldr tar</div><div class="line"><span class="comment"># output</span></div><div class="line">tar</div><div class="line"></div><div class="line">Archiving utility.</div><div class="line">Often combined with a compression method, such as gzip or bzip.</div><div class="line"></div><div class="line">- Create an archive from files:</div><div class="line">    tar cf target.tar file1 file2 file3</div><div class="line"></div><div class="line">- Create a gzipped archive:</div><div class="line">    tar czf target.tar.gz file1 file2 file3</div><div class="line"></div><div class="line">- Extract an archive <span class="keyword">in</span> a target folder:</div><div class="line">    tar xf source.tar -C folder</div><div class="line"></div><div class="line">- Extract a gzipped archive <span class="keyword">in</span> the current directory:</div><div class="line">    tar xzf source.tar.gz</div><div class="line"></div><div class="line">- Extract a bzipped archive <span class="keyword">in</span> the current directory:</div><div class="line">    tar xjf source.tar.bz2</div><div class="line"></div><div class="line">- Create a compressed archive, using archive suffix to determine the compression program:</div><div class="line">    tar caf target.tar.xz file1 file2 file3</div><div class="line"></div><div class="line">- List the contents of a tar file:</div><div class="line">    tar tvf source.tar</div></pre></td></tr></table></figure><p>tldr支持多种语言，我使用了python包安装。但是不知为何，tldr在我这里总显示奇怪的背景颜色，看上去很别扭。所以我实际使用的是<a href="https://github.com/lord63/tldr.py" target="_blank" rel="external">tldr-py</a>。</p><h2 id="tmux"><a href="#tmux" class="headerlink" title="tmux"></a>tmux</h2><p>用SSH登录到服务器上时，如果网络连接不稳定或是自己的主机意外断电，会造成正在跑的代码死掉。因为进程是依附于SSH的会话Session的。tmux是一个终端的“分线器”，可以很方便地将正在进行的终端会话detach掉，使其转入后台运行。正是有这一特点，所以我们可以在SSH会话时，新建tmux会话，在其中跑一些耗时很长的代码，而不必担心SSH掉线。当然，也可以将tmux作为一款终端多任务的管理软件，方便地在多个任务中进行跳转。不过这个功能，我更加常用的是下面的guake。</p><p>虽然Ubuntu14.04可以通过<code>apt-get</code>的方式安装tmux，不过为了能够使用一款好用的配置<a href="https://github.com/gpakosz/.tmux" target="_blank" rel="external">oh-my-tmux</a>（要求tmux&gt;=2.1），还是推荐去GitHub上自己编译安装<a href="https://github.com/tmux/tmux" target="_blank" rel="external">tmux</a>。</p><h2 id="guake"><a href="#guake" class="headerlink" title="guake"></a>guake</h2><p><a href="https://github.com/Guake/guake" target="_blank" rel="external">guake</a>是一款Ubuntu上可以方便呼出终端的应用（按下F12，终端将以全屏的方式铺满桌面，F11可以切换全屏或半屏）。</p><h2 id="Dash-Zeal"><a href="#Dash-Zeal" class="headerlink" title="Dash/Zeal"></a>Dash/Zeal</h2><p>Dash是Mac上一款用于查询API文档的软件。在Ubuntu或Windows上，我们可以使用Zeal这个替代软件。Zeal和Dash基本上无缝衔接，但是却是免费的（Mac上的软件真是好贵。。。）。之前我已经写过一篇<a href="https://xmfbit.github.io/2017/08/26/doc2dash-usage/">博客</a>，介绍如何自己制作文档导入Zeal中。</p><h2 id="sshfs"><a href="#sshfs" class="headerlink" title="sshfs"></a>sshfs</h2><p>使用sshfs可以在本地机器上挂载远程服务器某个文件夹。这样，操作本地的该文件夹就相当于操作远程服务器上的该文件夹（小心使用<code>rm</code>）。</p><h2 id="Alfred-Mutate"><a href="#Alfred-Mutate" class="headerlink" title="Alfred/Mutate"></a>Alfred/Mutate</h2><p>Alfred是Mac上一款非常好用的软件，就像蝙蝠侠身边的老管家一样，可以帮你自动化处理很多事情。除了原生<br>功能，还可以自己编写脚本实现扩展。例如查询豆瓣电影，查询ip，计算器等。鉴于这款软件的大名，这里不再多说。</p><p><a href="https://github.com/qdore/Mutate" target="_blank" rel="external">Mutate</a>是Ubuntu上的一款替代软件。同时，它也提供了方便的扩展接口，只需要按照模板编写python/shell代码，可以很方便地将自己的自动化处理功能加入软件中。</p>]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;工作环境大部分在Ubuntu和MacOS上进行，这里是一个我觉得在这两个平台上很有用的工具的整理列表，大部分都可以在两个系统上找到。这里并不会给出具体安装方式，因为最好的文档总是软件的官方Document或者GitHub的README。&lt;br&gt;
-    
-    </summary>
-    
     
   </entry>
   
