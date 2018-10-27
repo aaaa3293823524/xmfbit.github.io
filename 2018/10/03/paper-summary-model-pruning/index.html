@@ -98,7 +98,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-model-pruning-net-sliming-procedure.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-summary-autopruner-arch.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/paper-summary-model-compression-autopruner-alg.png">
-<meta property="og:updated_time" content="2018-10-03T14:08:06.395Z">
+<meta property="og:updated_time" content="2018-10-27T07:16:02.112Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="论文总结 - 模型剪枝 Model Pruning">
 <meta name="twitter:description" content="模型剪枝是常用的模型压缩方法之一。这篇是最近看的模型剪枝相关论文的总结。">
@@ -419,6 +419,7 @@
 </ol>
 <p>作者试图通过实验证明，很多剪枝方法并没有他们声称的那么有效，很多时候，无需剪枝之后的权重，而是直接随机初始化并训练，就能达到这些论文中的剪枝方法的效果。当然，这些论文并不是一无是处。作者提出，是剪枝之后的结构更重要。这些剪枝方法可以看做是网络结构的搜索。</p>
 <p>论文的其他部分就是对几种现有方法的实验和diss。我还没有细看，如果后续这篇论文得到了接收，再做总结吧~夹带一些私货，基于几篇论文的实现经验和在真实数据集上的测试，这篇文章的看法我是同意的。</p>
+<p>更新：这篇文章的作者原来正是Net Sliming的作者Liu Zhuang和Huang Gao，那实验和结论应该是很有保障的。最近这篇文章确实也引起了大家的注意，值得好好看一看。</p>
 <h2 id="其他论文等资源"><a href="#其他论文等资源" class="headerlink" title="其他论文等资源"></a>其他论文等资源</h2><ul>
 <li><a href="https://nervanasystems.github.io/distiller/index.html" target="_blank" rel="external">Distiller</a>：一个使用PyTorch实现的剪枝工具包</li>
 </ul>
@@ -565,7 +566,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives">
-                <span class="site-state-item-count">74</span>
+                <span class="site-state-item-count">75</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
