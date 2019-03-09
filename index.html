@@ -285,7 +285,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2018/11/18/convex-optimization-intro/">
+  <link itemprop="mainEntityOfPage" href="https://xmfbit.github.io/2019/03/09/darknet-caffe-converter/">
 
   <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <meta itemprop="name" content="一个脱离了高级趣味的人">
@@ -310,8 +310,8 @@
             
               
                 
-                <a class="post-title-link" href="/2018/11/18/convex-optimization-intro/" itemprop="url">
-                  从凸优化到SVM
+                <a class="post-title-link" href="/2019/03/09/darknet-caffe-converter/" itemprop="url">
+                  YOLO Caffe模型转换BN的坑
                 </a>
               
             
@@ -327,8 +327,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-18T00:27:37+08:00">
-                2018-11-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-09T12:51:18+08:00">
+                2019-03-09
               </time>
             
 
@@ -364,11 +364,10 @@
 
       
         
-          <p>开个新坑，总结下最近看的凸优化的东西，主要来自于CS229的讲义。前半部分介绍凸优化的问题定义，后半部分介绍对偶问题和KKT条件，并使用SVM作为例子，展示凸优化在机器学习中的应用。这部分也是SVM理论部分不太好理解的部分，希望我能把它梳理清楚明白。</p>
-<p><img src="/img/convex_opt_intro_title_pic.png" alt="凸函数和非凸函数"><br>
+          <p>YOLO虽好，但是Darknet框架实在是小众，有必要在Inference阶段将其转换为其他框架，以便后续统一部署和管理。Caffe作为小巧灵活的老资格框架，使用灵活，方便魔改，所以尝试将Darknet训练的YOLO模型转换为Caffe。这里简单记录下YOLO V3 原始Darknet模型转换为Caffe模型过程中的一个坑。</p>
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/11/18/convex-optimization-intro/#more" rel="contents">
+            <a class="btn" href="/2019/03/09/darknet-caffe-converter/#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1646,7 +1645,7 @@
         <div class="copyright" >
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

@@ -3,9 +3,9 @@
   
     
     <entry>
-      <title><![CDATA[从凸优化到SVM]]></title>
-      <url>%2F2018%2F11%2F18%2Fconvex-optimization-intro%2F</url>
-      <content type="text"><![CDATA[开个新坑，总结下最近看的凸优化的东西，主要来自于CS229的讲义。前半部分介绍凸优化的问题定义，后半部分介绍对偶问题和KKT条件，并使用SVM作为例子，展示凸优化在机器学习中的应用。这部分也是SVM理论部分不太好理解的部分，希望我能把它梳理清楚明白。 凸函数介绍凸函数之前，首先介绍凸集。函数必须定义在凸集上，才能有后续是否是凸函数的讨论。 凸集若集合$C$中任取两个元素$x$和$y$，对于任意$\theta \in [0,1]$且$\theta \in \mathbb{R}$，都有下面的不等式成立，则集合$C$是凸集： \theta x + (1-\theta)y \in C这句话翻译成不严谨的几何描述，就是在集合$C$中任取两点画一条线段，那么线段上的所有点都必须在$C$内，如下图所示。为何是这样呢？设$t = \theta x + (1-\theta) y$，稍作变形，可以得到，$t - y = \theta(x-y)$。这说明，$t-y$和$x-y$两个向量共线，也就是这三点共线。由$\theta$的取值范围，进一步知道，$t$在两点之间。这样，我们就把上面抽象的式子和下面直观的图建立了联系。 下面不加证明给出几个特殊的凸集： $\mathbb{R}^n$ $\{ x; \Vert x\Vert_p \le 1\}$，可以用范数的三角不等式证明 凸集的交集 凸函数与凸集的定义相类似，如果一个函数$f$定义在凸集上，而且对于其定义域上的任意两个变量取值$x$和$y$，对于任意$\theta \in [0,1]$且$\theta \in \mathbb{R}$，都有下式成立，则函数$f$是凸函数： f(\theta x + (1-\theta)y) \le \theta f(x) + (1-\theta) f(y)同样的，可以利用下面这张定义在$\mathbb{R}$上的函数图像帮助我们理解上面的式子。在函数曲线上任取两点画线，这条线一定要位于函数曲线的上方。 凸优化定义性质对偶问题拉格朗日对偶性质KKT条件SVM原始问题对偶问题求解参考资料 Boyd写的凸优化，是入门凸优化的必备读物。不过我还没有读过。 CS229凸优化的讲义，写的简练，快速入门。]]></content>
+      <title><![CDATA[YOLO Caffe模型转换BN的坑]]></title>
+      <url>%2F2019%2F03%2F09%2Fdarknet-caffe-converter%2F</url>
+      <content type="text"><![CDATA[YOLO虽好，但是Darknet框架实在是小众，有必要在Inference阶段将其转换为其他框架，以便后续统一部署和管理。Caffe作为小巧灵活的老资格框架，使用灵活，方便魔改，所以尝试将Darknet训练的YOLO模型转换为Caffe。这里简单记录下YOLO V3 原始Darknet模型转换为Caffe模型过程中的一个坑。 Darknet中BN的计算以CPU代码为例，在Darknet中，BN做normalization的操作如下，normalize_cpu 123456789101112void normalize_cpu(float *x, float *mean, float *variance, int batch, int filters, int spatial)&#123; int b, f, i; for(b = 0; b &lt; batch; ++b)&#123; for(f = 0; f &lt; filters; ++f)&#123; for(i = 0; i &lt; spatial; ++i)&#123; int index = b*filters*spatial + f*spatial + i; x[index] = (x[index] - mean[f])/(sqrt(variance[f]) + .000001f); &#125; &#125; &#125;&#125; 可以看到，Darknet中的BN计算如下： \hat{x} = \frac{x - \mu}{\sqrt{\sigma^2} + \epsilon}而且，$\epsilon$参数是固定的，为$1\times 10^{-6}$。 问题和解决然而，在Caffe（以及大部分其他框架）中，$\epsilon$的位置是在根号里面的，也就是： \hat{x} = \frac{x - \mu}{\sqrt{\sigma^2 + \epsilon}}另外，查看caffe.proto可以知道，Caffe默认的$\epsilon$值为$1\times 10^{-5}$。 所以，在转换为caffe prototxt时，需要设置batch_norm_param如下： 1234batch_norm_param &#123; use_global_stats: true eps: 1e-06&#125; 另外，需要重新求解$\sigma^2$，按照layer输出要相等的等量关系，可以求得： 12def convert_running_var(var, eps=DARKNET_EPS): return np.square(np.sqrt(var) + eps) - eps 这里调整之后，转换后的Caffe模型和原始Darknet模型的输出误差已经是$1\times 10^{-7}$量级，可以认为转换成功。]]></content>
     </entry>
 
     
@@ -507,9 +507,9 @@
 
     
     <entry>
-      <title><![CDATA[Windows环境下使用Doxygen生成注释文档]]></title>
-      <url>%2F2016%2F12%2F16%2Fuse-doxygen%2F</url>
-      <content type="text"><![CDATA[Doxygen 是一种很好用的代码注释生成工具，然而和很多国外的工具软件一样，在中文环境下，它的使用总是会出现一些问题，也就是中文注释文档出现乱码。经过调试，终于是解决了这个问题。 安装 DoxygenDoxygen 在Windows平台下的安装比较简单，Doxygen的项目主页提供了下载和安装的使用说明，可以下载它们的官方使用手册进行阅读。对于Windows，提供了源代码编译安装和直接安装程序安装两种方式，可以自行选择。 安装成功后，使用命令行命令 1doxygen --help 就可以查看帮助文档，对应参数含义一目了然，降低了入手难度。 使用命令， 1doxygen -g doxygen_filename 就可以在当前目录下建立一个doxygen配置文件，用文本编辑器打开就可以编辑里面的配置选项。 使用命令， 1doxygen doxygen_filename 就可以生成注释文档了。 下面就来说一说对中文的支持。 生成 HTML 格式文档中文之所以乱码，很多时候是由于编码和译码格式不同，所以我们需要先知道自己代码文件的编码方式。我的代码都是建立在Visual Studio上的，可以通过VS的高级保存选项查看自己代码文件的存储编码格式。对于中文版的VS，一般应该是GB2312。 我们打开 Doxygen 的配置文件，将里面的 INPUT_ENCODING 改为我们代码文件的编码格式，这里就改成 GB2312。 这样一来，编译出来的 HTML 页面就不会有中文乱码了。 生成Latex 格式文档生成 Latex 需要本机上安装有 Latex 的编译环境。如果是中文用户，推荐的是CTEX套件，可以到他们的网站上去下载。 可以看到，Doxygen为Latex文件的编译生成了make文件，我们在命令行窗口中执行make命令就可以完成编译，然而这时候会发现编译出错，pdf文档无法生成。 打开生成的refman.latex文档，添加宏包 CJKutf8。然后找到 \begin{document}一行，将其改为 12\begin&#123;document&#125;\begin&#123;CJK&#125;&#123;UTF8&#125;&#123;gbsn&#125; 也就是说为正文提供了CJK环境，这样中文文本就可以正常编译了。 相应的，我们要将结尾的 \end{document)改为：12\end&#123;CJK&#125;\end&#123;document&#125; 这样，运行make命令之后，就可以看到中文的注释文档了。]]></content>
+      <title><![CDATA[Hello World]]></title>
+      <url>%2F2016%2F12%2F16%2Fhello-world%2F</url>
+      <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment Code highlightHello World! 1234#include &lt;iostream&gt;int main() &#123; std::cout &lt;&lt; "HelloWorld\n";&#125; 1print 'HelloWorld' Latex Support by MathjaxMass-energy equation by Einstein: $E = mc^2$ a linear equation: \mathbf{A}\mathbf{v} = \mathbf{y}]]></content>
     </entry>
 
     
@@ -521,9 +521,9 @@
 
     
     <entry>
-      <title><![CDATA[Hello World]]></title>
-      <url>%2F2016%2F12%2F16%2Fhello-world%2F</url>
-      <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment Code highlightHello World! 1234#include &lt;iostream&gt;int main() &#123; std::cout &lt;&lt; "HelloWorld\n";&#125; 1print 'HelloWorld' Latex Support by MathjaxMass-energy equation by Einstein: $E = mc^2$ a linear equation: \mathbf{A}\mathbf{v} = \mathbf{y}]]></content>
+      <title><![CDATA[Windows环境下使用Doxygen生成注释文档]]></title>
+      <url>%2F2016%2F12%2F16%2Fuse-doxygen%2F</url>
+      <content type="text"><![CDATA[Doxygen 是一种很好用的代码注释生成工具，然而和很多国外的工具软件一样，在中文环境下，它的使用总是会出现一些问题，也就是中文注释文档出现乱码。经过调试，终于是解决了这个问题。 安装 DoxygenDoxygen 在Windows平台下的安装比较简单，Doxygen的项目主页提供了下载和安装的使用说明，可以下载它们的官方使用手册进行阅读。对于Windows，提供了源代码编译安装和直接安装程序安装两种方式，可以自行选择。 安装成功后，使用命令行命令 1doxygen --help 就可以查看帮助文档，对应参数含义一目了然，降低了入手难度。 使用命令， 1doxygen -g doxygen_filename 就可以在当前目录下建立一个doxygen配置文件，用文本编辑器打开就可以编辑里面的配置选项。 使用命令， 1doxygen doxygen_filename 就可以生成注释文档了。 下面就来说一说对中文的支持。 生成 HTML 格式文档中文之所以乱码，很多时候是由于编码和译码格式不同，所以我们需要先知道自己代码文件的编码方式。我的代码都是建立在Visual Studio上的，可以通过VS的高级保存选项查看自己代码文件的存储编码格式。对于中文版的VS，一般应该是GB2312。 我们打开 Doxygen 的配置文件，将里面的 INPUT_ENCODING 改为我们代码文件的编码格式，这里就改成 GB2312。 这样一来，编译出来的 HTML 页面就不会有中文乱码了。 生成Latex 格式文档生成 Latex 需要本机上安装有 Latex 的编译环境。如果是中文用户，推荐的是CTEX套件，可以到他们的网站上去下载。 可以看到，Doxygen为Latex文件的编译生成了make文件，我们在命令行窗口中执行make命令就可以完成编译，然而这时候会发现编译出错，pdf文档无法生成。 打开生成的refman.latex文档，添加宏包 CJKutf8。然后找到 \begin{document}一行，将其改为 12\begin&#123;document&#125;\begin&#123;CJK&#125;&#123;UTF8&#125;&#123;gbsn&#125; 也就是说为正文提供了CJK环境，这样中文文本就可以正常编译了。 相应的，我们要将结尾的 \end{document)改为：12\end&#123;CJK&#125;\end&#123;document&#125; 这样，运行make命令之后，就可以看到中文的注释文档了。]]></content>
     </entry>
 
     
