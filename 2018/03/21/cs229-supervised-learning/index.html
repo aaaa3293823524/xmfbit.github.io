@@ -95,7 +95,7 @@
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-least-square-normal-equation.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-some-useful-matrix-derivatives.png">
 <meta property="og:image" content="https://xmfbit.github.io/img/cs229-supervised-learning-sigmoid.png">
-<meta property="og:updated_time" content="2018-10-27T07:16:52.386Z">
+<meta property="og:updated_time" content="2019-04-12T14:07:43.005Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="CS229 简单的监督学习方法">
 <meta name="twitter:description" content="回过头去复习一下基础的监督学习算法，主要包括最小二乘法和logistic回归。">
@@ -396,7 +396,7 @@
 <h3 id="logistic回归-1"><a href="#logistic回归-1" class="headerlink" title="logistic回归"></a>logistic回归</h3><p>logistic函数的输出既然是在$(0,1)$上，我们可以将其作为概率。也就是说，我们认为它的输出是样本点属于类别$1$的概率：</p>
 <script type="math/tex; mode=display">\begin{aligned}P(y=1|x) &= h_\theta(x) \\
 P(y=0|x) &= 1-h_\theta(x) \end{aligned}</script><p>或者我们写的更紧凑些：</p>
-<script type="math/tex; mode=display">P(y|x) = (h_\theta(x))^y (1-h_\theta(x))^(1-y)</script><p>我们仍然使用上述极大似然的估计方法，求取参数$\theta$，为求简练，隐去了上标$(i)$。</p>
+<script type="math/tex; mode=display">P(y|x) = (h_\theta(x))^y (1-h_\theta(x))^{(1-y)}</script><p>我们仍然使用上述极大似然的估计方法，求取参数$\theta$，为求简练，隐去了上标$(i)$。</p>
 <script type="math/tex; mode=display">\begin{aligned}L(\theta) &= \prod_{i=1}^{N}P(y|x;\theta) \\
 &=\prod (h_\theta(x))^y (1-h_\theta(x))^{(1-y)} \end{aligned}</script><p>取对数：</p>
 <script type="math/tex; mode=display">\log L(\theta) = \sum_{i=1}^{N}y\log(h(x)) + (1-y)\log(1-h(x))</script><p>所以，我们的损失函数为$J(\theta) = - [y\log(h(x)) + (1-y)\log(1-h(x))]$。把$h(x)$换成$P$，岂不就是深度学习中常用的交叉损失熵在二分类下的特殊情况？</p>
